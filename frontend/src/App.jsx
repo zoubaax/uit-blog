@@ -26,9 +26,9 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public Routes */}
-        <Route path="/" element={<MainLayout />}>
-          <Route index element={<Home />} />
+        {/* Public Routes using MainLayout */}
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<Home />} />
           <Route path="articles" element={<Articles />} />
           <Route path="articles/:id" element={<ArticleDetail />} />
           <Route path="events" element={<Events />} />
@@ -41,16 +41,13 @@ function App() {
         <Route element={<PrivateRoute />}>
           <Route path="/dashboard" element={<AdminLayout />}>
             <Route index element={<DashboardHome />} />
-
             <Route path="articles" element={<AdminArticles />} />
             <Route path="articles/new" element={<CreateArticle />} />
             <Route path="articles/edit/:id" element={<EditArticle />} />
-
             <Route path="events" element={<AdminEvents />} />
             <Route path="events/new" element={<CreateEvent />} />
             <Route path="events/edit/:id" element={<EditEvent />} />
             <Route path="events/:eventId/registrations" element={<AdminEventRegistrations />} />
-
             <Route path="team" element={<AdminTeam />} />
             <Route path="team/new" element={<CreateTeam />} />
             <Route path="applications" element={<Applications />} />
@@ -60,5 +57,7 @@ function App() {
     </BrowserRouter>
   );
 }
+
+
 
 export default App;

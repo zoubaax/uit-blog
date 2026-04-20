@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
-import { Lock, Mail, AlertCircle, Loader2 } from 'lucide-react';
+import { Lock, Mail, Loader2 } from 'lucide-react';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -14,7 +14,7 @@ const Login = () => {
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
-        setError(''); // Clear error on typing
+        setError('');
     };
 
     const handleSubmit = async (e) => {
@@ -24,11 +24,9 @@ const Login = () => {
 
         try {
             if (!formData.email || !formData.password) {
-                throw new Error('Please fill in all fields'); // Local validation
+                throw new Error('Please fill in all fields');
             }
             await authService.login(formData.email, formData.password);
-
-            // Redirect to dashboard or home
             navigate('/dashboard');
         } catch (err) {
             setError(err || 'Failed to login');
@@ -38,24 +36,23 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-[80vh] flex items-center justify-center px-4">
-            <div className="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 p-8 space-y-8">
-                <div className="text-center space-y-2">
-                    <h2 className="text-3xl font-bold text-gray-900 tracking-tight">Welcome Back</h2>
-                    <p className="text-gray-500 text-sm">Sign in to access your admin dashboard</p>
+        <div className="min-h-[80vh] flex items-center justify-center px-6 py-20">
+            <div className="w-full max-w-sm bg-white border border-slate-100 p-10 space-y-10">
+                <div className="text-center">
+                    <span className="text-[10px] font-bold text-[#2563eb] uppercase tracking-[0.2em] mb-4 block">Portal Access</span>
+                    <h2 className="text-3xl font-semibold text-[#1e3a8a] tracking-tight">Member Login</h2>
                 </div>
 
                 {error && (
-                    <div className="flex items-center gap-2 p-4 text-sm text-red-700 bg-red-50 rounded-lg border border-red-100 animate-in fade-in slide-in-from-top-2">
-                        <AlertCircle className="w-4 h-4 shrink-0" />
-                        <span>{error}</span>
+                    <div className="p-4 text-xs font-medium text-red-600 bg-red-50 border border-red-100">
+                        {error}
                     </div>
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-700 block" htmlFor="email">
-                            Email Address
+                    <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-widest block" htmlFor="email">
+                            University Email
                         </label>
                         <div className="relative">
                             <input
@@ -64,16 +61,15 @@ const Login = () => {
                                 type="email"
                                 value={formData.email}
                                 onChange={handleChange}
-                                className="w-full px-4 py-3 pl-11 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-colors bg-gray-50 focus:bg-white outline-none"
-                                placeholder="name@example.com"
+                                className="w-full px-4 py-3 rounded border border-slate-200 focus:border-[#1e3a8a] outline-none text-sm transition-colors"
+                                placeholder="name@university.edu"
                                 required
                             />
-                            <Mail className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
                         </div>
                     </div>
 
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-700 block" htmlFor="password">
+                    <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-widest block" htmlFor="password">
                             Password
                         </label>
                         <div className="relative">
@@ -83,25 +79,26 @@ const Login = () => {
                                 type="password"
                                 value={formData.password}
                                 onChange={handleChange}
-                                className="w-full px-4 py-3 pl-11 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-colors bg-gray-50 focus:bg-white outline-none"
+                                className="w-full px-4 py-3 rounded border border-slate-200 focus:border-[#1e3a8a] outline-none text-sm transition-colors"
                                 placeholder="••••••••"
                                 required
                             />
-                            <Lock className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
                         </div>
                     </div>
 
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-lg hover:shadow-blue-500/25 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+                        className="w-full flex items-center justify-center gap-2 py-3 bg-[#1e3a8a] hover:bg-[#1e1e6b] text-white text-xs font-bold uppercase tracking-widest transition-all active:scale-95 disabled:opacity-70"
                     >
-                        {loading && <Loader2 className="w-5 h-5 animate-spin" />}
-                        {loading ? 'Signing in...' : 'Sign In'}
+                        {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Authenticate'}
                     </button>
-
-                    <div className="text-center text-sm text-gray-500">
-                        <span>Restricted area. Authorized personnel only.</span>
+                    
+                    <div className="text-center pt-4">
+                        <p className="text-[10px] text-[#94a3b8] leading-relaxed italic">
+                            Authorized access only.<br />
+                            Please contact systems administrator for credentials.
+                        </p>
                     </div>
                 </form>
             </div>

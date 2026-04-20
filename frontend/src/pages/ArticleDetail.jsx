@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import articleService from '../services/articleService';
-import { Calendar, User, ArrowLeft, Loader2, Clock } from 'lucide-react';
+import { ArrowLeft, Loader2 } from 'lucide-react';
 
 const ArticleDetail = () => {
     const { id } = useParams();
@@ -28,89 +28,84 @@ const ArticleDetail = () => {
 
     if (loading) {
         return (
-            <div className="min-h-[50vh] flex items-center justify-center">
-                <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
+            <div className="min-h-[60vh] flex flex-col items-center justify-center">
+                <Loader2 className="w-12 h-12 text-[#1e3a8a] animate-spin mb-4" />
+                <p className="text-[#475569] font-medium">Accessing archive...</p>
             </div>
         );
     }
 
     if (error || !article) {
         return (
-            <div className="min-h-[50vh] flex flex-col items-center justify-center space-y-4">
-                <p className="text-red-600 text-lg">{error || 'Something went wrong'}</p>
-                <button onClick={() => navigate('/articles')} className="text-blue-600 font-medium hover:underline">Go back to articles</button>
+            <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-4">
+                <p className="text-red-600 text-lg">{error || 'Publication not found'}</p>
+                <button onClick={() => navigate('/articles')} className="text-[#2563eb] font-bold uppercase text-xs tracking-widest hover:underline">Return to archive</button>
             </div>
         );
     }
 
-    const publishDate = new Date(article.created_at);
-
     return (
-        <div className="max-w-4xl mx-auto px-4 py-8 animate-in fade-in duration-700">
-            <button
-                onClick={() => navigate('/articles')}
-                className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors mb-8 group"
-            >
-                <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-                Back to Articles
-            </button>
+        <article className="bg-white min-h-screen">
+            {/* Header / Meta */}
+            <header className="max-w-4xl mx-auto px-6 pt-20 pb-12">
+                <button
+                    onClick={() => navigate('/articles')}
+                    className="flex items-center gap-2 text-[#94a3b8] hover:text-[#1e3a8a] transition-colors mb-12 text-xs font-bold uppercase tracking-widest group"
+                >
+                    <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                    Back
+                </button>
 
-            <article className="space-y-8">
-                {/* Header */}
-                <header className="space-y-6">
-                    <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight sm:text-5xl leading-tight">
+                <div className="reveal-element">
+                    <div className="flex items-center gap-4 mb-8 text-[10px] font-bold text-[#2563eb] uppercase tracking-[0.2em]">
+                        <span>Publication</span>
+                        <span className="text-[#94a3b8]">/</span>
+                        <span>{new Date(article.created_at).toLocaleDateString()}</span>
+                    </div>
+                    
+                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-[#1e3a8a] mb-8 leading-tight tracking-tight">
                         {article.title}
                     </h1>
 
-                    <div className="flex flex-wrap items-center gap-6 text-gray-500 font-medium pb-8 border-b border-gray-100">
-                        <div className="flex items-center gap-2">
-                            <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
-                                <Calendar className="w-4 h-4" />
-                            </div>
-                            <span>{publishDate.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                    <div className="flex items-center gap-4 py-8 border-y border-slate-100">
+                        <div className="w-10 h-10 bg-slate-50 border border-slate-100 flex items-center justify-center text-[#1e3a8a] font-bold text-sm">
+                            {(article.author_name || 'A')[0]}
                         </div>
-                        <div className="flex items-center gap-2">
-                            <div className="p-2 bg-purple-50 text-purple-600 rounded-lg">
-                                <User className="w-4 h-4" />
-                            </div>
-                            <span>{article.author_name || 'Admin'}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <div className="p-2 bg-amber-50 text-amber-600 rounded-lg">
-                                <Clock className="w-4 h-4" />
-                            </div>
-                            <span>{Math.ceil(article.content.split(' ').length / 200)} min read</span>
+                        <div>
+                            <p className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-widest">Authored By</p>
+                            <p className="text-sm font-semibold text-[#1e3a8a]">{article.author_name || 'University Staff'}</p>
                         </div>
                     </div>
-                </header>
+                </div>
+            </header>
 
-                {/* Cover Image */}
-                <div className="rounded-[40px] overflow-hidden shadow-2xl aspect-video max-h-[500px]">
+            {/* Featured Image */}
+            <section className="max-w-6xl mx-auto px-6 mb-16">
+                <div className="aspect-[21/9] bg-slate-50 border border-slate-100 overflow-hidden">
                     <img
                         src={article.image_url || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&q=80&w=1200'}
                         alt={article.title}
                         className="w-full h-full object-cover"
                     />
                 </div>
+            </section>
 
-                {/* Content */}
-                <div className="prose prose-lg lg:prose-xl max-w-none text-gray-700 leading-relaxed py-8">
-                    <p className="whitespace-pre-line">{article.content}</p>
+            {/* Content */}
+            <section className="max-w-3xl mx-auto px-6 pb-32">
+                <div className="prose prose-slate prose-lg max-w-none">
+                    <div className="text-[#475569] leading-[1.8] text-lg whitespace-pre-line">
+                        {article.content}
+                    </div>
                 </div>
-
-                {/* Footer / Author Box */}
-                <footer className="mt-12 p-8 bg-gray-50 rounded-[40px] border border-gray-100 flex items-center gap-6">
-                    <div className="w-20 h-20 rounded-3xl bg-blue-600 flex items-center justify-center text-white text-3xl font-bold">
-                        {(article.author_name || 'A')[0]}
-                    </div>
-                    <div>
-                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Written By</p>
-                        <h4 className="text-xl font-bold text-gray-900">{article.author_name || 'Admin User'}</h4>
-                        <p className="text-gray-500 text-sm mt-1">Passionate writer and contributor to our blog community.</p>
-                    </div>
-                </footer>
-            </article>
-        </div>
+                
+                {/* Footer Notes */}
+                <div className="mt-20 pt-12 border-t border-slate-100">
+                    <p className="text-[#94a3b8] text-xs italic leading-relaxed">
+                        This article is part of the UIT Club official archive. Reproduction or distribution of this research without explicit permission is prohibited under university guidelines.
+                    </p>
+                </div>
+            </section>
+        </article>
     );
 };
 

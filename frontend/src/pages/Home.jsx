@@ -1,304 +1,258 @@
-import { useState, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import articleService from '../services/articleService';
-import eventService from '../services/eventService';
-import teamService from '../services/teamService';
-import JoinForm from '../components/JoinForm';
-import {
-    Calendar,
-    ChevronRight,
-    BookOpen,
-    Users,
-    Target,
-    MapPin,
-    Mail,
-    Globe,
-    Award,
-    Shield
-} from 'lucide-react';
 
-const Home = () => {
-    const [events, setEvents] = useState([]);
-    const [team, setTeam] = useState([]);
-    const [loading, setLoading] = useState(true);
+/**
+ * UIT CLUB HOMEPAGE
+ * Style: Academic & Professional (MIT/Stanford inspired)
+ * Tech: React + Tailwind CSS v4
+ */
 
-    // Fade-in on scroll effect
+// --- MOCK DATA ---
+const STATS = [
+  { label: 'Active Members', value: '120+' },
+  { label: 'Published Articles', value: '45' },
+  { label: 'Annual Events', value: '12' },
+];
+
+const ARTICLES = [
+  {
+    id: 1,
+    category: 'Engineering',
+    title: 'The Future of Distributed Systems in Campus Infrastructure',
+    excerpt: 'Exploring how decentralized computing can streamline university resource management.',
+    author: 'Alex Chen',
+    readTime: '6 min read'
+  },
+  {
+    id: 2,
+    category: 'Research',
+    title: 'Machine Learning Patterns in Urban Mobility',
+    excerpt: 'A study on how transit data can predict peak congestion in metropolitan areas.',
+    author: 'Sarah Jenkins',
+    readTime: '8 min read'
+  },
+  {
+    id: 3,
+    category: 'Innovation',
+    title: 'Beyond the Sandbox: Deploying Student Projects to Production',
+    excerpt: 'Best practices for moving from local development to a globally accessible platform.',
+    author: 'Michael Vogt',
+    readTime: '5 min read'
+  }
+];
+
+const EVENTS = [
+  {
+    id: 1,
+    day: '24',
+    month: 'APR',
+    title: 'Spring Hackathon: AI for Education',
+    description: 'A 48-hour challenge to build tools that assist peer-to-peer learning.'
+  },
+  {
+    id: 2,
+    day: '05',
+    month: 'MAY',
+    title: 'Tech Talk: Cyber-Security in 2026',
+    description: 'Guest lecture from industry leaders on the evolving landscape of digital defense.'
+  },
+  {
+    id: 3,
+    day: '12',
+    month: 'MAY',
+    title: 'Workshop: Modern Cloud Architectures',
+    description: 'Hands-on session covering serverless deployments and edge computing.'
+  },
+  {
+    id: 4,
+    day: '19',
+    month: 'MAY',
+    title: 'General Body Meeting',
+    description: 'Discussion of upcoming summer research opportunities and club elections.'
+  }
+];
+
+// --- REVEAL ANIMATION HOOK ---
+const useReveal = () => {
     useEffect(() => {
-        const observerOptions = {
-            threshold: 0.1
-        };
-
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
+                    entry.target.classList.add('reveal-visible');
+                    entry.target.classList.remove('reveal-hidden');
                 }
             });
-        }, observerOptions);
+        }, { threshold: 0.1 });
 
-        const animatedElements = document.querySelectorAll('.fade-in-on-scroll');
-        animatedElements.forEach(el => observer.observe(el));
+        const elements = document.querySelectorAll('.reveal-element');
+        elements.forEach(el => {
+            el.classList.add('reveal-hidden');
+            observer.observe(el);
+        });
 
         return () => observer.disconnect();
-    }, [loading]);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const [eveRes, teamRes] = await Promise.all([
-                    eventService.getAll(),
-                    teamService.getAll()
-                ]);
-                setEvents(eveRes.data?.filter(e => !e.is_hidden).slice(0, 3) || []);
-                setTeam(teamRes.data?.slice(0, 4) || []);
-            } catch (err) {
-                console.error(err);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchData();
     }, []);
-
-    const scrollToSection = (id) => {
-        const element = document.getElementById(id);
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth' });
-        }
-    };
-
-    return (
-        <div className="flex flex-col w-full">
-
-            {/* HERO SECTION */}
-            <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700">
-                <div className="absolute inset-0 opacity-20">
-                    <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
-                </div>
-                <div className="container mx-auto px-4 text-center z-10 text-white space-y-8 animate-in fade-in zoom-in duration-1000">
-                    <h1 className="text-6xl md:text-8xl font-black tracking-tighter">
-                        [UIT] CLUB
-                    </h1>
-                    <p className="text-xl md:text-2xl font-light max-w-2xl mx-auto text-blue-100 leading-relaxed">
-                        Excellence in Innovation, Leadership, and Academic Achievement.
-                    </p>
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-4">
-                        <button
-                            onClick={() => scrollToSection('contact')}
-                            className="px-10 py-4 bg-white text-blue-800 font-bold rounded shadow-xl hover:bg-blue-50 transition-all uppercase tracking-widest text-sm"
-                        >
-                            Join Now
-                        </button>
-                        <button
-                            onClick={() => scrollToSection('events')}
-                            className="px-10 py-4 border-2 border-white text-white font-bold rounded hover:bg-white/10 transition-all uppercase tracking-widest text-sm"
-                        >
-                            Upcoming Events
-                        </button>
-                    </div>
-                </div>
-            </section>
-
-            {/* ABOUT SECTION */}
-            <section id="about" className="py-24 bg-white fade-in-on-scroll">
-                <div className="container mx-auto px-4 lg:px-12">
-                    <div className="flex flex-col lg:flex-row items-center gap-16">
-                        <div className="lg:w-1/2 space-y-6">
-                            <h2 className="section-title text-blue-900">About UIT Club</h2>
-                            <p className="text-lg text-slate-600 leading-relaxed">
-                                UIT is a premier academic club dedicated to fostering professional growth,
-                                technical excellence, and entrepreneurial spirit among students. We bridge
-                                the gap between classroom theory and real-world application.
-                            </p>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
-                                <div className="flex items-start gap-4">
-                                    <div className="p-3 bg-blue-50 text-blue-700 rounded-lg">
-                                        <Target className="w-6 h-6" />
-                                    </div>
-                                    <div>
-                                        <h4 className="font-bold text-slate-900">Our Mission</h4>
-                                        <p className="text-sm text-slate-500">To empower students through hands-on projects and mentorship.</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-start gap-4">
-                                    <div className="p-3 bg-blue-50 text-blue-700 rounded-lg">
-                                        <Users className="w-6 h-6" />
-                                    </div>
-                                    <div>
-                                        <h4 className="font-bold text-slate-900">Focus Areas</h4>
-                                        <p className="text-sm text-slate-500">Technology, Debate, and Professional Leadership.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="pt-6">
-                                <p className="text-slate-900 font-bold flex items-center gap-2">
-                                    <Calendar className="w-5 h-5 text-blue-600" />
-                                    Meeting Times: Every Tuesday & Thursday at 5:00 PM
-                                </p>
-                            </div>
-                        </div>
-                        <div className="lg:w-1/2">
-                            <div className="relative rounded-2xl overflow-hidden shadow-2xl border-8 border-gray-50">
-                                <img
-                                    src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=1200"
-                                    alt="UIT Students"
-                                    className="w-full h-full object-cover"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* EVENTS SECTION */}
-            <section id="events" className="py-24 bg-slate-50 fade-in-on-scroll">
-                <div className="container mx-auto px-4 lg:px-12 text-center space-y-16">
-                    <div className="space-y-4">
-                        <h2 className="section-title text-blue-900 mx-auto w-fit font-black tracking-tight uppercase">Upcoming Activities</h2>
-                        <p className="text-slate-500 max-w-xl mx-auto font-medium">Stay updated with our latest workshops, seminars, and networking events.</p>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {events.length > 0 ? events.map(event => (
-                            <div key={event.id} className="card p-8 flex flex-col items-start gap-6 text-left group">
-                                <div className="w-full h-48 rounded-lg overflow-hidden relative">
-                                    <img
-                                        src={event.cover_image_url || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=800'}
-                                        alt={event.title}
-                                        className="w-full h-full object-cover transition-transform group-hover:scale-110"
-                                    />
-                                    <div className="absolute top-4 left-4 bg-blue-700 text-white px-3 py-1 text-xs font-bold rounded uppercase tracking-widest leading-none">
-                                        EVENT
-                                    </div>
-                                </div>
-                                <div className="space-y-3">
-                                    <div className="flex items-center gap-2 text-blue-600 font-bold text-sm">
-                                        <Calendar className="w-4 h-4" />
-                                        {new Date(event.date).toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}
-                                    </div>
-                                    <h3 className="text-xl font-bold text-slate-900 group-hover:text-blue-700 transition-colors uppercase leading-tight">{event.title}</h3>
-                                    <p className="text-slate-500 text-sm line-clamp-3 leading-relaxed">
-                                        {event.description}
-                                    </p>
-                                </div>
-                                <Link to={`/events/${event.id}`} className="mt-auto flex items-center gap-2 text-blue-700 font-bold hover:gap-4 transition-all uppercase text-xs tracking-widest">
-                                    Learn More <ChevronRight className="w-4 h-4" />
-                                </Link>
-                            </div>
-                        )) : (
-                            <div className="col-span-3 py-10 text-slate-400 font-medium tracking-widest uppercase">No events scheduled at the moment.</div>
-                        )}
-                    </div>
-                </div>
-            </section>
-
-            {/* RESOURCES SECTION */}
-            <section id="resources" className="py-24 bg-white fade-in-on-scroll">
-                <div className="container mx-auto px-4 lg:px-12 text-center space-y-16">
-                    <div className="space-y-4">
-                        <h2 className="section-title text-blue-900 mx-auto w-fit font-black tracking-tight uppercase">Club Resources</h2>
-                        <p className="text-slate-500 max-w-xl mx-auto font-medium">We provide the tools and support needed for academic and professional success.</p>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-                        <div className="space-y-4">
-                            <div className="w-16 h-16 bg-blue-50 text-blue-700 rounded-full flex items-center justify-center mx-auto mb-6">
-                                <BookOpen className="w-8 h-8" />
-                            </div>
-                            <h3 className="text-xl font-bold text-slate-900 uppercase tracking-tight">Mentorship</h3>
-                            <p className="text-slate-500 text-sm font-medium">Direct access to experienced upperclassmen and industry professionals.</p>
-                        </div>
-                        <div className="space-y-4">
-                            <div className="w-16 h-16 bg-blue-50 text-blue-700 rounded-full flex items-center justify-center mx-auto mb-6">
-                                <Award className="w-8 h-8" />
-                            </div>
-                            <h3 className="text-xl font-bold text-slate-900 uppercase tracking-tight">Toolkits</h3>
-                            <p className="text-slate-500 text-sm font-medium">Curated digital resources, templates, and guides for your projects.</p>
-                        </div>
-                        <div className="space-y-4">
-                            <div className="w-16 h-16 bg-blue-50 text-blue-700 rounded-full flex items-center justify-center mx-auto mb-6">
-                                <Shield className="w-8 h-8" />
-                            </div>
-                            <h3 className="text-xl font-bold text-slate-900 uppercase tracking-tight">Member Portal</h3>
-                            <p className="text-slate-500 text-sm font-medium">Exclusive dashboard for event registration and internal updates.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* TEAM SECTION */}
-            <section id="team" className="py-24 bg-slate-50 fade-in-on-scroll">
-                <div className="container mx-auto px-4 lg:px-12 text-center space-y-16">
-                    <div className="space-y-4">
-                        <h2 className="section-title text-blue-900 mx-auto w-fit font-black tracking-tight uppercase">Meet Our Leadership</h2>
-                        <p className="text-slate-500 max-w-xl mx-auto font-medium">The dedicated students driving the vision of UIT Club forward.</p>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-                        {team.map(member => (
-                            <div key={member.id} className="space-y-4 group">
-                                <div className="w-48 h-48 rounded-full overflow-hidden mx-auto shadow-lg border-4 border-white group-hover:border-blue-100 transition-all duration-300 transform group-hover:scale-105">
-                                    <img
-                                        src={member.photo_url || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400'}
-                                        alt={member.name}
-                                        className="w-full h-full object-cover"
-                                    />
-                                </div>
-                                <div className="space-y-1">
-                                    <h4 className="text-xl font-bold text-slate-900 uppercase tracking-tight">{member.name}</h4>
-                                    <p className="text-blue-600 font-bold text-xs tracking-[0.2em] uppercase">{member.role}</p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-
-                    <div className="pt-8">
-                        <Link to="/team" className="btn-primary uppercase text-xs tracking-widest font-black">
-                            See Full Team <ChevronRight className="w-4 h-4" />
-                        </Link>
-                    </div>
-                </div>
-            </section>
-
-            {/* CONTACT SECTION */}
-            <section id="contact" className="py-24 bg-white fade-in-on-scroll">
-                <div className="container mx-auto px-4 lg:px-12">
-                    <div className="flex flex-col lg:flex-row gap-16">
-                        <div className="lg:w-1/2 space-y-8">
-                            <h2 className="section-title text-blue-900 font-black tracking-tight uppercase">Get In Touch</h2>
-                            <p className="text-slate-500 max-w-md font-medium">Interested in joining or partnership? Drop us a message or join our mailing list.</p>
-
-                            <div className="space-y-4">
-                                <div className="flex items-center gap-4 text-slate-700 font-bold">
-                                    <Mail className="w-5 h-5 text-blue-600" /> contact@uitclub.edu
-                                </div>
-                                <div className="flex items-center gap-4 text-slate-700 font-bold">
-                                    <MapPin className="w-5 h-5 text-blue-600" /> Faculty of Sciences, Campus Nord
-                                </div>
-                                <div className="flex items-center gap-4 text-slate-700 font-bold">
-                                    <Globe className="w-5 h-5 text-blue-600" /> www.uitclub.edu
-                                </div>
-                            </div>
-
-                            <div className="flex gap-4 pt-4">
-                                <a href="#" className="w-12 h-12 bg-blue-50 text-blue-700 rounded-full flex items-center justify-center hover:bg-blue-700 hover:text-white transition-all">
-                                    <Globe className="w-6 h-6" />
-                                </a>
-                                <a href="#" className="w-12 h-12 bg-blue-50 text-blue-700 rounded-full flex items-center justify-center hover:bg-blue-700 hover:text-white transition-all">
-                                    <Mail className="w-6 h-6" />
-                                </a>
-                            </div>
-                        </div>
-
-                        <div className="lg:w-1/2">
-                            <JoinForm />
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-        </div>
-    );
 };
 
+const Home = () => {
+  useReveal();
+
+  return (
+    <div className="min-h-screen bg-white">
+      {/* 2. HERO */}
+      <header className="py-24 md:py-32 flex flex-col items-center text-center px-6">
+        <div className="reveal-element">
+            <span className="inline-block px-3 py-1 bg-[#dbeafe] text-[#2563eb] text-[10px] uppercase font-bold tracking-widest rounded-full mb-6 italic">
+                University of IT Club
+            </span>
+            <h1 className="text-5xl md:text-7xl font-semibold text-[#1e3a8a] leading-[1.1] mb-6 max-w-4xl mx-auto">
+                Built by students.<br /> Driven by knowledge.
+            </h1>
+            <p className="text-lg md:text-xl text-[#475569] max-w-2xl mx-auto mb-10 leading-relaxed">
+                A technical collective dedicated to fostering engineering excellence and research collaboration across the university campus.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4 mb-16">
+                <Link 
+                    to="/articles" 
+                    className="px-8 py-3 bg-[#1e3a8a] text-white font-medium rounded hover:bg-[#1e1e6b] transition-all active:scale-95"
+                >
+                    Explore Articles
+                </Link>
+                <Link 
+                    to="/team" 
+                    className="px-8 py-3 border border-slate-200 text-[#1e3a8a] font-medium rounded hover:bg-slate-50 transition-all active:scale-95"
+                >
+                    Meet the Team
+                </Link>
+            </div>
+            
+            {/* Stats */}
+            <div className="flex flex-wrap justify-center items-center gap-12 md:gap-24 pt-12 border-t border-slate-100 w-full max-w-3xl">
+                {STATS.map((stat, i) => (
+                    <div key={i} className="flex flex-col items-center">
+                        <span className="text-2xl font-semibold text-[#1e3a8a] mb-1">{stat.value}</span>
+                        <span className="text-xs text-[#94a3b8] uppercase tracking-wider">{stat.label}</span>
+                    </div>
+                ))}
+            </div>
+        </div>
+      </header>
+
+      {/* 3. MISSION STRIP */}
+      <section className="bg-[#f8fafc] py-20 px-6">
+        <div className="max-w-7xl mx-auto reveal-element">
+            <div className="grid md:grid-cols-[200px_1fr] gap-12 items-start">
+                <div className="text-6xl md:text-8xl font-bold text-[#dbeafe]/60 leading-none">
+                    01
+                </div>
+                <div className="max-w-3xl">
+                    <p className="text-2xl md:text-3xl font-medium text-[#1e3a8a] leading-tight italic">
+                        Our mission is to bridge the gap between academic theory and technical reality. We build systems that matter and cultivate minds that lead.
+                    </p>
+                </div>
+            </div>
+        </div>
+      </section>
+
+      {/* 4. FEATURED ARTICLES */}
+      <section className="py-24 px-6 max-w-7xl mx-auto">
+        <div className="reveal-element">
+            <div className="mb-12">
+                <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#2563eb] border-b-2 border-[#2563eb] pb-1">
+                    Knowledge Hub
+                </span>
+            </div>
+            
+            <div className="grid md:grid-cols-3 gap-8 mb-12">
+                {ARTICLES.map((article, i) => (
+                    <Link 
+                        key={article.id} 
+                        to={`/articles/${article.id}`}
+                        className="group flex flex-col p-8 border border-slate-100 hover:border-slate-200 hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 transform hover:-translate-y-0.5 reveal-element"
+                        style={{ transitionDelay: `${i * 50}ms` }}
+                    >
+                        <span className="inline-block w-fit px-2 py-0.5 bg-[#dbeafe] text-[#2563eb] text-[10px] font-bold uppercase tracking-wider rounded mb-6">
+                            {article.category}
+                        </span>
+                        <h3 className="text-xl font-semibold text-[#1e3a8a] mb-4 group-hover:text-[#2563eb] transition-colors leading-snug">
+                            {article.title}
+                        </h3>
+                        <p className="text-sm text-[#475569] mb-8 line-clamp-2 leading-relaxed">
+                            {article.excerpt}
+                        </p>
+                        <div className="mt-auto flex items-center justify-between text-[11px] text-[#94a3b8] uppercase font-semibold tracking-wide">
+                            <span>{article.author}</span>
+                            <span>{article.readTime}</span>
+                        </div>
+                    </Link>
+                ))}
+            </div>
+            
+            <Link to="/articles" className="inline-block text-[#2563eb] font-semibold text-sm hover:underline">
+                Browse All Articles →
+            </Link>
+        </div>
+      </section>
+
+      {/* 5. UPCOMING EVENTS */}
+      <section className="py-24 px-6 max-w-7xl mx-auto border-t border-slate-100">
+        <div className="reveal-element">
+            <div className="mb-12">
+                <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#2563eb] border-b-2 border-[#2563eb] pb-1">
+                    Upcoming Events
+                </span>
+            </div>
+            
+            <div className="max-w-4xl">
+                {EVENTS.map((event, i) => (
+                    <div 
+                        key={event.id} 
+                        className="grid grid-cols-[100px_1fr] md:grid-cols-[150px_1fr] py-8 border-b border-slate-100 first:pt-0 reveal-element"
+                        style={{ transitionDelay: `${i * 50}ms` }}
+                    >
+                        <div className="flex flex-col">
+                            <span className="text-2xl font-bold text-[#1e3a8a]">{event.day}</span>
+                            <span className="text-xs font-bold text-[#94a3b8]">{event.month}</span>
+                        </div>
+                        <div>
+                            <h4 className="text-xl font-semibold text-[#1e3a8a] mb-2">{event.title}</h4>
+                            <p className="text-[#475569] text-sm leading-relaxed max-w-xl">{event.description}</p>
+                        </div>
+                    </div>
+                ))}
+            </div>
+            
+            <div className="mt-12">
+                <Link to="/events" className="inline-block text-[#2563eb] font-semibold text-sm hover:underline">
+                    View Calendar →
+                </Link>
+            </div>
+        </div>
+      </section>
+
+      {/* 6. JOIN THE CLUB CTA */}
+      <section className="bg-[#1e3a8a] py-32 px-6 text-center">
+        <div className="max-w-4xl mx-auto reveal-element">
+            <h2 className="text-3xl md:text-5xl font-semibold text-white mb-6">
+                Become part of something meaningful.
+            </h2>
+            <p className="text-blue-200 text-lg md:text-xl mb-12 max-w-2xl mx-auto font-light">
+                We are always looking for driven individuals to join our ranks and contribute to the next generation of campus technology.
+            </p>
+            <Link 
+                to="/apply" 
+                className="inline-block px-10 py-4 bg-white text-[#1e3a8a] font-semibold rounded hover:bg-slate-50 transition-all active:scale-95"
+            >
+                Apply for Membership
+            </Link>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+
 export default Home;
+
+
+
