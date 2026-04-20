@@ -3,6 +3,9 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import JoinModal from './JoinModal';
 
+import logo from '../assets/logo.png';
+import logoDark from '../assets/dark.png';
+
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
@@ -26,10 +29,12 @@ const Navbar = () => {
                 : 'bg-transparent py-4 md:py-6'
         }`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
-                <Link to="/" className={`text-xl font-bold tracking-tight transition-colors ${
-                    !isHomePage || isScrolled ? 'text-[#1e3a8a]' : 'text-white drop-shadow-md'
-                }`}>
-                    UIT
+                <Link to="/" className="flex items-center">
+                    <img 
+                        src={isHomePage && !isScrolled ? logo : logoDark} 
+                        alt="UIT Logo" 
+                        className="h-8 md:h-10 w-auto transition-all" 
+                    />
                 </Link>
 
                 <div className="flex items-center gap-4 md:gap-8">

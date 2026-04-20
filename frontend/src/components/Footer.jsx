@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import JoinModal from './JoinModal';
+import logoDark from '../assets/dark.png';
 
 const Footer = () => {
     const [showJoinModal, setShowJoinModal] = useState(false);
@@ -9,8 +10,8 @@ const Footer = () => {
         <footer className="bg-white pt-16 md:pt-24 pb-8 md:pb-12 px-4 sm:px-6 border-t border-slate-100 relative">
             <div className="max-w-7xl mx-auto">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 md:gap-8 mb-12 md:mb-16">
-                    <Link to="/" className="text-2xl font-bold text-[#1e3a8a] tracking-tight">
-                        UIT
+                    <Link to="/" className="flex items-center">
+                        <img src={logoDark} alt="UIT Logo" className="h-10 w-auto" />
                     </Link>
                     <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 items-start sm:items-center w-full sm:w-auto">
                         <Link to="/articles" className="text-sm font-medium text-[#475569] hover:text-[#1e3a8a] transition-colors">Articles</Link>

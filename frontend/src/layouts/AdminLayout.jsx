@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, FileText, Calendar, Users, LogOut, ClipboardList } from 'lucide-react';
 import authService from '../services/authService';
+import logoDark from '../assets/dark.png';
 
 const AdminLayout = () => {
     const navigate = useNavigate();
@@ -24,8 +25,9 @@ const AdminLayout = () => {
         <div className="min-h-screen bg-gray-50 flex">
             {/* Sidebar */}
             <aside className={`bg-white border-r border-gray-200 fixed inset-y-0 z-20 w-64 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300`}>
-                <div className="h-16 flex items-center px-6 border-b border-gray-100">
-                    <span className="text-xl font-bold text-gray-900">Admin Panel</span>
+                <div className="h-16 flex items-center gap-3 px-6 border-b border-gray-100">
+                    <img src={logoDark} alt="Logo" className="h-6 w-auto" />
+                    <span className="text-lg font-bold text-gray-900">Admin</span>
                 </div>
 
                 <nav className="p-4 space-y-1">

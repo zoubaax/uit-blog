@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
 import { Lock, Mail, Loader2 } from 'lucide-react';
+import logoDark from '../assets/dark.png';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -39,6 +40,9 @@ const Login = () => {
         <div className="min-h-[80vh] flex items-center justify-center px-4 sm:px-6 pt-24 md:pt-28 pb-20">
             <div className="w-full max-w-sm bg-white border border-slate-100 p-10 space-y-10">
                 <div className="text-center">
+                    <div className="flex justify-center mb-6">
+                        <img src={logoDark} alt="UIT Logo" className="h-12 w-auto" />
+                    </div>
                     <span className="text-[10px] font-bold text-[#2563eb] uppercase tracking-[0.2em] mb-4 block">Portal Access</span>
                     <h2 className="text-3xl font-semibold text-[#1e3a8a] tracking-tight">Member Login</h2>
                 </div>

@@ -20,8 +20,7 @@ const login = async (email, password) => {
     // 3. Generate JWT
     const token = jwt.sign(
         { id: user.id, role: user.role },
-        process.env.JWT_SECRET,
-        { expiresIn: '1d' }
+        process.env.JWT_SECRET
     );
 
     // Remove password from output

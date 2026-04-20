@@ -5,10 +5,10 @@ const isProduction = process.env.NODE_ENV === 'production';
 // Use connection string for cloud providers, fallback to individual params
 const connectionConfig = process.env.DATABASE_URL ? {
     connectionString: process.env.DATABASE_URL,
-    ssl: isProduction ? { rejectUnauthorized: false } : false,
+    ssl: { rejectUnauthorized: false },
     max: 20,
     idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 2000,
+    connectionTimeoutMillis: 10000,
 } : {
     user: process.env.DB_USER,
     host: process.env.DB_HOST,
@@ -17,7 +17,7 @@ const connectionConfig = process.env.DATABASE_URL ? {
     port: process.env.DB_PORT,
     max: 20,
     idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 2000,
+    connectionTimeoutMillis: 10000,
 };
 
 const pool = new Pool(connectionConfig);
