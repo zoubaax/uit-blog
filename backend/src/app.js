@@ -26,6 +26,15 @@ app.get('/health', (req, res) => {
     res.status(200).json({ status: 'UP', timestamp: new Date() });
 });
 
+// Root route for deployment testing
+app.get('/', (req, res) => {
+    res.status(200).json({ 
+        message: 'University of IT Club API is live!',
+        version: '1.0.0',
+        environment: process.env.NODE_ENV
+    });
+});
+
 // Routes
 app.use('/api/v1/auth', require('./routes/auth.routes'));
 app.use('/api/v1/articles', require('./routes/article.routes'));
