@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import settingsService from '../services/settingsService';
 import { User, Mail, Book, MessageSquare, Send, CheckCircle, Loader2, AlertCircle } from 'lucide-react';
 
-const JoinForm = () => {
+const JoinForm = ({ onSuccess }) => {
     const [formData, setFormData] = useState({
         full_name: '',
         email: '',
@@ -35,6 +35,9 @@ const JoinForm = () => {
         try {
             await settingsService.submitApplication(formData);
             setSuccess(true);
+            if (onSuccess) {
+                setTimeout(() => onSuccess(), 2000);
+            }
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to submit application');
         } finally {

@@ -5,7 +5,6 @@ const { protect, restrictTo } = require('../middlewares/authMiddleware');
 const router = express.Router();
 
 router.post('/login', authController.login);
-// router.post('/register-admin', authController.registerAdmin); // DISABLED FOR SECURITY
 
 // Example of a protected route
 router.get('/me', protect, (req, res) => {

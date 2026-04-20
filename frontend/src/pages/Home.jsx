@@ -1,5 +1,10 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import articleService from '../services/articleService';
+import eventService from '../services/eventService';
+import teamService from '../services/teamService';
+import { Loader2 } from 'lucide-react';
+import bannerImage from '../assets/banner.png';
 
 /**
  * UIT CLUB HOMEPAGE
@@ -7,72 +12,7 @@ import { Link } from 'react-router-dom';
  * Tech: React + Tailwind CSS v4
  */
 
-// --- MOCK DATA ---
-const STATS = [
-  { label: 'Active Members', value: '120+' },
-  { label: 'Published Articles', value: '45' },
-  { label: 'Annual Events', value: '12' },
-];
-
-const ARTICLES = [
-  {
-    id: 1,
-    category: 'Engineering',
-    title: 'The Future of Distributed Systems in Campus Infrastructure',
-    excerpt: 'Exploring how decentralized computing can streamline university resource management.',
-    author: 'Alex Chen',
-    readTime: '6 min read'
-  },
-  {
-    id: 2,
-    category: 'Research',
-    title: 'Machine Learning Patterns in Urban Mobility',
-    excerpt: 'A study on how transit data can predict peak congestion in metropolitan areas.',
-    author: 'Sarah Jenkins',
-    readTime: '8 min read'
-  },
-  {
-    id: 3,
-    category: 'Innovation',
-    title: 'Beyond the Sandbox: Deploying Student Projects to Production',
-    excerpt: 'Best practices for moving from local development to a globally accessible platform.',
-    author: 'Michael Vogt',
-    readTime: '5 min read'
-  }
-];
-
-const EVENTS = [
-  {
-    id: 1,
-    day: '24',
-    month: 'APR',
-    title: 'Spring Hackathon: AI for Education',
-    description: 'A 48-hour challenge to build tools that assist peer-to-peer learning.'
-  },
-  {
-    id: 2,
-    day: '05',
-    month: 'MAY',
-    title: 'Tech Talk: Cyber-Security in 2026',
-    description: 'Guest lecture from industry leaders on the evolving landscape of digital defense.'
-  },
-  {
-    id: 3,
-    day: '12',
-    month: 'MAY',
-    title: 'Workshop: Modern Cloud Architectures',
-    description: 'Hands-on session covering serverless deployments and edge computing.'
-  },
-  {
-    id: 4,
-    day: '19',
-    month: 'MAY',
-    title: 'General Body Meeting',
-    description: 'Discussion of upcoming summer research opportunities and club elections.'
-  }
-];
-
-// --- REVEAL ANIMATION HOOK ---
+// --- DYNAMIC DATA HOOKS ---
 const useReveal = () => {
     useEffect(() => {
         const observer = new IntersectionObserver((entries) => {
@@ -96,44 +36,97 @@ const useReveal = () => {
 
 const Home = () => {
   useReveal();
+  
+  const [stats, setStats] = useState({ members: 0, articles: 0, events: 0 });
+  const [articles, setArticles] = useState([]);
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch articles
+        const articlesResponse = await articleService.getAll();
+        const allArticles = articlesResponse.data || [];
+        setArticles(allArticles.slice(0, 3)); // Get first 3 for homepage
+
+        // Fetch events
+        const eventsResponse = await eventService.getAll();
+        const allEvents = eventsResponse.data || [];
+        const upcomingEvents = allEvents
+          .filter(e => new Date(e.date) > new Date())
+          .sort((a, b) => new Date(a.date) - new Date(b.date))
+          .slice(0, 4); // Get next 4 upcoming events
+        setEvents(upcomingEvents);
+
+        // Fetch team members count
+        const teamResponse = await teamService.getAll();
+        const members = teamResponse.data || [];
+
+        // Update stats
+        setStats({
+          members: members.length,
+          articles: allArticles.length,
+          events: allEvents.length
+        });
+      } catch (error) {
+        console.error('Error fetching homepage data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center">
+        <Loader2 className="w-12 h-12 text-[#1e3a8a] animate-spin mb-4" />
+        <p className="text-[#475569] font-medium">Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white">
       {/* 2. HERO */}
-      <header className="py-24 md:py-32 flex flex-col items-center text-center px-6">
-        <div className="reveal-element">
-            <span className="inline-block px-3 py-1 bg-[#dbeafe] text-[#2563eb] text-[10px] uppercase font-bold tracking-widest rounded-full mb-6 italic">
+      <header className="relative pt-28 pb-12 md:pt-36 md:pb-24 flex flex-col items-center text-center px-4 sm:px-6 overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src={bannerImage}
+            alt="UPF Campus"
+            className="w-full h-full object-cover"
+          />
+          {/* Graduated glass overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-white/10 to-white/50 backdrop-blur-sm"></div>
+        </div>
+        
+        {/* Content */}
+        <div className="relative z-10 reveal-element w-full max-w-7xl mx-auto">
+            <div className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md border border-white/30 text-white text-[10px] uppercase font-bold tracking-widest rounded-full mb-4 md:mb-6 italic">
                 University of IT Club
-            </span>
-            <h1 className="text-5xl md:text-7xl font-semibold text-[#1e3a8a] leading-[1.1] mb-6 max-w-4xl mx-auto">
+            </div>
+            <h1 className="text-3xl sm:text-5xl md:text-7xl font-semibold text-white leading-[1.1] mb-4 md:mb-6 max-w-4xl mx-auto drop-shadow-lg">
                 Built by students.<br /> Driven by knowledge.
             </h1>
-            <p className="text-lg md:text-xl text-[#475569] max-w-2xl mx-auto mb-10 leading-relaxed">
+            <p className="text-base sm:text-lg md:text-xl text-white/90 max-w-2xl mx-auto mb-6 md:mb-10 leading-relaxed drop-shadow">
                 A technical collective dedicated to fostering engineering excellence and research collaboration across the university campus.
             </p>
-            <div className="flex flex-wrap justify-center gap-4 mb-16">
+            <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mb-12 md:mb-16 w-full sm:w-auto px-4 sm:px-0">
                 <Link 
                     to="/articles" 
-                    className="px-8 py-3 bg-[#1e3a8a] text-white font-medium rounded hover:bg-[#1e1e6b] transition-all active:scale-95"
+                    className="px-6 py-3 sm:px-8 sm:py-3 bg-white text-[#1e3a8a] font-medium rounded hover:bg-slate-50 transition-all active:scale-95 shadow-sm text-center"
                 >
                     Explore Articles
                 </Link>
                 <Link 
                     to="/team" 
-                    className="px-8 py-3 border border-slate-200 text-[#1e3a8a] font-medium rounded hover:bg-slate-50 transition-all active:scale-95"
+                    className="px-6 py-3 sm:px-8 sm:py-3 bg-white text-[#1e3a8a] font-medium rounded hover:bg-slate-50 transition-all active:scale-95 shadow-sm text-center"
                 >
                     Meet the Team
                 </Link>
-            </div>
-            
-            {/* Stats */}
-            <div className="flex flex-wrap justify-center items-center gap-12 md:gap-24 pt-12 border-t border-slate-100 w-full max-w-3xl">
-                {STATS.map((stat, i) => (
-                    <div key={i} className="flex flex-col items-center">
-                        <span className="text-2xl font-semibold text-[#1e3a8a] mb-1">{stat.value}</span>
-                        <span className="text-xs text-[#94a3b8] uppercase tracking-wider">{stat.label}</span>
-                    </div>
-                ))}
             </div>
         </div>
       </header>
@@ -164,28 +157,51 @@ const Home = () => {
             </div>
             
             <div className="grid md:grid-cols-3 gap-8 mb-12">
-                {ARTICLES.map((article, i) => (
-                    <Link 
-                        key={article.id} 
-                        to={`/articles/${article.id}`}
-                        className="group flex flex-col p-8 border border-slate-100 hover:border-slate-200 hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 transform hover:-translate-y-0.5 reveal-element"
-                        style={{ transitionDelay: `${i * 50}ms` }}
-                    >
-                        <span className="inline-block w-fit px-2 py-0.5 bg-[#dbeafe] text-[#2563eb] text-[10px] font-bold uppercase tracking-wider rounded mb-6">
-                            {article.category}
-                        </span>
-                        <h3 className="text-xl font-semibold text-[#1e3a8a] mb-4 group-hover:text-[#2563eb] transition-colors leading-snug">
-                            {article.title}
-                        </h3>
-                        <p className="text-sm text-[#475569] mb-8 line-clamp-2 leading-relaxed">
-                            {article.excerpt}
-                        </p>
-                        <div className="mt-auto flex items-center justify-between text-[11px] text-[#94a3b8] uppercase font-semibold tracking-wide">
-                            <span>{article.author}</span>
-                            <span>{article.readTime}</span>
-                        </div>
-                    </Link>
-                ))}
+                {articles.length > 0 ? (
+                    articles.map((article, i) => (
+                        <Link 
+                            key={article.id} 
+                            to={`/articles/${article.id}`}
+                            className="group flex flex-col bg-white border border-slate-100 hover:border-slate-200 hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 transform hover:-translate-y-0.5 reveal-element overflow-hidden rounded-lg"
+                            style={{ transitionDelay: `${i * 50}ms` }}
+                        >
+                            {/* Article Image */}
+                            <div className="relative w-full h-48 overflow-hidden bg-slate-100">
+                                <img
+                                    src={article.image_url || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&q=80&w=800'}
+                                    alt={article.title}
+                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                    onError={(e) => {
+                                        e.target.src = 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&q=80&w=800';
+                                    }}
+                                />
+                                <div className="absolute top-3 left-3">
+                                    <span className="inline-block px-2 py-0.5 bg-white/90 backdrop-blur-sm text-[#2563eb] text-[10px] font-bold uppercase tracking-wider rounded">
+                                        Article
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            {/* Article Content */}
+                            <div className="flex flex-col p-6 flex-1">
+                                <h3 className="text-lg font-semibold text-[#1e3a8a] mb-3 group-hover:text-[#2563eb] transition-colors leading-snug line-clamp-2">
+                                    {article.title}
+                                </h3>
+                                <p className="text-sm text-[#475569] mb-4 line-clamp-2 leading-relaxed flex-1">
+                                    {article.content?.substring(0, 120)}...
+                                </p>
+                                <div className="mt-auto flex items-center justify-between text-[11px] text-[#94a3b8] uppercase font-semibold tracking-wide pt-4 border-t border-slate-50">
+                                    <span>{new Date(article.created_at).toLocaleDateString()}</span>
+                                    <span className="text-[#2563eb] group-hover:underline">Read →</span>
+                                </div>
+                            </div>
+                        </Link>
+                    ))
+                ) : (
+                    <div className="col-span-3 text-center py-12 bg-[#f8fafc] rounded border border-slate-200">
+                        <p className="text-[#475569]">No articles available yet.</p>
+                    </div>
+                )}
             </div>
             
             <Link to="/articles" className="inline-block text-[#2563eb] font-semibold text-sm hover:underline">
@@ -204,22 +220,36 @@ const Home = () => {
             </div>
             
             <div className="max-w-4xl">
-                {EVENTS.map((event, i) => (
-                    <div 
-                        key={event.id} 
-                        className="grid grid-cols-[100px_1fr] md:grid-cols-[150px_1fr] py-8 border-b border-slate-100 first:pt-0 reveal-element"
-                        style={{ transitionDelay: `${i * 50}ms` }}
-                    >
-                        <div className="flex flex-col">
-                            <span className="text-2xl font-bold text-[#1e3a8a]">{event.day}</span>
-                            <span className="text-xs font-bold text-[#94a3b8]">{event.month}</span>
-                        </div>
-                        <div>
-                            <h4 className="text-xl font-semibold text-[#1e3a8a] mb-2">{event.title}</h4>
-                            <p className="text-[#475569] text-sm leading-relaxed max-w-xl">{event.description}</p>
-                        </div>
+                {events.length > 0 ? (
+                    events.map((event, i) => {
+                        const eventDate = new Date(event.date);
+                        const day = eventDate.getDate().toString().padStart(2, '0');
+                        const month = eventDate.toLocaleString('en-US', { month: 'short' }).toUpperCase();
+                        
+                        return (
+                            <div 
+                                key={event.id} 
+                                className="grid grid-cols-[100px_1fr] md:grid-cols-[150px_1fr] py-8 border-b border-slate-100 first:pt-0 reveal-element"
+                                style={{ transitionDelay: `${i * 50}ms` }}
+                            >
+                                <div className="flex flex-col">
+                                    <span className="text-2xl font-bold text-[#1e3a8a]">{day}</span>
+                                    <span className="text-xs font-bold text-[#94a3b8]">{month}</span>
+                                </div>
+                                <div>
+                                    <h4 className="text-xl font-semibold text-[#1e3a8a] mb-2">{event.title}</h4>
+                                    <p className="text-[#475569] text-sm leading-relaxed max-w-xl">
+                                        {event.description?.substring(0, 120)}...
+                                    </p>
+                                </div>
+                            </div>
+                        );
+                    })
+                ) : (
+                    <div className="text-center py-12 bg-[#f8fafc] rounded border border-slate-200">
+                        <p className="text-[#475569]">No upcoming events scheduled.</p>
                     </div>
-                ))}
+                )}
             </div>
             
             <div className="mt-12">

@@ -36,7 +36,7 @@ const Team = () => {
     return (
         <div className="bg-white min-h-screen">
             {/* Header Section */}
-            <header className="py-20 px-6 max-w-7xl mx-auto border-b border-slate-100 mb-16 text-center">
+            <header className="pt-28 md:pt-32 pb-12 md:pb-20 px-4 sm:px-6 max-w-7xl mx-auto border-b border-slate-100 mb-12 md:mb-16 text-center">
                 <div className="reveal-element">
                     <span className="inline-block px-3 py-1 bg-[#dbeafe] text-[#2563eb] text-[10px] uppercase font-bold tracking-widest rounded mb-6">
                         Leadership

@@ -21,6 +21,7 @@ import ArticleDetail from './pages/ArticleDetail';
 import Events from './pages/Events';
 import EventDetail from './pages/EventDetail';
 import Team from './pages/Team';
+import Apply from './pages/Apply';
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
           <Route path="events" element={<Events />} />
           <Route path="events/:id" element={<EventDetail />} />
           <Route path="team" element={<Team />} />
+          <Route path="apply" element={<Apply />} />
           <Route path="login" element={<Login />} />
         </Route>
 

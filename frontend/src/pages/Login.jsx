@@ -36,7 +36,7 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-[80vh] flex items-center justify-center px-6 py-20">
+        <div className="min-h-[80vh] flex items-center justify-center px-4 sm:px-6 pt-24 md:pt-28 pb-20">
             <div className="w-full max-w-sm bg-white border border-slate-100 p-10 space-y-10">
                 <div className="text-center">
                     <span className="text-[10px] font-bold text-[#2563eb] uppercase tracking-[0.2em] mb-4 block">Portal Access</span>

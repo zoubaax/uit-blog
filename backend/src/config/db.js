@@ -2,24 +2,23 @@ const { Pool } = require('pg');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
-const connectionConfig = {
+// Use connection string for cloud providers, fallback to individual params
+const connectionConfig = process.env.DATABASE_URL ? {
+    connectionString: process.env.DATABASE_URL,
+    ssl: isProduction ? { rejectUnauthorized: false } : false,
+    max: 20,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 2000,
+} : {
     user: process.env.DB_USER,
     host: process.env.DB_HOST,
     database: process.env.DB_NAME,
     password: process.env.DB_PASSWORD,
     port: process.env.DB_PORT,
-    // Connection pool settings
-    max: 20, // Max number of clients in the pool
-    idleTimeoutMillis: 30000, // how long a client is allowed to remain idle before being closed
-    connectionTimeoutMillis: 2000, // how long to wait for a connection
+    max: 20,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 2000,
 };
-
-// Add SSL for production (required by most cloud providers like Render/Heroku)
-if (isProduction) {
-    connectionConfig.ssl = {
-        rejectUnauthorized: false,
-    };
-}
 
 const pool = new Pool(connectionConfig);
 
