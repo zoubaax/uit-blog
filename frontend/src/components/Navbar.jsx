@@ -11,7 +11,7 @@ const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [showJoinModal, setShowJoinModal] = useState(false);
     const location = useLocation();
-    const isHomePage = location.pathname === '/';
+    const isHomePage = location.pathname === '/' || location.pathname === '';
 
     useEffect(() => {
         const handleScroll = () => {
@@ -34,6 +34,9 @@ const Navbar = () => {
                         src={isHomePage && !isScrolled ? logo : logoDark} 
                         alt="UIT Logo" 
                         className="h-8 md:h-10 w-auto transition-all" 
+                        style={{ 
+                            filter: isHomePage && !isScrolled ? 'brightness(0) invert(1)' : 'none' 
+                        }}
                     />
                 </Link>
 

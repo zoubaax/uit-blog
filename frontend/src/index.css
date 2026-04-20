@@ -32,13 +32,39 @@
 @layer utilities {
   .reveal-hidden {
     opacity: 0;
-    transform: translateY(24px);
+    transform: translateY(30px) scale(0.98);
+    filter: blur(4px);
   }
   
   .reveal-visible {
     opacity: 1;
-    transform: translateY(0);
-    transition: all 400ms ease-out;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+    transition: 
+      opacity 1000ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 1100ms cubic-bezier(0.16, 1, 0.3, 1),
+      filter 800ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Staggered Delays */
+  .delay-100 { transition-delay: 100ms; }
+  .delay-200 { transition-delay: 200ms; }
+  .delay-300 { transition-delay: 300ms; }
+  .delay-500 { transition-delay: 500ms; }
+
+  /* Floating Animation */
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0) scale(1.05); }
+    50% { transform: translateY(-10px) scale(1.08); }
+  }
+
+  /* Ken Burns Effect */
+  .group:hover .ken-burns {
+    transform: scale(1.1);
   }
 }
 

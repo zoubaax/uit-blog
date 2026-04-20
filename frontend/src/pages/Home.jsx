@@ -91,30 +91,30 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* 2. HERO */}
-      <header className="relative pt-28 pb-12 md:pt-36 md:pb-24 flex flex-col items-center text-center px-4 sm:px-6 overflow-hidden">
+      <header className="relative min-h-[90vh] md:min-h-screen flex items-center justify-center text-center px-8 sm:px-6 overflow-hidden">
         {/* Background Image */}
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-0 overflow-hidden">
           <img
             src={bannerImage}
             alt="UPF Campus"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover animate-float"
           />
-          {/* Graduated glass overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-white/10 to-white/50 backdrop-blur-sm"></div>
+          {/* Enhanced glass overlay for legibility */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-white backdrop-blur-[2px]"></div>
         </div>
         
         {/* Content */}
-        <div className="relative z-10 reveal-element w-full max-w-7xl mx-auto">
-            <div className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md border border-white/30 text-white text-[10px] uppercase font-bold tracking-widest rounded-full mb-4 md:mb-6 italic">
+        <div className="relative z-10 w-full max-w-7xl mx-auto pt-20">
+            <div className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md border border-white/30 text-white text-[10px] uppercase font-bold tracking-widest rounded-full mb-4 md:mb-6 italic reveal-element">
                 University of IT Club
             </div>
-            <h1 className="text-3xl sm:text-5xl md:text-7xl font-semibold text-white leading-[1.1] mb-4 md:mb-6 max-w-4xl mx-auto drop-shadow-lg">
+            <h1 className="text-3xl sm:text-5xl md:text-7xl font-semibold text-white leading-[1.1] mb-4 md:mb-6 max-w-4xl mx-auto drop-shadow-lg reveal-element delay-100">
                 Built by students.<br /> Driven by knowledge.
             </h1>
-            <p className="text-base sm:text-lg md:text-xl text-white/90 max-w-2xl mx-auto mb-6 md:mb-10 leading-relaxed drop-shadow">
+            <p className="text-base sm:text-lg md:text-xl text-white/90 max-w-2xl mx-auto mb-6 md:mb-10 leading-relaxed drop-shadow reveal-element delay-200">
                 A technical collective dedicated to fostering engineering excellence and research collaboration across the university campus.
             </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mb-12 md:mb-16 w-full sm:w-auto px-4 sm:px-0">
+            <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mb-12 md:mb-16 w-full sm:w-auto px-4 sm:px-0 reveal-element delay-300">
                 <Link 
                     to="/articles" 
                     className="px-6 py-3 sm:px-8 sm:py-3 bg-white text-[#1e3a8a] font-medium rounded hover:bg-slate-50 transition-all active:scale-95 shadow-sm text-center"
@@ -163,14 +163,14 @@ const Home = () => {
                             key={article.id} 
                             to={`/articles/${article.id}`}
                             className="group flex flex-col bg-white border border-slate-100 hover:border-slate-200 hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 transform hover:-translate-y-0.5 reveal-element overflow-hidden rounded-lg"
-                            style={{ transitionDelay: `${i * 50}ms` }}
+                            style={{ transitionDelay: `${i * 100}ms` }}
                         >
                             {/* Article Image */}
                             <div className="relative w-full h-48 overflow-hidden bg-slate-100">
                                 <img
                                     src={article.image_url || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&q=80&w=800'}
                                     alt={article.title}
-                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                    className="w-full h-full object-cover ken-burns transition-transform duration-700 ease-out"
                                     onError={(e) => {
                                         e.target.src = 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&q=80&w=800';
                                     }}
@@ -230,7 +230,7 @@ const Home = () => {
                             <div 
                                 key={event.id} 
                                 className="grid grid-cols-[100px_1fr] md:grid-cols-[150px_1fr] py-8 border-b border-slate-100 first:pt-0 reveal-element"
-                                style={{ transitionDelay: `${i * 50}ms` }}
+                                style={{ transitionDelay: `${i * 100}ms` }}
                             >
                                 <div className="flex flex-col">
                                     <span className="text-2xl font-bold text-[#1e3a8a]">{day}</span>

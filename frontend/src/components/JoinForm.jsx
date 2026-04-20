@@ -55,58 +55,66 @@ const JoinForm = ({ onSuccess }) => {
 
     if (status === 'closed') {
         return (
-            <div className="text-center p-12 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
-                <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-xl font-bold text-gray-900 uppercase">Form Closed</h3>
-                <p className="text-gray-500 mt-2">We are not accepting new applications at this time. Please check back later!</p>
+            <div className="text-center p-12 bg-slate-50 border border-slate-100 italic">
+                <AlertCircle className="w-10 h-10 text-slate-300 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-[#1e3a8a]">Application Period Closed</h3>
+                <p className="text-[#475569] text-sm mt-2">The membership portal is currently offline. Please join our mailing list or check back next semester.</p>
             </div>
         );
     }
 
     if (success) {
         return (
-            <div className="text-center p-12 bg-blue-50 rounded-2xl border border-blue-100 animate-in fade-in zoom-in duration-500">
-                <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-200">
-                    <CheckCircle className="w-10 h-10" />
+            <div className="text-center p-12 bg-[#f0f9ff] border border-[#bae6fd] animate-in fade-in zoom-in duration-500">
+                <div className="w-16 h-16 bg-[#1e3a8a] text-white rounded-full flex items-center justify-center mx-auto mb-6">
+                    <CheckCircle className="w-8 h-8" />
                 </div>
-                <h3 className="text-2xl font-black text-blue-900 uppercase">Application Received!</h3>
-                <p className="text-blue-700 font-bold mt-2">Thank you for your interest in UIT Club. Our team will review your application and contact you soon.</p>
-                <button
-                    onClick={() => setSuccess(false)}
-                    className="mt-8 text-blue-700 font-bold hover:underline uppercase text-xs tracking-widest"
-                >
-                    Submit another application
-                </button>
+                <h3 className="text-2xl font-semibold text-[#1e3a8a] tracking-tight">Application Transmitted</h3>
+                <p className="text-[#475569] mt-3 max-w-sm mx-auto leading-relaxed">
+                    Your credentials and motivation have been securely received. Our administration team will review your profile shortly.
+                </p>
+                <div className="mt-8 pt-8 border-t border-[#bae6fd]">
+                    <button
+                        onClick={() => setSuccess(false)}
+                        className="text-[10px] font-bold text-[#1e3a8a] hover:underline uppercase tracking-[0.2em]"
+                    >
+                        Return to Start
+                    </button>
+                </div>
             </div>
         );
     }
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                    <label className="text-xs font-black text-slate-700 uppercase tracking-widest pl-1">Full Name</label>
-                    <div className="relative">
-                        <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+        <form onSubmit={handleSubmit} className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-1.5 flex flex-col">
+                    <label className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-[0.2em] px-1" htmlFor="full_name">
+                        Full Name
+                    </label>
+                    <div className="relative group">
                         <input
+                            id="full_name"
                             type="text"
                             required
-                            className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-gray-200 outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-700 transition-all font-bold placeholder:text-gray-300"
-                            placeholder="John Doe"
+                            className="w-full px-4 py-3 bg-white border border-slate-200 focus:border-[#1e3a8a] outline-none transition-all text-sm font-medium text-slate-800 placeholder:text-slate-300"
+                            placeholder="e.g. Alan Turing"
                             value={formData.full_name}
                             onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
                         />
                     </div>
                 </div>
-                <div className="space-y-2">
-                    <label className="text-xs font-black text-slate-700 uppercase tracking-widest pl-1">Email Address</label>
-                    <div className="relative">
-                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <div className="space-y-1.5 flex flex-col">
+                    <label className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-[0.2em] px-1" htmlFor="email">
+                        Email Address
+                    </label>
+                    <div className="relative group">
                         <input
+                            id="email"
                             type="email"
                             required
-                            className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-gray-200 outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-700 transition-all font-bold placeholder:text-gray-300"
-                            placeholder="john@university.edu"
+                            className="w-full px-4 py-3 bg-white border border-slate-200 focus:border-[#1e3a8a] outline-none transition-all text-sm font-medium text-slate-800 placeholder:text-slate-300"
+                            placeholder="name@university.edu"
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         />
@@ -114,30 +122,34 @@ const JoinForm = ({ onSuccess }) => {
                 </div>
             </div>
 
-            <div className="space-y-2">
-                <label className="text-xs font-black text-slate-700 uppercase tracking-widest pl-1">Your Major / Faculty</label>
-                <div className="relative">
-                    <Book className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <div className="space-y-1.5 flex flex-col">
+                <label className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-[0.2em] px-1" htmlFor="major">
+                    Faculty / Major
+                </label>
+                <div className="relative group">
                     <input
+                        id="major"
                         type="text"
                         required
-                        className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-gray-200 outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-700 transition-all font-bold placeholder:text-gray-300"
-                        placeholder="Computer Science, Biology, etc."
+                        className="w-full px-4 py-3 bg-white border border-slate-200 focus:border-[#1e3a8a] outline-none transition-all text-sm font-medium text-slate-800 placeholder:text-slate-300"
+                        placeholder="e.g. Computer Science & Information Technology"
                         value={formData.major}
                         onChange={(e) => setFormData({ ...formData, major: e.target.value })}
                     />
                 </div>
             </div>
 
-            <div className="space-y-2">
-                <label className="text-xs font-black text-slate-700 uppercase tracking-widest pl-1">Why do you want to join UIT?</label>
-                <div className="relative">
-                    <MessageSquare className="absolute left-4 top-4 w-5 h-5 text-gray-400" />
+            <div className="space-y-1.5 flex flex-col">
+                <label className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-[0.2em] px-1" htmlFor="motivation">
+                    Statement of Motivation
+                </label>
+                <div className="relative group">
                     <textarea
+                        id="motivation"
                         required
                         rows="4"
-                        className="w-full pl-12 pr-4 py-4 rounded-xl border border-gray-200 outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-700 transition-all font-bold placeholder:text-gray-300 resize-none"
-                        placeholder="Tell us about your interests and what you hope to achieve..."
+                        className="w-full px-4 py-3 bg-white border border-slate-200 focus:border-[#1e3a8a] outline-none transition-all text-sm font-medium text-slate-800 placeholder:text-slate-300 resize-none"
+                        placeholder="Describe your technical background and why you wish to contribute to the collective..."
                         value={formData.motivation}
                         onChange={(e) => setFormData({ ...formData, motivation: e.target.value })}
                     ></textarea>
@@ -145,24 +157,29 @@ const JoinForm = ({ onSuccess }) => {
             </div>
 
             {error && (
-                <div className="flex items-center gap-2 text-red-600 bg-red-50 p-4 rounded-xl text-sm font-bold border border-red-100">
-                    <AlertCircle className="w-5 h-5" /> {error}
+                <div className="flex items-center gap-3 text-red-600 bg-red-50 p-4 border border-red-100 text-[11px] font-bold uppercase tracking-wider">
+                    <AlertCircle className="w-4 h-4" /> {error}
                 </div>
             )}
 
-            <button
-                type="submit"
-                disabled={submitting}
-                className="w-full py-5 bg-blue-700 text-white font-black rounded-xl shadow-xl hover:bg-blue-800 transition-all uppercase tracking-[0.2em] text-sm flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-70"
-            >
-                {submitting ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                ) : (
-                    <>
-                        Join UIT Club <Send className="w-5 h-5" />
-                    </>
-                )}
-            </button>
+            <div className="pt-4">
+                <button
+                    type="submit"
+                    disabled={submitting}
+                    className="w-full py-4 bg-[#1e3a8a] hover:bg-[#1e1e6b] text-white text-[11px] font-bold uppercase tracking-[0.3em] transition-all active:scale-[0.99] disabled:opacity-70 flex items-center justify-center gap-3 group"
+                >
+                    {submitting ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                        <>
+                            Submit Application <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        </>
+                    )}
+                </button>
+                <p className="mt-6 text-[10px] text-center text-[#94a3b8] leading-relaxed italic">
+                    By submitting, you agree to comply with the club's code of conduct<br /> and university data privacy regulations.
+                </p>
+            </div>
         </form>
     );
 };
