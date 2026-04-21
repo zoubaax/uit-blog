@@ -5,6 +5,8 @@ import { ArrowLeft, MapPin, Calendar, Clock } from 'lucide-react';
 import PageLoader from '../components/PageLoader';
 import EventRegistrationForm from '../components/EventRegistrationForm';
 
+import { getOptimizedImageUrl } from '../utils/cloudinaryUtils';
+
 const EventDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -47,37 +49,37 @@ const EventDetail = () => {
     const isFull = event.max_participants && event.current_registrations >= event.max_participants;
 
     return (
-        <article className="bg-white min-h-screen">
+        <article className="bg-white min-h-screen pt-20">
             {/* Header Section */}
-            <header className="max-w-7xl mx-auto px-6 py-20 border-b border-slate-100">
+            <header className="max-w-7xl mx-auto px-6 pt-12 pb-20 border-b border-slate-100">
                 <button
                     onClick={() => navigate('/events')}
                     className="flex items-center gap-2 text-[#94a3b8] hover:text-[#1e3a8a] transition-colors mb-12 text-xs font-bold uppercase tracking-widest group"
                 >
                     <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                    Back
+                    Back to Calendar
                 </button>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                     <div className="reveal-element">
                         <span className="inline-block px-3 py-1 bg-[#dbeafe] text-[#2563eb] text-[10px] uppercase font-bold tracking-widest rounded mb-6">
-                            Event Details
+                            Campus Event
                         </span>
-                        <h1 className="text-4xl md:text-6xl font-semibold text-[#1e3a8a] mb-8 leading-tight tracking-tight">
+                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#0f172a] mb-10 leading-tight tracking-tight">
                             {event.title}
                         </h1>
                         
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 text-[#475569]">
-                            <div className="flex flex-col gap-1">
-                                <span className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-widest">Date</span>
-                                <span className="text-sm font-semibold flex items-center gap-2">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 text-[#475569]">
+                            <div className="flex flex-col gap-2">
+                                <span className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-widest">Schedule</span>
+                                <span className="text-sm font-semibold flex items-center gap-2 text-[#1e3a8a]">
                                     <Calendar className="w-4 h-4 text-[#2563eb]" />
                                     {eventDate.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                                 </span>
                             </div>
-                            <div className="flex flex-col gap-1">
-                                <span className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-widest">Location</span>
-                                <span className="text-sm font-semibold flex items-center gap-2">
+                            <div className="flex flex-col gap-2">
+                                <span className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-widest">Venue</span>
+                                <span className="text-sm font-semibold flex items-center gap-2 text-[#1e3a8a]">
                                     <MapPin className="w-4 h-4 text-[#2563eb]" />
                                     {event.location}
                                 </span>
@@ -85,11 +87,11 @@ const EventDetail = () => {
                         </div>
                     </div>
                     
-                    <div className="aspect-[16/9] bg-slate-50 border border-slate-100 overflow-hidden">
+                    <div className="rounded-2xl border border-slate-200 overflow-hidden shadow-2xl shadow-blue-900/10 bg-slate-50">
                         <img
-                            src={event.cover_image_url || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80'}
+                            src={event.cover_image_url ? getOptimizedImageUrl(event.cover_image_url, 1200) : 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80'}
                             alt={event.title}
-                            className="w-full h-full object-cover"
+                            className="w-full h-auto max-h-[600px] object-contain"
                         />
                     </div>
                 </div>

@@ -1,5 +1,6 @@
 import { MapPin, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { getOptimizedImageUrl } from '../utils/cloudinaryUtils';
 
 const EventCard = ({ event, isPast }) => {
     const eventDate = new Date(event.date);
@@ -9,13 +10,24 @@ const EventCard = ({ event, isPast }) => {
     return (
         <Link 
             to={`/events/${event.id}`}
-            className="group grid grid-cols-[100px_1fr] md:grid-cols-[150px_1fr] py-8 border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors px-4 -mx-4"
+            className="group grid grid-cols-[100px_1fr] md:grid-cols-[180px_1fr] lg:grid-cols-[200px_1fr] py-8 border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors px-4 -mx-4 gap-6"
         >
-            <div className="flex flex-col">
-                <span className="text-2xl font-bold text-[#1e3a8a]">{day}</span>
-                <span className="text-xs font-bold text-[#94a3b8]">{month}</span>
+            {/* Visual Column */}
+            <div className="flex flex-col gap-4">
+                <div className="flex flex-col">
+                    <span className="text-2xl font-bold text-[#1e3a8a]">{day}</span>
+                    <span className="text-xs font-bold text-[#94a3b8]">{month}</span>
+                </div>
+                <div className="aspect-[4/5] w-full rounded-xl overflow-hidden border border-slate-100 shadow-sm relative">
+                    <img 
+                        src={event.cover_image_url ? getOptimizedImageUrl(event.cover_image_url, 400, 500) : 'https://images.unsplash.com/photo-1540575861501-7ad058138a31?auto=format&fit=crop&q=80&w=600'} 
+                        alt={event.title}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-black/5"></div>
+                </div>
             </div>
-            <div>
+            <div className="flex flex-col justify-center">
                 <h4 className="text-xl font-semibold text-[#1e3a8a] mb-2 group-hover:text-[#2563eb] transition-colors">{event.title}</h4>
                 <p className="text-[#475569] text-sm leading-relaxed max-w-xl mb-4">{event.description}</p>
                 <div className="flex items-center gap-2 text-[10px] font-bold text-[#94a3b8] uppercase tracking-widest">

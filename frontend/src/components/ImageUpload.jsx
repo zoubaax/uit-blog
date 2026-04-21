@@ -22,7 +22,7 @@ const ImageUpload = ({ onImageUpload, initialImage }) => {
             setPreview(url);
             onImageUpload(url); // Pass URL back to parent form
         } catch (error) {
-            alert('Failed to upload image. Please check your config.');
+            alert(`Failed to upload image: ${error}`);
         } finally {
             setUploading(false);
         }

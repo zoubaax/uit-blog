@@ -80,7 +80,7 @@ const EditEvent = () => {
             navigate('/dashboard/events');
         } catch (error) {
             console.error('Update Error:', error);
-            alert('Failed to update event. Check console for details.');
+            alert(`Failed to update event: ${error}`);
         } finally {
             setSaving(false);
         }

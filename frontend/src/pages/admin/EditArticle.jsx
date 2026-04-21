@@ -73,7 +73,7 @@ const EditArticle = () => {
       navigate('/dashboard/articles');
     } catch (error) {
       console.error('Update Error:', error);
-      alert('Failed to update article');
+      alert(`Failed to update article: ${error}`);
     } finally {
       setSaving(false);
     }

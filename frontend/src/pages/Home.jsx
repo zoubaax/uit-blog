@@ -4,6 +4,7 @@ import articleService from '../services/articleService';
 import eventService from '../services/eventService';
 import teamService from '../services/teamService';
 import PageLoader from '../components/PageLoader';
+import { getOptimizedImageUrl } from '../utils/cloudinaryUtils';
 import bannerImage from '../assets/banner.png';
 
 /**
@@ -222,22 +223,35 @@ const Home = () => {
                         const month = eventDate.toLocaleString('en-US', { month: 'short' }).toUpperCase();
                         
                         return (
-                            <div 
-                                key={event.id} 
-                                className="grid grid-cols-[100px_1fr] md:grid-cols-[150px_1fr] py-8 border-b border-slate-100 first:pt-0 reveal-element"
+                            <Link 
+                                key={event.id}
+                                to={`/events/${event.id}`}
+                                className="grid grid-cols-[80px_1fr] md:grid-cols-[120px_1fr] lg:grid-cols-[140px_1fr] py-8 border-b border-slate-100 first:pt-0 reveal-element hover:bg-slate-50/50 -mx-4 px-4 rounded-lg transition-colors group gap-6"
                                 style={{ transitionDelay: `${i * 100}ms` }}
                             >
-                                <div className="flex flex-col">
-                                    <span className="text-2xl font-bold text-[#1e3a8a]">{day}</span>
-                                    <span className="text-xs font-bold text-[#94a3b8]">{month}</span>
+                                <div className="flex flex-col gap-3">
+                                    <div className="flex flex-col">
+                                        <span className="text-2xl font-bold text-[#1e3a8a]">{day}</span>
+                                        <span className="text-xs font-bold text-[#94a3b8]">{month}</span>
+                                    </div>
+                                    <div className="w-full aspect-square md:aspect-[4/5] rounded-lg overflow-hidden border border-slate-100 shadow-sm">
+                                        <img 
+                                            src={event.cover_image_url ? getOptimizedImageUrl(event.cover_image_url, 300, 375) : 'https://images.unsplash.com/photo-1540575861501-7ad058138a31?auto=format&fit=crop&q=80&w=300'} 
+                                            alt={event.title}
+                                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                        />
+                                    </div>
                                 </div>
-                                <div>
-                                    <h4 className="text-xl font-semibold text-[#1e3a8a] mb-2">{event.title}</h4>
+                                <div className="flex flex-col justify-center">
+                                    <h4 className="text-xl font-semibold text-[#1e3a8a] mb-2 group-hover:text-[#2563eb] transition-colors">{event.title}</h4>
                                     <p className="text-[#475569] text-sm leading-relaxed max-w-xl">
                                         {event.description?.substring(0, 120)}...
                                     </p>
+                                    <span className="inline-block mt-3 text-[#2563eb] text-xs font-semibold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity">
+                                        View Details →
+                                    </span>
                                 </div>
-                            </div>
+                            </Link>
                         );
                     })
                 ) : (

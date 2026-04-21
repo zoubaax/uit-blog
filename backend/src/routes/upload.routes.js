@@ -6,7 +6,7 @@ const router = express.Router();
 // Multer config: store file in memory buffer (no disk writes)
 const upload = multer({
     storage: multer.memoryStorage(),
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max
+    limits: { fileSize: 10 * 1024 * 1024 }, // 10MB max
     fileFilter: (req, file, cb) => {
         if (file.mimetype.startsWith('image/')) {
             cb(null, true);
@@ -42,9 +42,14 @@ router.post('/', upload.single('file'), async (req, res) => {
             secure_url: result.secure_url,
             public_id: result.public_id,
         });
+        console.log(`✓ Image uploaded successfully: ${result.secure_url}`);
     } catch (error) {
-        console.error('Upload error:', error);
-        res.status(500).json({ message: 'Image upload failed', error: error.message });
+        console.error('SERVER UPLOAD ERROR:', error);
+        res.status(500).json({ 
+            message: 'Image upload failed', 
+            error: error.message,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
     }
 });
 
