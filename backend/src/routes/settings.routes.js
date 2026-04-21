@@ -49,4 +49,24 @@ router.get('/applications', protect, async (req, res, next) => {
     }
 });
 
+// Admin: Delete one application
+router.delete('/applications/:id', protect, async (req, res, next) => {
+    try {
+        await settingsModel.deleteApplication(req.params.id);
+        res.json({ success: true, message: 'Application deleted' });
+    } catch (error) {
+        next(error);
+    }
+});
+
+// Admin: Clear all applications
+router.delete('/applications', protect, async (req, res, next) => {
+    try {
+        await settingsModel.clearAllApplications();
+        res.json({ success: true, message: 'All applications cleared' });
+    } catch (error) {
+        next(error);
+    }
+});
+
 module.exports = router;

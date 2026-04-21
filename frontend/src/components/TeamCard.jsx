@@ -1,15 +1,16 @@
 import { Linkedin, Mail } from 'lucide-react';
+import { getOptimizedImageUrl } from '../utils/cloudinaryUtils';
 
 const TeamCard = ({ member }) => {
     const { name, role, photo_url, social_links } = member;
 
     return (
         <div className="group text-center">
-            <div className="relative mb-6 mx-auto w-48 h-48 overflow-hidden bg-slate-50 border border-slate-100">
+            <div className="relative mb-8 mx-auto w-48 h-48 rounded-3xl overflow-hidden bg-slate-50 border border-slate-100 shadow-xl shadow-blue-900/5">
                 <img
-                    src={photo_url || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'}
+                    src={photo_url ? getOptimizedImageUrl(photo_url, 400, 400) : 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=400&h=400&q=80'}
                     alt={name}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
             </div>
             

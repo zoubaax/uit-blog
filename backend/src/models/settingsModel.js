@@ -27,9 +27,21 @@ const getAllApplications = async () => {
     return result.rows;
 };
 
+const deleteApplication = async (id) => {
+    const result = await db.query('DELETE FROM club_applications WHERE id = $1 RETURNING id', [id]);
+    return result.rows[0];
+};
+
+const clearAllApplications = async () => {
+    await db.query('TRUNCATE TABLE club_applications');
+    return true;
+};
+
 module.exports = {
     getSetting,
     updateSetting,
     createApplication,
-    getAllApplications
+    getAllApplications,
+    deleteApplication,
+    clearAllApplications
 };

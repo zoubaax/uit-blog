@@ -16,6 +16,14 @@ const settingsService = {
 
     getApplications: async () => {
         return await api.get('/settings/applications');
+    },
+
+    deleteApplication: async (id) => {
+        return await api.delete(`/settings/applications/${id}`);
+    },
+
+    clearAllApplications: async () => {
+        return await api.delete('/settings/applications');
     }
 };
 
