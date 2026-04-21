@@ -56,6 +56,7 @@ app.use('/api/v1/events', require('./routes/event.routes'));
 app.use('/api/v1/team', require('./routes/team.routes'));
 app.use('/api/v1/registrations', require('./routes/registration.routes'));
 app.use('/api/v1/settings', require('./routes/settings.routes'));
+app.use('/api/v1/upload', require('./routes/upload.routes'));
 
 app.use((req, res) => {
     res.status(404).json({ message: 'API endpoint not found' });
