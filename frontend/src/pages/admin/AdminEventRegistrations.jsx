@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import registrationService from '../../services/registrationService';
 import eventService from '../../services/eventService';
-import { ArrowLeft, Loader2, Mail, Phone, School, User, Calendar, MapPin, Search, Download } from 'lucide-react';
+import { ArrowLeft, Mail, Phone, School, User, Calendar, MapPin, Search, Download } from 'lucide-react';
+import { SectionLoader } from '../../components/PageLoader';
 import { exportToCSV } from '../../utils/exportUtils';
 
 const AdminEventRegistrations = () => {
@@ -38,7 +39,7 @@ const AdminEventRegistrations = () => {
         (reg.school_name && reg.school_name.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
-    if (loading) return <div className="flex justify-center p-10"><Loader2 className="animate-spin text-blue-600" /></div>;
+    if (loading) return <SectionLoader message="Loading registrations" />;
 
     return (
         <div className="space-y-6">

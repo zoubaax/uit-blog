@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import articleService from '../services/articleService';
 import eventService from '../services/eventService';
 import teamService from '../services/teamService';
-import { Loader2 } from 'lucide-react';
+import PageLoader from '../components/PageLoader';
 import bannerImage from '../assets/banner.png';
 
 /**
@@ -80,12 +80,7 @@ const Home = () => {
   }, []);
 
   if (loading) {
-    return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center">
-        <Loader2 className="w-12 h-12 text-[#1e3a8a] animate-spin mb-4" />
-        <p className="text-[#475569] font-medium">Loading...</p>
-      </div>
-    );
+    return <PageLoader />;
   }
 
   return (

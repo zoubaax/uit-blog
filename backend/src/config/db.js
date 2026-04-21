@@ -6,29 +6,50 @@ const isProduction = process.env.NODE_ENV === 'production';
 const connectionConfig = process.env.DATABASE_URL ? {
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false },
-    max: 20,
+    max: 10,
     idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 10000,
+    connectionTimeoutMillis: 30000, // 30s for Neon cold-start
 } : {
     user: process.env.DB_USER,
     host: process.env.DB_HOST,
     database: process.env.DB_NAME,
     password: process.env.DB_PASSWORD,
     port: process.env.DB_PORT,
-    max: 20,
+    max: 10,
     idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 10000,
+    connectionTimeoutMillis: 30000,
 };
 
 const pool = new Pool(connectionConfig);
 
-// Global header for handling pool errors (e.g. backend crashes)
+// Global handler for handling pool errors (e.g. backend crashes)
 pool.on('error', (err, client) => {
     console.error('Unexpected error on idle client', err);
-    process.exit(-1);
+    // Don't exit the process — just log the error and let the pool recover
 });
 
+// Retry wrapper for queries — handles Neon cold-start & transient DNS failures
+const queryWithRetry = async (text, params, retries = 3) => {
+    for (let attempt = 1; attempt <= retries; attempt++) {
+        try {
+            return await pool.query(text, params);
+        } catch (error) {
+            const isTransient = error.message.includes('ENOTFOUND') ||
+                                error.message.includes('connection timeout') ||
+                                error.message.includes('Connection terminated') ||
+                                error.code === 'ECONNREFUSED';
+
+            if (isTransient && attempt < retries) {
+                console.warn(`DB query attempt ${attempt} failed (${error.message}). Retrying in ${attempt * 2}s...`);
+                await new Promise(resolve => setTimeout(resolve, attempt * 2000));
+            } else {
+                throw error;
+            }
+        }
+    }
+};
+
 module.exports = {
-    query: (text, params) => pool.query(text, params),
+    query: queryWithRetry,
     pool, // Export pool for transaction scenarios
 };

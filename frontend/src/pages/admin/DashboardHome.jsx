@@ -18,6 +18,7 @@ import {
   Database,
   Cloud
 } from 'lucide-react';
+import { SectionLoader } from '../../components/PageLoader';
 
 const DashboardHome = () => {
   const [stats, setStats] = useState({
@@ -71,14 +72,7 @@ const DashboardHome = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[500px]">
-        <div className="text-center">
-          <Loader2 className="w-12 h-12 text-blue-600 animate-spin mx-auto mb-4" />
-          <p className="text-gray-600 font-medium">Loading dashboard...</p>
-        </div>
-      </div>
-    );
+    return <SectionLoader message="Loading dashboard" />;
   }
 
   const statCards = [

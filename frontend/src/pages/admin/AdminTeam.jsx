@@ -8,7 +8,6 @@ import {
     Linkedin,
     Twitter,
     Globe,
-    Loader2,
     Users,
     Search,
     Filter,
@@ -16,6 +15,7 @@ import {
     Mail,
     Download
 } from 'lucide-react';
+import { SectionLoader } from '../../components/PageLoader';
 import { exportToCSV } from '../../utils/exportUtils';
 
 const AdminTeam = () => {
@@ -63,14 +63,7 @@ const AdminTeam = () => {
     const roles = ['all', ...new Set(members.map(m => m.role).filter(Boolean))];
 
     if (loading) {
-        return (
-            <div className="flex items-center justify-center min-h-[500px]">
-                <div className="text-center">
-                    <Loader2 className="w-12 h-12 text-blue-600 animate-spin mx-auto mb-4" />
-                    <p className="text-gray-600 font-medium">Loading team members...</p>
-                </div>
-            </div>
-        );
+        return <SectionLoader message="Loading team members" />;
     }
 
     return (

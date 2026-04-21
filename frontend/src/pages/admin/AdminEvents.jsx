@@ -6,7 +6,6 @@ import {
   Trash2, 
   Calendar, 
   MapPin, 
-  Loader2, 
   Users, 
   Edit2, 
   Eye, 
@@ -17,6 +16,7 @@ import {
   CheckCircle,
   AlertCircle
 } from 'lucide-react';
+import { SectionLoader } from '../../components/PageLoader';
 
 const AdminEvents = () => {
   const [events, setEvents] = useState([]);
@@ -78,14 +78,7 @@ const AdminEvents = () => {
     .sort((a, b) => new Date(b.date) - new Date(a.date)); // Sort by date descending
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[500px]">
-        <div className="text-center">
-          <Loader2 className="w-12 h-12 text-blue-600 animate-spin mx-auto mb-4" />
-          <p className="text-gray-600 font-medium">Loading events...</p>
-        </div>
-      </div>
-    );
+    return <SectionLoader message="Loading events" />;
   }
 
   const getEventStatus = (event) => {

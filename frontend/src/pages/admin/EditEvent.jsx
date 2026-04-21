@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import eventService from '../../services/eventService';
 import ImageUpload from '../../components/ImageUpload';
 import { Save, ArrowLeft, Loader2, Calendar, MapPin, Eye, EyeOff, Clock, Users } from 'lucide-react';
+import { SectionLoader } from '../../components/PageLoader';
 
 const EditEvent = () => {
     const { id } = useParams();
@@ -85,12 +86,7 @@ const EditEvent = () => {
         }
     };
 
-    if (loading) return (
-        <div className="flex flex-col items-center justify-center min-h-[50vh] space-y-4">
-            <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
-            <p className="text-gray-500 font-medium">Loading event details...</p>
-        </div>
-    );
+    if (loading) return <SectionLoader message="Loading event" />;
 
     return (
         <div className="max-w-2xl mx-auto space-y-6 pb-20">

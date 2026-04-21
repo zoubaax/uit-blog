@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import articleService from '../services/articleService';
-import { ArrowLeft, Loader2, Calendar, User, Share2, Twitter, Linkedin, Facebook, Clock } from 'lucide-react';
+import { ArrowLeft, Calendar, User, Share2, Twitter, Linkedin, Facebook, Clock } from 'lucide-react';
+import PageLoader from '../components/PageLoader';
 
 const ArticleDetail = () => {
     const { id } = useParams();
@@ -27,14 +28,7 @@ const ArticleDetail = () => {
     }, [id]);
 
     if (loading) {
-        return (
-            <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white flex items-center justify-center">
-                <div className="text-center">
-                    <Loader2 className="w-12 h-12 text-[#2563eb] animate-spin mx-auto mb-4" />
-                    <p className="text-[#64748b] font-medium">Loading article...</p>
-                </div>
-            </div>
-        );
+        return <PageLoader message="Loading article" />;
     }
 
     if (error || !article) {
@@ -133,17 +127,17 @@ const ArticleDetail = () => {
 
     return (
         <article className="bg-white min-h-screen">
-            {/* Hero Section with Background */}
-            <div className="relative bg-gradient-to-br from-[#1e3a8a] via-[#2563eb] to-[#3b82f6] text-white overflow-hidden">
-                <div className="absolute inset-0 opacity-10">
-                    <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '40px 40px' }}></div>
+            {/* Hero Section */}
+            <div className="relative bg-white border-b border-slate-100 overflow-hidden">
+                <div className="absolute inset-0 opacity-[0.02]">
+                    <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #1e3a8a 1px, transparent 0)', backgroundSize: '40px 40px' }}></div>
                 </div>
                 
-                <div className="relative max-w-5xl mx-auto px-6 pt-16 pb-20">
+                <div className="relative max-w-5xl mx-auto px-6 pt-28 md:pt-32 pb-16">
                     {/* Back Button */}
                     <button
                         onClick={() => navigate('/articles')}
-                        className="inline-flex items-center gap-2 text-white/80 hover:text-white transition-colors mb-8 text-sm font-medium group"
+                        className="inline-flex items-center gap-2 text-[#94a3b8] hover:text-[#1e3a8a] transition-colors mb-8 text-sm font-medium group"
                     >
                         <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                         Back to Articles
@@ -152,10 +146,10 @@ const ArticleDetail = () => {
                     {/* Article Meta */}
                     <div className="space-y-6">
                         <div className="flex flex-wrap items-center gap-3 text-sm">
-                            <span className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full font-medium">
+                            <span className="px-3 py-1 bg-[#dbeafe] text-[#2563eb] rounded-full font-medium">
                                 Article
                             </span>
-                            <span className="flex items-center gap-1.5 text-white/90">
+                            <span className="flex items-center gap-1.5 text-[#64748b]">
                                 <Calendar className="w-4 h-4" />
                                 {new Date(article.created_at).toLocaleDateString('en-US', { 
                                     year: 'numeric', 
@@ -163,24 +157,24 @@ const ArticleDetail = () => {
                                     day: 'numeric' 
                                 })}
                             </span>
-                            <span className="flex items-center gap-1.5 text-white/90">
+                            <span className="flex items-center gap-1.5 text-[#64748b]">
                                 <Clock className="w-4 h-4" />
                                 {readTime} min read
                             </span>
                         </div>
                         
-                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight">
+                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight text-[#0f172a]">
                             {article.title}
                         </h1>
 
                         {/* Author Info */}
                         <div className="flex items-center gap-4 pt-4">
-                            <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center font-bold text-lg">
+                            <div className="w-12 h-12 bg-gradient-to-br from-[#2563eb] to-[#1e3a8a] rounded-full flex items-center justify-center text-white font-bold text-lg">
                                 {(article.author_name || 'A')[0].toUpperCase()}
                             </div>
                             <div>
-                                <p className="text-white/70 text-xs font-medium uppercase tracking-wider">Written by</p>
-                                <p className="font-semibold text-lg">{article.author_name || 'UIT Club Team'}</p>
+                                <p className="text-[#94a3b8] text-xs font-medium uppercase tracking-wider">Written by</p>
+                                <p className="font-semibold text-lg text-[#1e3a8a]">{article.author_name || 'UIT Club Team'}</p>
                             </div>
                         </div>
                     </div>
@@ -189,8 +183,8 @@ const ArticleDetail = () => {
 
             {/* Featured Image */}
             {article.image_url && (
-                <section className="max-w-5xl mx-auto px-6 -mt-10 relative z-10">
-                    <div className="rounded-2xl overflow-hidden shadow-2xl border-4 border-white">
+                <section className="max-w-5xl mx-auto px-6 py-8">
+                    <div className="rounded-2xl overflow-hidden shadow-lg border border-slate-200">
                         <img
                             src={article.image_url}
                             alt={article.title}

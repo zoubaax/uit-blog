@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import eventService from '../services/eventService';
-import { ArrowLeft, Loader2, MapPin, Calendar, Clock } from 'lucide-react';
+import { ArrowLeft, MapPin, Calendar, Clock } from 'lucide-react';
+import PageLoader from '../components/PageLoader';
 import EventRegistrationForm from '../components/EventRegistrationForm';
 
 const EventDetail = () => {
@@ -28,12 +29,7 @@ const EventDetail = () => {
     }, [id]);
 
     if (loading) {
-        return (
-            <div className="min-h-[60vh] flex flex-col items-center justify-center">
-                <Loader2 className="w-12 h-12 text-[#1e3a8a] animate-spin mb-4" />
-                <p className="text-[#475569] font-medium">Loading event details...</p>
-            </div>
-        );
+        return <PageLoader message="Loading event" />;
     }
 
     if (error || !event) {

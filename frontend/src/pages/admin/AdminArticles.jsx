@@ -5,7 +5,6 @@ import {
   Plus, 
   Trash2, 
   Edit2, 
-  Loader2, 
   Calendar, 
   User, 
   FileText, 
@@ -15,6 +14,7 @@ import {
   ChevronRight,
   AlertTriangle
 } from 'lucide-react';
+import { SectionLoader } from '../../components/PageLoader';
 
 const AdminArticles = () => {
   const [articles, setArticles] = useState([]);
@@ -66,14 +66,7 @@ const AdminArticles = () => {
     });
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[500px]">
-        <div className="text-center">
-          <Loader2 className="w-12 h-12 text-blue-600 animate-spin mx-auto mb-4" />
-          <p className="text-gray-600 font-medium">Loading articles...</p>
-        </div>
-      </div>
-    );
+    return <SectionLoader message="Loading articles" />;
   }
 
   return (
