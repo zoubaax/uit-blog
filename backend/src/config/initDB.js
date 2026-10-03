@@ -24,10 +24,17 @@ const initDB = async () => {
                 title VARCHAR(255) NOT NULL,
                 content TEXT NOT NULL,
                 image_url VARCHAR(255),
+                category VARCHAR(100) DEFAULT 'General',
+                views INTEGER DEFAULT 0,
                 author_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
+        `);
+        // Migration check for existing databases
+        await pool.query(`
+            ALTER TABLE articles ADD COLUMN IF NOT EXISTS category VARCHAR(100) DEFAULT 'General';
+            ALTER TABLE articles ADD COLUMN IF NOT EXISTS views INTEGER DEFAULT 0;
         `);
         console.log('✓ Articles table ready');
 

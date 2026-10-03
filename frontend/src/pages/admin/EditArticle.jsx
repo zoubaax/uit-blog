@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import articleService from '../../services/articleService';
 import ImageUpload from '../../components/ImageUpload';
@@ -7,21 +7,34 @@ import {
   ArrowLeft, 
   Loader2, 
   Eye, 
-  Upload,
-  Type,
+  Edit3,
   FileText,
-  AlertCircle
+  Clock,
+  Layout,
+  Tag
 } from 'lucide-react';
 import { SectionLoader } from '../../components/PageLoader';
+
+const CATEGORY_PRESETS = [
+    'AI & Machine Learning',
+    'Software Engineering',
+    'Cloud & DevOps',
+    'Cybersecurity',
+    'Tutorials',
+    'Campus & Community'
+];
 
 const EditArticle = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: '',
+    category: 'Technology',
     content: '',
     image_url: ''
   });
+  const [activeTab, setActiveTab] = useState('write');
+  const [customCategory, setCustomCategory] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState({});
@@ -29,13 +42,18 @@ const EditArticle = () => {
   useEffect(() => {
     const fetchArticle = async () => {
       try {
-        const res = await articleService.getById(id);
+        const res = await articleService.getById(id, true); // skip_view = true
         const article = res.data;
+        const cat = article.category || 'Technology';
         setFormData({
           title: article.title || '',
+          category: cat,
           content: article.content || '',
           image_url: article.image_url || ''
         });
+        if (!CATEGORY_PRESETS.includes(cat) && cat !== 'Technology') {
+          setCustomCategory(true);
+        }
       } catch (error) {
         console.error('Error fetching article:', error);
         alert('Failed to fetch article data');
@@ -48,11 +66,16 @@ const EditArticle = () => {
     fetchArticle();
   }, [id, navigate]);
 
+  const wordCount = useMemo(() => {
+    return formData.content.trim() ? formData.content.trim().split(/\s+/).length : 0;
+  }, [formData.content]);
+
+  const readTime = Math.max(1, Math.ceil(wordCount / 200));
+
   const validateForm = () => {
     const newErrors = {};
     if (!formData.title.trim()) newErrors.title = 'Title is required';
     if (!formData.content.trim()) newErrors.content = 'Content is required';
-    if (formData.content.length < 100) newErrors.content = 'Content should be at least 100 characters';
     return newErrors;
   };
 
@@ -80,187 +103,188 @@ const EditArticle = () => {
   };
 
   if (loading) {
-    return <SectionLoader message="Loading article" />;
+    return <SectionLoader message="Loading article..." />;
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 pb-12">
+    <div className="max-w-4xl mx-auto space-y-6 pb-20 animate-in fade-in duration-500">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate('/dashboard/articles')}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 px-3 py-2 rounded-lg transition-colors"
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors group"
+            title="Back to articles"
           >
-            <ArrowLeft className="w-4 h-4" />
-            <span className="font-medium">Back to Articles</span>
+            <ArrowLeft className="w-5 h-5 text-gray-600 group-hover:-translate-x-1 transition-transform" />
           </button>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Edit Article</h1>
+            <p className="text-sm text-gray-500">Update article content, metadata, and visuals</p>
+          </div>
         </div>
-        
-        <div className="flex items-center gap-3">
-          <a
-            href={`/articles/${id}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 text-blue-600 hover:text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-50 transition-colors font-medium"
-          >
-            <Eye className="w-4 h-4" />
-            Preview Article
-          </a>
+
+        <div className="flex items-center gap-4 text-xs font-semibold text-gray-500 bg-white px-4 py-2 rounded-xl border border-gray-200">
+          <span className="flex items-center gap-1.5">
+            <FileText className="w-3.5 h-3.5 text-blue-600" />
+            {wordCount} words
+          </span>
+          <span>•</span>
+          <span className="flex items-center gap-1.5">
+            <Clock className="w-3.5 h-3.5 text-blue-600" />
+            {readTime} min read
+          </span>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Edit Article</h1>
-          <p className="text-gray-500 mt-2">Update your article content and details</p>
-        </div>
+      <form onSubmit={handleSubmit} className="space-y-8 bg-white p-8 sm:p-10 rounded-[32px] shadow-xl border border-gray-100 relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-600 to-indigo-600"></div>
 
-        <form onSubmit={handleSubmit} className="space-y-8">
-          {/* Featured Image Section */}
-          <div className="bg-white rounded-xl border border-gray-200 p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <Upload className="w-5 h-5 text-gray-700" />
-              <h2 className="text-lg font-semibold text-gray-900">Featured Image</h2>
+        <div className="space-y-6">
+          {/* Header Image */}
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-widest pl-1">
+              <Layout className="w-4 h-4" /> Header Image
             </div>
             <ImageUpload
               initialImage={formData.image_url}
               onImageUpload={(url) => setFormData(p => ({ ...p, image_url: url }))}
             />
-            <p className="text-sm text-gray-500 mt-4">
-              Add a compelling image to attract readers. Recommended size: 1200×630px
-            </p>
           </div>
 
-          {/* Article Details */}
-          <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-6">
-            {/* Title Field */}
-            <div className="space-y-2">
-              <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                <Type className="w-4 h-4" />
-                Article Title
-              </label>
+          {/* Title & Category Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+            <div className="md:col-span-8 space-y-2">
+              <label className="block text-sm font-bold text-gray-700 pl-1">Article Title</label>
               <input
                 type="text"
                 required
-                className={`w-full px-4 py-3 rounded-lg border ${errors.title ? 'border-red-300' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
-                placeholder="Enter article title..."
+                className="w-full px-5 py-3.5 rounded-2xl border border-gray-200 focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all text-lg font-bold placeholder:text-gray-300"
+                placeholder="Article title"
                 value={formData.title}
-                onChange={(e) => {
-                  setFormData(p => ({ ...p, title: e.target.value }));
-                  if (errors.title) setErrors({ ...errors, title: '' });
-                }}
+                onChange={(e) => setFormData(p => ({ ...p, title: e.target.value }))}
               />
-              {errors.title && (
-                <div className="flex items-center gap-1 text-sm text-red-600">
-                  <AlertCircle className="w-4 h-4" />
-                  {errors.title}
-                </div>
-              )}
+              {errors.title && <p className="text-xs text-red-500 pl-1">{errors.title}</p>}
             </div>
 
-            {/* Content Field */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                  <FileText className="w-4 h-4" />
-                  Article Content
-                </label>
-                <div className="text-sm text-gray-500">
-                  {formData.content.length} characters • {Math.ceil(formData.content.length / 5)} words
-                </div>
+            <div className="md:col-span-4 space-y-2">
+              <label className="flex items-center justify-between text-sm font-bold text-gray-700 pl-1">
+                <span>Category</span>
+                <button
+                  type="button"
+                  onClick={() => setCustomCategory(!customCategory)}
+                  className="text-xs text-blue-600 hover:underline font-normal"
+                >
+                  {customCategory ? 'Choose Preset' : '+ Custom'}
+                </button>
+              </label>
+
+              {customCategory ? (
+                <input
+                  type="text"
+                  required
+                  className="w-full px-4 py-3.5 rounded-2xl border border-gray-200 focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all text-sm font-semibold"
+                  placeholder="Enter custom category"
+                  value={formData.category}
+                  onChange={(e) => setFormData(p => ({ ...p, category: e.target.value }))}
+                />
+              ) : (
+                <select
+                  value={formData.category}
+                  onChange={(e) => setFormData(p => ({ ...p, category: e.target.value }))}
+                  className="w-full px-4 py-3.5 rounded-2xl border border-gray-200 focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all text-sm font-semibold bg-white cursor-pointer"
+                >
+                  <option value="Technology">Technology</option>
+                  {CATEGORY_PRESETS.map((preset) => (
+                    <option key={preset} value={preset}>{preset}</option>
+                  ))}
+                </select>
+              )}
+            </div>
+          </div>
+
+          {/* Content with Write / Preview Tabs */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-2">
+              <label className="block text-sm font-bold text-gray-700">Article Content (Markdown supported)</label>
+              
+              <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-xl">
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('write')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                    activeTab === 'write'
+                      ? 'bg-white text-blue-600 shadow-sm'
+                      : 'text-gray-500 hover:text-gray-900'
+                  }`}
+                >
+                  <Edit3 className="w-3.5 h-3.5" />
+                  Write
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('preview')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                    activeTab === 'preview'
+                      ? 'bg-white text-blue-600 shadow-sm'
+                      : 'text-gray-500 hover:text-gray-900'
+                  }`}
+                >
+                  <Eye className="w-3.5 h-3.5" />
+                  Preview
+                </button>
               </div>
+            </div>
+
+            {activeTab === 'write' ? (
               <textarea
                 required
-                rows="18"
-                className={`w-full px-4 py-3 rounded-lg border ${errors.content ? 'border-red-300' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y font-mono text-sm`}
-                placeholder="Write your article content here... Markdown is supported."
+                rows="16"
+                className="w-full px-6 py-5 rounded-2xl border border-gray-200 focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all font-mono text-sm leading-relaxed text-gray-800 placeholder:text-gray-300 resize-y"
+                placeholder="Write your article here..."
                 value={formData.content}
-                onChange={(e) => {
-                  setFormData(p => ({ ...p, content: e.target.value }));
-                  if (errors.content) setErrors({ ...errors, content: '' });
-                }}
+                onChange={(e) => setFormData(p => ({ ...p, content: e.target.value }))}
               />
-              {errors.content && (
-                <div className="flex items-center gap-1 text-sm text-red-600">
-                  <AlertCircle className="w-4 h-4" />
-                  {errors.content}
-                </div>
-              )}
-              <div className="flex items-center gap-4 text-sm text-gray-500">
-                <span>✨ Markdown supported</span>
-                <span>•</span>
-                <span>📝 Autosave enabled</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row justify-between gap-4 pt-6 border-t border-gray-200">
-            <button
-              type="button"
-              onClick={() => navigate('/dashboard/articles')}
-              className="px-6 py-3 text-gray-700 hover:bg-gray-100 font-medium rounded-lg transition-colors"
-            >
-              Cancel
-            </button>
-            
-            <div className="flex flex-col sm:flex-row gap-3">
-              <button
-                type="button"
-                onClick={() => window.location.reload()}
-                className="px-6 py-3 border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium rounded-lg transition-colors"
-              >
-                Reset Changes
-              </button>
-              
-              <button
-                type="submit"
-                disabled={saving}
-                className="flex items-center justify-center gap-2 bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
-              >
-                {saving ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Saving...
-                  </>
+            ) : (
+              <div className="w-full min-h-[380px] p-6 rounded-2xl border border-gray-200 bg-gray-50/50 overflow-y-auto max-h-[500px]">
+                {formData.content.trim() ? (
+                  <div className="prose max-w-none text-slate-800">
+                    <p className="text-xs text-slate-400 uppercase tracking-widest font-bold mb-4">Content Preview</p>
+                    <div className="whitespace-pre-wrap font-sans text-sm leading-relaxed">
+                      {formData.content}
+                    </div>
+                  </div>
                 ) : (
-                  <>
-                    <Save className="w-4 h-4" />
-                    Update Article
-                  </>
+                  <div className="text-center py-20 text-gray-400 text-sm">
+                    No content written yet.
+                  </div>
                 )}
-              </button>
-            </div>
-          </div>
-        </form>
-
-        {/* Quick Stats */}
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100">
-          <h3 className="font-semibold text-gray-900 mb-4">Article Status</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="bg-white rounded-lg p-4 border border-gray-200">
-              <div className="text-sm text-gray-600 mb-1">Word Count</div>
-              <div className="text-2xl font-bold text-gray-900">
-                {Math.ceil(formData.content.length / 5)}
               </div>
-            </div>
-            <div className="bg-white rounded-lg p-4 border border-gray-200">
-              <div className="text-sm text-gray-600 mb-1">Reading Time</div>
-              <div className="text-2xl font-bold text-gray-900">
-                ~{Math.ceil(formData.content.length / 5 / 200)} min
-              </div>
-            </div>
-            <div className="bg-white rounded-lg p-4 border border-gray-200">
-              <div className="text-sm text-gray-600 mb-1">Image Status</div>
-              <div className="text-2xl font-bold text-gray-900">
-                {formData.image_url ? '✅ Set' : '⚠️ Missing'}
-              </div>
-            </div>
+            )}
+            {errors.content && <p className="text-xs text-red-500 pl-1">{errors.content}</p>}
           </div>
         </div>
-      </div>
+
+        <div className="flex justify-end pt-6 border-t border-gray-100">
+          <button
+            type="submit"
+            disabled={saving}
+            className="flex items-center justify-center gap-3 bg-blue-600 text-white px-10 py-3.5 rounded-2xl font-bold hover:bg-blue-700 hover:scale-[1.01] active:scale-95 transition-all shadow-xl shadow-blue-500/10 disabled:opacity-70 text-sm"
+          >
+            {saving ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span>Saving Changes...</span>
+              </>
+            ) : (
+              <>
+                <Save className="w-4 h-4" />
+                <span>Save Changes</span>
+              </>
+            )}
+          </button>
+        </div>
+      </form>
     </div>
   );
 };

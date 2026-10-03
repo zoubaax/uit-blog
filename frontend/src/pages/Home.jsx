@@ -67,7 +67,7 @@ const Home = () => {
                 // Update stats
                 setStats({
                     members: members.length,
-                    articles: allArticles.length,
+                    articles: articlesResponse.total ?? allArticles.length,
                     events: allEvents.length
                 });
             } catch (error) {
@@ -101,9 +101,6 @@ const Home = () => {
 
                 {/* Content */}
                 <div className="relative z-10 w-full max-w-7xl mx-auto pt-20">
-                    <div className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md border border-white/30 text-white text-[10px] uppercase font-bold tracking-widest rounded-full mb-4 md:mb-6 italic reveal-element">
-                        UPF UNIVERSITY
-                    </div>
                     <h1 className="text-3xl sm:text-5xl md:text-7xl font-semibold text-white leading-[1.1] mb-4 md:mb-6 max-w-4xl mx-auto drop-shadow-lg reveal-element delay-100">
                         Built by students.<br /> Driven by knowledge.
                     </h1>
@@ -172,8 +169,8 @@ const Home = () => {
                                             }}
                                         />
                                         <div className="absolute top-3 left-3">
-                                            <span className="inline-block px-2 py-0.5 bg-white/90 backdrop-blur-sm text-[#2563eb] text-[10px] font-bold uppercase tracking-wider rounded">
-                                                Article
+                                            <span className="inline-block px-2.5 py-0.5 bg-white/95 backdrop-blur-sm text-[#2563eb] text-[10px] font-bold uppercase tracking-wider rounded-md shadow-sm border border-slate-100">
+                                                {article.category || 'Article'}
                                             </span>
                                         </div>
                                     </div>

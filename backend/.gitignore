@@ -1,5 +1,8 @@
 node_modules
 .env
+.env.*
+!.env.example
+.emv*
 npm-debug.log
 coverage
 dist

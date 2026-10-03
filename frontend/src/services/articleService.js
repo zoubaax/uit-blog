@@ -1,12 +1,21 @@
 import api from './api';
 
 const articleService = {
-    getAll: async () => {
-        return await api.get('/articles');
+    getAll: async (params = {}) => {
+        return await api.get('/articles', { params });
     },
 
-    getById: async (id) => {
-        return await api.get(`/articles/${id}`);
+    getById: async (id, skipView = false) => {
+        const query = skipView ? '?skip_view=true' : '';
+        return await api.get(`/articles/${id}${query}`);
+    },
+
+    getCategories: async () => {
+        return await api.get('/articles/categories');
+    },
+
+    getRelated: async (id) => {
+        return await api.get(`/articles/${id}/related`);
     },
 
     // Admin only
