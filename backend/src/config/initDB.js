@@ -35,6 +35,8 @@ const initDB = async () => {
         await pool.query(`
             ALTER TABLE articles ADD COLUMN IF NOT EXISTS category VARCHAR(100) DEFAULT 'General';
             ALTER TABLE articles ADD COLUMN IF NOT EXISTS views INTEGER DEFAULT 0;
+            ALTER TABLE articles ADD COLUMN IF NOT EXISTS slug VARCHAR(255);
+            CREATE INDEX IF NOT EXISTS idx_articles_slug ON articles(slug);
         `);
         console.log('✓ Articles table ready');
 

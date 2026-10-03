@@ -49,7 +49,7 @@ const ArticleCard = ({ article }) => {
 
     return (
         <Link 
-            to={`/articles/${article.id}`}
+            to={`/articles/${article.slug || article.id}`}
             className="group block h-full focus:outline-none"
         >
             <div className="flex flex-col h-full bg-white rounded-2xl border border-slate-200/80 p-5 hover:border-blue-300 hover:shadow-xl hover:shadow-blue-500/5 transition-all duration-300 group-hover:-translate-y-1">

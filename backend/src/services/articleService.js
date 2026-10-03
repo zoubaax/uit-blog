@@ -11,7 +11,7 @@ const getArticleById = async (id, shouldIncrementView = true) => {
         throw new AppError('Article not found', 404);
     }
     if (shouldIncrementView) {
-        await articleModel.incrementViews(id);
+        await articleModel.incrementViews(article.id);
         article.views = (article.views || 0) + 1;
     }
     return article;
@@ -26,7 +26,7 @@ const getRelatedArticles = async (id) => {
     if (!article) {
         throw new AppError('Article not found', 404);
     }
-    return await articleModel.getRelated(id, article.category, 3);
+    return await articleModel.getRelated(article.id, article.category, 3);
 };
 
 const createArticle = async (data, authorId) => {

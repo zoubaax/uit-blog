@@ -14,12 +14,14 @@ CREATE TABLE IF NOT EXISTS articles (
   image_url VARCHAR(255),
   category VARCHAR(100) DEFAULT 'General',
   views INTEGER DEFAULT 0,
+  slug VARCHAR(255),
   event_id INTEGER REFERENCES events(id) ON DELETE SET NULL,
   project_url VARCHAR(255),
   author_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+CREATE INDEX IF NOT EXISTS idx_articles_slug ON articles(slug);
 
 CREATE TABLE IF NOT EXISTS events (
   id SERIAL PRIMARY KEY,

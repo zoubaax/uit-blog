@@ -1,74 +1,119 @@
 import { useState } from 'react';
 import { Copy, Check } from 'lucide-react';
 
+const slugify = (text = '') => {
+    return text
+        .toString()
+        .toLowerCase()
+        .trim()
+        .replace(/[\s\W-]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+};
+
 const renderInline = (text) => {
     if (!text) return '';
 
-    // Regex pattern for bold (**), italic (*), inline code (`), and links ([text](url))
-    const tokens = [];
+    // Check for inline images: ![alt](url)
+    const imgRegex = /!\[(.*?)\]\((.*?)\)/g;
     let remaining = text;
     let keyIdx = 0;
 
-    // Process links first: [text](url)
-    const linkRegex = /\[(.*?)\]\((.*?)\)/g;
-    let lastIndex = 0;
-    let match;
-
-    const parts = [];
-    while ((match = linkRegex.exec(remaining)) !== null) {
-        if (match.index > lastIndex) {
-            parts.push({ type: 'text', content: remaining.substring(lastIndex, match.index) });
+    // Process images first
+    const partsWithImg = [];
+    let lastImgIdx = 0;
+    let imgMatch;
+    while ((imgMatch = imgRegex.exec(remaining)) !== null) {
+        if (imgMatch.index > lastImgIdx) {
+            partsWithImg.push({ type: 'text', content: remaining.substring(lastImgIdx, imgMatch.index) });
         }
-        parts.push({ type: 'link', text: match[1], href: match[2] });
-        lastIndex = match.index + match[0].length;
+        partsWithImg.push({ type: 'image', alt: imgMatch[1], src: imgMatch[2] });
+        lastImgIdx = imgMatch.index + imgMatch[0].length;
     }
-    if (lastIndex < remaining.length) {
-        parts.push({ type: 'text', content: remaining.substring(lastIndex) });
+    if (lastImgIdx < remaining.length) {
+        partsWithImg.push({ type: 'text', content: remaining.substring(lastImgIdx) });
     }
 
-    return parts.map((part) => {
-        if (part.type === 'link') {
+    return partsWithImg.map((item, pIdx) => {
+        if (item.type === 'image') {
             return (
-                <a
-                    key={`link-${keyIdx++}`}
-                    href={part.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:text-blue-800 underline font-medium"
-                >
-                    {part.text}
-                </a>
+                <span key={`img-${pIdx}`} className="block my-4">
+                    <img
+                        src={item.src}
+                        alt={item.alt || 'Article image'}
+                        className="rounded-2xl max-w-full h-auto mx-auto shadow-md border border-slate-200"
+                        loading="lazy"
+                    />
+                    {item.alt && (
+                        <span className="block text-center text-xs text-slate-500 mt-2 italic">
+                            {item.alt}
+                        </span>
+                    )}
+                </span>
             );
         }
 
-        // Sub-parse inline code, bold, italic
-        const subTokens = part.content.split(/(`[^`]+`|\*\*[^*]+\*\*|\*[^*]+\*)/g);
-        return subTokens.map((token, subIdx) => {
-            if (token.startsWith('`') && token.endsWith('`')) {
+        // Process links: [text](url)
+        const linkRegex = /\[(.*?)\]\((.*?)\)/g;
+        let lastLinkIdx = 0;
+        let linkMatch;
+        const linkParts = [];
+        const subText = item.content;
+
+        while ((linkMatch = linkRegex.exec(subText)) !== null) {
+            if (linkMatch.index > lastLinkIdx) {
+                linkParts.push({ type: 'text', content: subText.substring(lastLinkIdx, linkMatch.index) });
+            }
+            linkParts.push({ type: 'link', text: linkMatch[1], href: linkMatch[2] });
+            lastLinkIdx = linkMatch.index + linkMatch[0].length;
+        }
+        if (lastLinkIdx < subText.length) {
+            linkParts.push({ type: 'text', content: subText.substring(lastLinkIdx) });
+        }
+
+        return linkParts.map((part) => {
+            if (part.type === 'link') {
                 return (
-                    <code
-                        key={`code-${keyIdx++}-${subIdx}`}
-                        className="px-1.5 py-0.5 mx-0.5 bg-slate-100 text-blue-700 font-mono text-xs rounded border border-slate-200"
+                    <a
+                        key={`link-${keyIdx++}`}
+                        href={part.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:text-blue-800 underline font-medium"
                     >
-                        {token.slice(1, -1)}
-                    </code>
+                        {part.text}
+                    </a>
                 );
             }
-            if (token.startsWith('**') && token.endsWith('**')) {
-                return (
-                    <strong key={`bold-${keyIdx++}-${subIdx}`} className="font-bold text-slate-900">
-                        {token.slice(2, -2)}
-                    </strong>
-                );
-            }
-            if (token.startsWith('*') && token.endsWith('*')) {
-                return (
-                    <em key={`em-${keyIdx++}-${subIdx}`} className="italic text-slate-800">
-                        {token.slice(1, -1)}
-                    </em>
-                );
-            }
-            return token;
+
+            // Sub-parse inline code (`code`), bold (**bold**), and italic (*italic*)
+            const subTokens = part.content.split(/(`[^`]+`|\*\*[^*]+\*\*|\*[^*]+\*)/g);
+            return subTokens.map((token, subIdx) => {
+                if (token.startsWith('`') && token.endsWith('`')) {
+                    return (
+                        <code
+                            key={`code-${keyIdx++}-${subIdx}`}
+                            className="px-1.5 py-0.5 mx-0.5 bg-slate-100 text-blue-700 font-mono text-xs rounded border border-slate-200"
+                        >
+                            {token.slice(1, -1)}
+                        </code>
+                    );
+                }
+                if (token.startsWith('**') && token.endsWith('**')) {
+                    return (
+                        <strong key={`bold-${keyIdx++}-${subIdx}`} className="font-bold text-slate-900">
+                            {token.slice(2, -2)}
+                        </strong>
+                    );
+                }
+                if (token.startsWith('*') && token.endsWith('*')) {
+                    return (
+                        <em key={`em-${keyIdx++}-${subIdx}`} className="italic text-slate-800">
+                            {token.slice(1, -1)}
+                        </em>
+                    );
+                }
+                return token;
+            });
         });
     });
 };
@@ -154,39 +199,43 @@ const MarkdownRenderer = ({ content = '' }) => {
 
         // Horizontal Rule
         if (trimmed === '---' || trimmed === '***' || trimmed === '___') {
-            elements.push(<hr key={`hr-${i}`} className="my-8 border-t-2 border-slate-200/80" />);
+            elements.push(<hr key={`hr-${i}`} className="my-8 border-t border-slate-200" />);
             continue;
         }
 
-        // Headings
+        // Headings with Anchor Slug IDs
         if (line.startsWith('# ')) {
+            const raw = line.replace('# ', '');
             elements.push(
-                <h1 key={`h1-${i}`} className="text-2xl sm:text-3xl font-black text-slate-900 mt-8 mb-4 tracking-tight leading-snug">
-                    {renderInline(line.replace('# ', ''))}
+                <h1 key={`h1-${i}`} id={slugify(raw)} className="text-2xl sm:text-3xl font-black text-slate-900 mt-8 mb-4 tracking-tight leading-snug scroll-mt-24">
+                    {renderInline(raw)}
                 </h1>
             );
             continue;
         }
         if (line.startsWith('## ')) {
+            const raw = line.replace('## ', '');
             elements.push(
-                <h2 key={`h2-${i}`} className="text-xl sm:text-2xl font-bold text-slate-900 mt-7 mb-3 pb-2 border-b border-slate-100 tracking-tight leading-snug">
-                    {renderInline(line.replace('## ', ''))}
+                <h2 key={`h2-${i}`} id={slugify(raw)} className="text-xl sm:text-2xl font-bold text-slate-900 mt-8 mb-3.5 pb-2 border-b border-slate-100 tracking-tight leading-snug scroll-mt-24">
+                    {renderInline(raw)}
                 </h2>
             );
             continue;
         }
         if (line.startsWith('### ')) {
+            const raw = line.replace('### ', '');
             elements.push(
-                <h3 key={`h3-${i}`} className="text-lg sm:text-xl font-bold text-slate-900 mt-6 mb-2.5 tracking-tight leading-snug">
-                    {renderInline(line.replace('### ', ''))}
+                <h3 key={`h3-${i}`} id={slugify(raw)} className="text-lg sm:text-xl font-bold text-slate-900 mt-6 mb-2.5 tracking-tight leading-snug scroll-mt-24">
+                    {renderInline(raw)}
                 </h3>
             );
             continue;
         }
         if (line.startsWith('#### ')) {
+            const raw = line.replace('#### ', '');
             elements.push(
-                <h4 key={`h4-${i}`} className="text-base sm:text-lg font-bold text-slate-900 mt-5 mb-2 leading-snug">
-                    {renderInline(line.replace('#### ', ''))}
+                <h4 key={`h4-${i}`} id={slugify(raw)} className="text-base sm:text-lg font-bold text-slate-900 mt-5 mb-2 leading-snug scroll-mt-24">
+                    {renderInline(raw)}
                 </h4>
             );
             continue;
@@ -195,7 +244,7 @@ const MarkdownRenderer = ({ content = '' }) => {
         // Blockquotes
         if (line.startsWith('> ')) {
             elements.push(
-                <blockquote key={`quote-${i}`} className="my-4 pl-4 py-2 border-l-4 border-blue-500 bg-blue-50/50 rounded-r-xl italic text-slate-700 text-sm leading-relaxed">
+                <blockquote key={`quote-${i}`} className="my-5 pl-4 py-2.5 border-l-4 border-blue-500 bg-blue-50/50 rounded-r-xl italic text-slate-700 text-sm sm:text-base leading-relaxed">
                     {renderInline(line.replace('> ', ''))}
                 </blockquote>
             );
@@ -205,7 +254,7 @@ const MarkdownRenderer = ({ content = '' }) => {
         // Bullet Lists (- or *)
         if (line.startsWith('- ') || line.startsWith('* ')) {
             elements.push(
-                <li key={`li-${i}`} className="ml-5 my-1.5 text-slate-700 text-sm list-disc leading-relaxed">
+                <li key={`li-${i}`} className="ml-5 my-1.5 text-slate-700 text-sm sm:text-base list-disc leading-relaxed">
                     {renderInline(line.substring(2))}
                 </li>
             );
@@ -217,7 +266,7 @@ const MarkdownRenderer = ({ content = '' }) => {
             const match = line.match(/^(\d+)\.\s(.*)/);
             if (match) {
                 elements.push(
-                    <div key={`ol-${i}`} className="flex items-start gap-2.5 my-2 text-slate-700 text-sm leading-relaxed">
+                    <div key={`ol-${i}`} className="flex items-start gap-3 my-2 text-slate-700 text-sm sm:text-base leading-relaxed">
                         <span className="flex-shrink-0 w-5 h-5 rounded-full bg-blue-100 text-blue-700 font-bold text-xs flex items-center justify-center mt-0.5">
                             {match[1]}
                         </span>
@@ -236,7 +285,7 @@ const MarkdownRenderer = ({ content = '' }) => {
 
         // Regular Paragraph
         elements.push(
-            <p key={`p-${i}`} className="mb-3 text-slate-700 text-sm sm:text-base leading-relaxed font-normal">
+            <p key={`p-${i}`} className="mb-4 text-slate-700 text-sm sm:text-base leading-relaxed font-normal">
                 {renderInline(line)}
             </p>
         );

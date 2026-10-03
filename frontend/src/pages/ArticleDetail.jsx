@@ -25,13 +25,16 @@ import {
 } from 'lucide-react';
 import PageLoader from '../components/PageLoader';
 import ArticleCard from '../components/ArticleCard';
+import MarkdownRenderer from '../components/MarkdownRenderer';
 import { getOptimizedImageUrl } from '../utils/cloudinaryUtils';
 
 const slugify = (text = '') => {
     return text
+        .toString()
         .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/(^-|-$)+/g, '');
+        .trim()
+        .replace(/[\s\W-]+/g, '-')
+        .replace(/^-+|-+$/g, '');
 };
 
 const ArticleDetail = () => {
@@ -45,7 +48,6 @@ const ArticleDetail = () => {
     const [scrollProgress, setScrollProgress] = useState(0);
     const [liked, setLiked] = useState(false);
     const [likeCount, setLikeCount] = useState(0);
-    const [copiedCodeIndex, setCopiedCodeIndex] = useState(null);
 
     // Track scroll progress
     useEffect(() => {
@@ -68,19 +70,25 @@ const ArticleDetail = () => {
             setError(null);
             try {
                 const response = await articleService.getById(id);
-                setArticle(response.data);
+                const loadedArticle = response.data;
+                setArticle(loadedArticle);
 
-                // Initialize likes from localStorage
-                const localLikeKey = `uit_article_liked_${id}`;
+                // If visited via numeric ID or un-slugified URL, seamlessly update URL bar to the clean title slug
+                if (loadedArticle?.slug && id !== loadedArticle.slug) {
+                    window.history.replaceState(null, '', `/articles/${loadedArticle.slug}`);
+                }
+
+                // Initialize likes from localStorage using numeric article ID
+                const localLikeKey = `uit_article_liked_${loadedArticle.id}`;
                 const hasLiked = localStorage.getItem(localLikeKey) === 'true';
                 setLiked(hasLiked);
                 // Simulated initial likes based on views and ID
-                const baseLikes = Math.max(5, Math.floor((response.data?.views || 10) * 0.4) + (Number(id) % 7));
+                const baseLikes = Math.max(5, Math.floor((loadedArticle.views || 10) * 0.4) + (Number(loadedArticle.id) % 7));
                 setLikeCount(hasLiked ? baseLikes + 1 : baseLikes);
 
                 // Fetch related articles
                 try {
-                    const relatedRes = await articleService.getRelated(id);
+                    const relatedRes = await articleService.getRelated(loadedArticle.id);
                     setRelatedArticles((relatedRes.data || []).slice(0, 3));
                 } catch (relErr) {
                     console.warn('Could not fetch related articles:', relErr);
@@ -99,7 +107,8 @@ const ArticleDetail = () => {
 
     // Handle Like Toggle
     const handleLikeToggle = () => {
-        const localLikeKey = `uit_article_liked_${id}`;
+        if (!article) return;
+        const localLikeKey = `uit_article_liked_${article.id}`;
         if (liked) {
             setLiked(false);
             setLikeCount(prev => Math.max(0, prev - 1));
@@ -135,16 +144,6 @@ const ArticleDetail = () => {
             setTimeout(() => setCopied(false), 2500);
         } catch (err) {
             console.error('Failed to copy URL:', err);
-        }
-    };
-
-    const handleCopyCode = async (code, index) => {
-        try {
-            await navigator.clipboard.writeText(code);
-            setCopiedCodeIndex(index);
-            setTimeout(() => setCopiedCodeIndex(null), 2000);
-        } catch (err) {
-            console.error('Failed to copy code:', err);
         }
     };
 
@@ -198,175 +197,6 @@ const ArticleDetail = () => {
 
     const readTime = Math.max(1, Math.ceil((article.content?.split(/\s+/).length || 0) / 200));
 
-    // Render parsed Markdown blocks
-    const renderMarkdownContent = (content) => {
-        if (!content) return null;
-
-        const lines = content.split('\n');
-        const elements = [];
-        let inCodeBlock = false;
-        let codeBuffer = [];
-        let codeLanguage = '';
-        let codeBlockCount = 0;
-
-        for (let i = 0; i < lines.length; i++) {
-            const line = lines[i];
-
-            // Code block handler
-            if (line.startsWith('```')) {
-                if (inCodeBlock) {
-                    const currentCode = codeBuffer.join('\n');
-                    const codeIndex = codeBlockCount++;
-                    elements.push(
-                        <div key={`code-${i}`} className="my-6 rounded-2xl overflow-hidden border border-slate-800 bg-[#0d1117] text-slate-100 shadow-xl">
-                            <div className="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800 text-xs font-mono text-slate-400">
-                                <span>{codeLanguage || 'code'}</span>
-                                <button
-                                    onClick={() => handleCopyCode(currentCode, codeIndex)}
-                                    className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors text-[11px]"
-                                >
-                                    {copiedCodeIndex === codeIndex ? (
-                                        <>
-                                            <Check className="w-3.5 h-3.5 text-emerald-400" />
-                                            <span className="text-emerald-400">Copied!</span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Copy className="w-3.5 h-3.5" />
-                                            <span>Copy</span>
-                                        </>
-                                    )}
-                                </button>
-                            </div>
-                            <pre className="p-4 overflow-x-auto text-sm font-mono leading-relaxed text-blue-200">
-                                <code>{currentCode}</code>
-                            </pre>
-                        </div>
-                    );
-                    codeBuffer = [];
-                    inCodeBlock = false;
-                } else {
-                    inCodeBlock = true;
-                    codeLanguage = line.replace('```', '').trim();
-                }
-                continue;
-            }
-
-            if (inCodeBlock) {
-                codeBuffer.push(line);
-                continue;
-            }
-
-            // Headings
-            if (line.startsWith('# ')) {
-                const text = line.replace('# ', '');
-                elements.push(
-                    <h1 key={`h1-${i}`} id={slugify(text)} className="text-3xl sm:text-4xl font-black text-slate-900 mt-12 mb-6 scroll-mt-24">
-                        {text}
-                    </h1>
-                );
-                continue;
-            }
-            if (line.startsWith('## ')) {
-                const text = line.replace('## ', '');
-                elements.push(
-                    <h2 key={`h2-${i}`} id={slugify(text)} className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-10 mb-4 scroll-mt-24 pb-2 border-b border-slate-100">
-                        {text}
-                    </h2>
-                );
-                continue;
-            }
-            if (line.startsWith('### ')) {
-                const text = line.replace('### ', '');
-                elements.push(
-                    <h3 key={`h3-${i}`} id={slugify(text)} className="text-xl sm:text-2xl font-bold text-slate-900 mt-8 mb-3 scroll-mt-24">
-                        {text}
-                    </h3>
-                );
-                continue;
-            }
-
-            // Blockquote
-            if (line.startsWith('> ')) {
-                elements.push(
-                    <blockquote key={`quote-${i}`} className="my-6 pl-4 border-l-4 border-blue-500 italic text-slate-700 bg-blue-50/40 py-3 pr-4 rounded-r-xl">
-                        {line.replace('> ', '')}
-                    </blockquote>
-                );
-                continue;
-            }
-
-            // Bullet Lists
-            if (line.startsWith('- ') || line.startsWith('* ')) {
-                const item = line.substring(2);
-                elements.push(
-                    <li key={`li-${i}`} className="ml-5 my-1.5 text-slate-700 list-disc leading-relaxed">
-                        {renderInlineFormatting(item)}
-                    </li>
-                );
-                continue;
-            }
-
-            // Numbered Lists
-            if (/^\d+\.\s/.test(line)) {
-                const match = line.match(/^(\d+)\.\s(.*)/);
-                if (match) {
-                    elements.push(
-                        <div key={`ol-${i}`} className="flex items-start gap-3 my-2 text-slate-700 leading-relaxed">
-                            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 text-blue-700 font-bold text-xs flex items-center justify-center mt-0.5">
-                                {match[1]}
-                            </span>
-                            <div className="flex-1">{renderInlineFormatting(match[2])}</div>
-                        </div>
-                    );
-                    continue;
-                }
-            }
-
-            // Empty lines
-            if (line.trim() === '') {
-                elements.push(<div key={`empty-${i}`} className="h-4"></div>);
-                continue;
-            }
-
-            // Regular Paragraphs
-            elements.push(
-                <p key={`p-${i}`} className="mb-4 text-slate-700 text-base sm:text-lg leading-relaxed font-normal">
-                    {renderInlineFormatting(line)}
-                </p>
-            );
-        }
-
-        return elements;
-    };
-
-    const renderInlineFormatting = (text) => {
-        if (!text) return '';
-        // Bold with **
-        const parts = text.split(/(\*\*.*?\*\*)/g);
-        return parts.map((part, idx) => {
-            if (part.startsWith('**') && part.endsWith('**')) {
-                return (
-                    <strong key={idx} className="font-bold text-slate-900">
-                        {part.slice(2, -2)}
-                    </strong>
-                );
-            }
-            // Inline code with `
-            const codeParts = part.split(/(`.*?`)/g);
-            return codeParts.map((cPart, cIdx) => {
-                if (cPart.startsWith('`') && cPart.endsWith('`')) {
-                    return (
-                        <code key={cIdx} className="px-1.5 py-0.5 bg-slate-100 text-blue-700 font-mono text-sm rounded border border-slate-200">
-                            {cPart.slice(1, -1)}
-                        </code>
-                    );
-                }
-                return cPart;
-            });
-        });
-    };
-
     return (
         <article className="bg-white min-h-screen">
             {/* Scroll Progress Bar */}
@@ -376,63 +206,61 @@ const ArticleDetail = () => {
             />
 
             {/* Hero & Title Header */}
-            <header className="relative bg-gradient-to-b from-slate-50 via-white to-white border-b border-slate-100 pt-28 md:pt-36 pb-12 sm:pb-16 px-4 sm:px-6">
+            <header className="relative bg-white border-b border-slate-100/90 pt-24 md:pt-28 pb-8 px-4 sm:px-6">
                 <div className="max-w-4xl mx-auto">
-                    {/* Navigation Bar */}
-                    <div className="flex items-center justify-between mb-8">
+                    {/* Breadcrumb Navigation */}
+                    <div className="flex items-center gap-2.5 mb-5">
                         <button
                             onClick={() => navigate('/articles')}
-                            className="inline-flex items-center gap-2 text-slate-500 hover:text-blue-600 text-sm font-semibold transition-colors group"
+                            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-blue-600 transition-colors py-1 px-2 -ml-2 rounded-lg hover:bg-slate-100 group"
                         >
-                            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                            Back to Articles
+                            <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
+                            <span>Articles</span>
                         </button>
-
-                        <div className="flex items-center gap-2">
-                            <span className="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-bold uppercase tracking-wider rounded-full border border-blue-200/80">
-                                {article.category || 'Technology'}
-                            </span>
-                        </div>
+                        <span className="text-slate-300 text-xs">/</span>
+                        <span className="px-2.5 py-0.5 bg-blue-50 text-blue-700 text-[11px] font-bold uppercase tracking-wider rounded-full border border-blue-200/60">
+                            {article.category || 'Technology'}
+                        </span>
                     </div>
 
-                    {/* Title */}
-                    <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.15] mb-6">
+                    {/* Title - Refined, elegant, and balanced */}
+                    <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight sm:leading-snug mb-6">
                         {article.title}
                     </h1>
 
                     {/* Metadata Strip */}
-                    <div className="flex flex-wrap items-center justify-between gap-4 py-4 border-y border-slate-200/60 text-sm text-slate-600">
+                    <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-slate-100 text-xs text-slate-500">
                         {/* Author info */}
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 text-white font-bold flex items-center justify-center text-sm shadow-sm">
+                            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 text-white font-bold flex items-center justify-center text-xs shadow-sm">
                                 {(article.author_name || 'U')[0].toUpperCase()}
                             </div>
                             <div>
-                                <p className="font-bold text-slate-900 leading-none">{article.author_name || 'UIT Club Team'}</p>
-                                <p className="text-xs text-slate-400 mt-1">Research & Technical Author</p>
+                                <p className="font-bold text-slate-900 text-xs leading-none">{article.author_name || 'UIT Club Team'}</p>
+                                <p className="text-[11px] text-slate-400 mt-0.5">Research & Technical Author</p>
                             </div>
                         </div>
 
                         {/* Article stats */}
-                        <div className="flex items-center gap-4 text-xs sm:text-sm text-slate-500">
+                        <div className="flex items-center gap-3 text-xs text-slate-500">
                             <span className="flex items-center gap-1.5 font-medium">
-                                <Calendar className="w-4 h-4 text-slate-400" />
+                                <Calendar className="w-3.5 h-3.5 text-slate-400" />
                                 {new Date(article.created_at).toLocaleDateString('en-US', {
                                     month: 'short',
                                     day: 'numeric',
                                     year: 'numeric'
                                 })}
                             </span>
-                            <span>•</span>
+                            <span className="text-slate-300">•</span>
                             <span className="flex items-center gap-1.5 font-medium">
-                                <Clock className="w-4 h-4 text-slate-400" />
+                                <Clock className="w-3.5 h-3.5 text-slate-400" />
                                 {readTime} min read
                             </span>
                             {typeof article.views === 'number' && (
                                 <>
-                                    <span>•</span>
+                                    <span className="text-slate-300">•</span>
                                     <span className="flex items-center gap-1.5 font-medium text-slate-500">
-                                        <Eye className="w-4 h-4 text-slate-400" />
+                                        <Eye className="w-3.5 h-3.5 text-slate-400" />
                                         {article.views} views
                                     </span>
                                 </>
@@ -442,14 +270,14 @@ const ArticleDetail = () => {
                 </div>
             </header>
 
-            {/* Featured Image */}
+            {/* Featured Image - Full view, uncropped, expansive */}
             {article.image_url && (
-                <div className="max-w-5xl mx-auto px-4 sm:px-6 my-10">
-                    <div className="relative aspect-[21/9] sm:aspect-[16/8] rounded-3xl overflow-hidden shadow-2xl border border-slate-200">
+                <div className="max-w-5xl mx-auto px-4 sm:px-6 my-8 md:my-10">
+                    <div className="relative rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl border border-slate-200/80 bg-slate-50">
                         <img
-                            src={getOptimizedImageUrl(article.image_url, 1400, 700)}
+                            src={getOptimizedImageUrl(article.image_url, 1600)}
                             alt={article.title}
-                            className="w-full h-full object-cover"
+                            className="w-full h-auto block rounded-2xl md:rounded-3xl"
                             onError={(e) => {
                                 e.target.src = 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&q=80&w=1200';
                             }}
@@ -459,7 +287,7 @@ const ArticleDetail = () => {
             )}
 
             {/* Main Content Layout with TOC Sidebar */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-14">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
                     {/* Left Sticky Sidebar: Table of Contents & Quick Actions */}
                     <aside className="hidden lg:block lg:col-span-3">
@@ -542,68 +370,83 @@ const ArticleDetail = () => {
 
                     {/* Center: Article Body */}
                     <div className="lg:col-span-9 max-w-3xl">
-                        {/* Linked Event Recap Banner */}
+                        {/* Linked Event Recap Banner - Smooth, refined editorial card */}
                         {article.event_title && (
-                            <div className="mb-8 p-5 rounded-2xl bg-emerald-50/80 border border-emerald-200/90 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
-                                <div className="flex items-center gap-3.5">
-                                    <div className="w-11 h-11 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center flex-shrink-0 shadow-sm">
-                                        <Camera className="w-5 h-5" />
+                            <div className="mb-8 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-slate-50 via-slate-50/60 to-blue-50/30 border border-slate-200/80 hover:border-slate-300 transition-all duration-300 shadow-sm group">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                    <div className="flex items-center gap-3.5">
+                                        <div className="w-10 h-10 rounded-xl bg-white text-blue-600 border border-slate-200/80 flex items-center justify-center flex-shrink-0 shadow-sm group-hover:scale-105 group-hover:text-blue-700 transition-all">
+                                            <Calendar className="w-4 h-4" />
+                                        </div>
+                                        <div>
+                                            <div className="flex items-center gap-2">
+                                                <span className="inline-block w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse"></span>
+                                                <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600">
+                                                    Official Event Recap
+                                                </span>
+                                            </div>
+                                            <h4 className="text-sm sm:text-base font-bold text-slate-900 mt-0.5 group-hover:text-blue-600 transition-colors">
+                                                {article.event_title}
+                                            </h4>
+                                            {article.event_date && (
+                                                <p className="text-xs text-slate-500 mt-0.5">
+                                                    Held on {new Date(article.event_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                                                </p>
+                                            )}
+                                        </div>
                                     </div>
-                                    <div>
-                                        <span className="text-[10px] font-extrabold uppercase tracking-widest text-emerald-800 bg-emerald-100/60 px-2 py-0.5 rounded">
-                                            Official Event Recap
-                                        </span>
-                                        <h4 className="text-sm sm:text-base font-bold text-slate-900 mt-1">{article.event_title}</h4>
-                                        {article.event_date && (
-                                            <p className="text-xs text-slate-500 mt-0.5">
-                                                Held on {new Date(article.event_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-                                            </p>
-                                        )}
-                                    </div>
+
+                                    {article.event_id && (
+                                        <Link 
+                                            to={`/events/${article.event_id}`}
+                                            className="inline-flex items-center gap-2 px-4 py-2 bg-white hover:bg-blue-50/80 text-slate-700 hover:text-blue-600 text-xs font-semibold rounded-xl border border-slate-200 hover:border-blue-200 shadow-sm transition-all self-start sm:self-auto group/btn"
+                                        >
+                                            <span>View Event</span>
+                                            <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover/btn:text-blue-600 group-hover/btn:translate-x-0.5 transition-all" />
+                                        </Link>
+                                    )}
                                 </div>
-                                {article.event_id && (
-                                    <Link 
-                                        to={`/events/${article.event_id}`}
-                                        className="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition-colors self-start sm:self-auto shadow-sm"
-                                    >
-                                        <span>View Event</span>
-                                        <ChevronRight className="w-3.5 h-3.5" />
-                                    </Link>
-                                )}
                             </div>
                         )}
 
-                        {/* Hackathon Project Demo Link */}
+                        {/* Hackathon Project Demo Link - Smooth & modern */}
                         {article.project_url && (
-                            <div className="mb-8 p-5 rounded-2xl bg-amber-50/90 border border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
-                                <div className="flex items-center gap-3.5">
-                                    <div className="w-11 h-11 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center flex-shrink-0 shadow-sm">
-                                        <Trophy className="w-5 h-5" />
+                            <div className="mb-8 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-slate-50 via-slate-50/60 to-amber-50/30 border border-slate-200/80 hover:border-slate-300 transition-all duration-300 shadow-sm group">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                    <div className="flex items-center gap-3.5">
+                                        <div className="w-10 h-10 rounded-xl bg-white text-amber-600 border border-slate-200/80 flex items-center justify-center flex-shrink-0 shadow-sm group-hover:scale-105 transition-all">
+                                            <Trophy className="w-4 h-4" />
+                                        </div>
+                                        <div>
+                                            <div className="flex items-center gap-2">
+                                                <span className="inline-block w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                                <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700">
+                                                    Project Demo & Code
+                                                </span>
+                                            </div>
+                                            <h4 className="text-sm sm:text-base font-bold text-slate-900 mt-0.5">
+                                                Hackathon Prototype Online
+                                            </h4>
+                                            <p className="text-xs text-slate-500 mt-0.5">Explore the live repository or product demonstration.</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <span className="text-[10px] font-extrabold uppercase tracking-widest text-amber-900 bg-amber-200/60 px-2 py-0.5 rounded">
-                                            Project Demo & Code
-                                        </span>
-                                        <h4 className="text-sm sm:text-base font-bold text-slate-900 mt-1">Hackathon Prototype Online</h4>
-                                        <p className="text-xs text-slate-600 mt-0.5">Explore the live repository or product demonstration built by the team.</p>
-                                    </div>
+                                    <a 
+                                        href={article.project_url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center gap-2 px-4 py-2 bg-white hover:bg-amber-50/80 text-slate-700 hover:text-amber-700 text-xs font-semibold rounded-xl border border-slate-200 hover:border-amber-200 shadow-sm transition-all self-start sm:self-auto group/btn"
+                                    >
+                                        <Globe className="w-3.5 h-3.5 text-slate-400 group-hover/btn:text-amber-600 transition-colors" />
+                                        <span>Launch Demo</span>
+                                        <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover/btn:text-amber-600 transition-colors" />
+                                    </a>
                                 </div>
-                                <a 
-                                    href={article.project_url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-xl transition-colors self-start sm:self-auto shadow-sm"
-                                >
-                                    <Globe className="w-3.5 h-3.5" />
-                                    <span>Launch Demo</span>
-                                    <ExternalLink className="w-3.5 h-3.5" />
-                                </a>
                             </div>
                         )}
 
                         {/* Article Text */}
                         <div className="article-body">
-                            {renderMarkdownContent(article.content)}
+                            <MarkdownRenderer content={article.content} />
                         </div>
 
                         {/* Mobile Share & Like Bar */}

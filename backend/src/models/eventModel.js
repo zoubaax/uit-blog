@@ -6,7 +6,8 @@ const findAllVisible = async () => {
         SELECT 
             e.*, 
             a.id AS recap_article_id, 
-            a.title AS recap_article_title 
+            a.title AS recap_article_title,
+            a.slug AS recap_article_slug
         FROM events e 
         LEFT JOIN articles a ON a.event_id = e.id 
         WHERE e.is_hidden = false 
@@ -21,7 +22,8 @@ const findAll = async () => {
         SELECT 
             e.*, 
             a.id AS recap_article_id, 
-            a.title AS recap_article_title 
+            a.title AS recap_article_title,
+            a.slug AS recap_article_slug
         FROM events e 
         LEFT JOIN articles a ON a.event_id = e.id 
         ORDER BY e.date ASC
@@ -34,7 +36,8 @@ const findById = async (id) => {
         SELECT 
             e.*, 
             a.id AS recap_article_id, 
-            a.title AS recap_article_title 
+            a.title AS recap_article_title,
+            a.slug AS recap_article_slug
         FROM events e 
         LEFT JOIN articles a ON a.event_id = e.id 
         WHERE e.id = $1

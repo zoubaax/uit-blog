@@ -246,7 +246,7 @@ const AdminArticles = () => {
                       Published
                     </span>
                     <button
-                      onClick={() => navigate(`/articles/${article.id}`)}
+                      onClick={() => navigate(`/articles/${article.slug || article.id}`)}
                       className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 font-bold"
                     >
                       <Eye className="w-3.5 h-3.5" />

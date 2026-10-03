@@ -154,7 +154,7 @@ const Home = () => {
                             articles.map((article, i) => (
                                 <Link
                                     key={article.id}
-                                    to={`/articles/${article.id}`}
+                                    to={`/articles/${article.slug || article.id}`}
                                     className="group flex flex-col bg-white border border-slate-100 hover:border-slate-200 hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 transform hover:-translate-y-0.5 reveal-element overflow-hidden rounded-lg"
                                     style={{ transitionDelay: `${i * 100}ms` }}
                                 >

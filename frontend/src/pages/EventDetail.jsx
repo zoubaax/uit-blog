@@ -135,7 +135,7 @@ const EventDetail = () => {
                                             </p>
                                         </div>
                                         <Link
-                                            to={`/articles/${event.recap_article_id}`}
+                                            to={`/articles/${event.recap_article_slug || event.recap_article_id}`}
                                             className="inline-flex items-center justify-center gap-2 w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl transition-all shadow-md shadow-emerald-600/20 active:scale-95"
                                         >
                                             <span>Read Story & Photos</span>

@@ -67,9 +67,45 @@ const findAll = async ({ search = '', category = '', sort = 'newest', page = 1, 
     return { articles, total };
 };
 
-const findById = async (id) => {
-    const result = await db.query(
-        `SELECT 
+const slugify = (text = '') => {
+    return text
+        .toString()
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+        .substring(0, 200);
+};
+
+const generateUniqueSlug = async (title, currentArticleId = null) => {
+    let baseSlug = slugify(title) || 'article';
+    let slug = baseSlug;
+    let counter = 1;
+
+    while (true) {
+        let query = 'SELECT id FROM articles WHERE slug = $1';
+        let params = [slug];
+        if (currentArticleId) {
+            query += ' AND id != $2';
+            params.push(currentArticleId);
+        }
+        const res = await db.query(query, params);
+        if (res.rows.length === 0) {
+            return slug;
+        }
+        counter++;
+        slug = `${baseSlug}-${counter}`;
+    }
+};
+
+const findById = async (idOrSlug) => {
+    const isNumeric = /^\d+$/.test(String(idOrSlug).trim());
+    let query;
+    let params;
+
+    if (isNumeric) {
+        query = `SELECT 
             a.*, 
             u.username AS author_name, 
             e.title AS event_title, 
@@ -77,17 +113,39 @@ const findById = async (id) => {
          FROM articles a 
          LEFT JOIN users u ON a.author_id = u.id 
          LEFT JOIN events e ON a.event_id = e.id 
-         WHERE a.id = $1`,
-        [id]
-    );
+         WHERE a.id = $1 OR a.slug = $2`;
+        params = [parseInt(idOrSlug, 10), String(idOrSlug).trim()];
+    } else {
+        query = `SELECT 
+            a.*, 
+            u.username AS author_name, 
+            e.title AS event_title, 
+            e.date AS event_date 
+         FROM articles a 
+         LEFT JOIN users u ON a.author_id = u.id 
+         LEFT JOIN events e ON a.event_id = e.id 
+         WHERE a.slug = $1`;
+        params = [String(idOrSlug).trim()];
+    }
+
+    const result = await db.query(query, params);
     return result.rows[0];
 };
 
-const incrementViews = async (id) => {
-    const result = await db.query(
-        'UPDATE articles SET views = COALESCE(views, 0) + 1 WHERE id = $1 RETURNING views',
-        [id]
-    );
+const incrementViews = async (idOrSlug) => {
+    const isNumeric = /^\d+$/.test(String(idOrSlug).trim());
+    let query;
+    let params;
+
+    if (isNumeric) {
+        query = 'UPDATE articles SET views = COALESCE(views, 0) + 1 WHERE id = $1 OR slug = $2 RETURNING views';
+        params = [parseInt(idOrSlug, 10), String(idOrSlug).trim()];
+    } else {
+        query = 'UPDATE articles SET views = COALESCE(views, 0) + 1 WHERE slug = $1 RETURNING views';
+        params = [String(idOrSlug).trim()];
+    }
+
+    const result = await db.query(query, params);
     return result.rows[0];
 };
 
@@ -134,15 +192,17 @@ const getRelated = async (id, category, limit = 3) => {
 
 const create = async (title, content, imageUrl, authorId, category = 'General', eventId = null, projectUrl = null) => {
     const parsedEventId = eventId ? parseInt(eventId, 10) : null;
+    const slug = await generateUniqueSlug(title);
     const result = await db.query(
-        'INSERT INTO articles (title, content, image_url, author_id, category, event_id, project_url) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
-        [title, content, imageUrl, authorId, category || 'General', parsedEventId, projectUrl || null]
+        'INSERT INTO articles (title, content, image_url, author_id, category, event_id, project_url, slug) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
+        [title, content, imageUrl, authorId, category || 'General', parsedEventId, projectUrl || null, slug]
     );
     return result.rows[0];
 };
 
 const update = async (id, title, content, imageUrl, category, eventId, projectUrl) => {
     const parsedEventId = eventId !== undefined ? (eventId ? parseInt(eventId, 10) : null) : undefined;
+    const slug = await generateUniqueSlug(title, id);
     
     // Build query handling optional fields
     const result = await db.query(
@@ -153,9 +213,10 @@ const update = async (id, title, content, imageUrl, category, eventId, projectUr
              category = COALESCE($4, category),
              event_id = $5,
              project_url = $6,
+             slug = $7,
              updated_at = CURRENT_TIMESTAMP 
-         WHERE id = $7 RETURNING *`,
-        [title, content, imageUrl, category, parsedEventId ?? null, projectUrl ?? null, id]
+         WHERE id = $8 RETURNING *`,
+        [title, content, imageUrl, category, parsedEventId ?? null, projectUrl ?? null, slug, id]
     );
     return result.rows[0];
 };
