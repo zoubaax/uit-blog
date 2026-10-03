@@ -1,19 +1,44 @@
 const db = require('../config/db');
 
-// Public view: only visible events
+// Public view: only visible events, with any recap article attached
 const findAllVisible = async () => {
-    const result = await db.query('SELECT * FROM events WHERE is_hidden = false ORDER BY date ASC');
+    const result = await db.query(`
+        SELECT 
+            e.*, 
+            a.id AS recap_article_id, 
+            a.title AS recap_article_title 
+        FROM events e 
+        LEFT JOIN articles a ON a.event_id = e.id 
+        WHERE e.is_hidden = false 
+        ORDER BY e.date ASC
+    `);
     return result.rows;
 };
 
 // Admin view: all events including hidden ones
 const findAll = async () => {
-    const result = await db.query('SELECT * FROM events ORDER BY date ASC');
+    const result = await db.query(`
+        SELECT 
+            e.*, 
+            a.id AS recap_article_id, 
+            a.title AS recap_article_title 
+        FROM events e 
+        LEFT JOIN articles a ON a.event_id = e.id 
+        ORDER BY e.date ASC
+    `);
     return result.rows;
 };
 
 const findById = async (id) => {
-    const result = await db.query('SELECT * FROM events WHERE id = $1', [id]);
+    const result = await db.query(`
+        SELECT 
+            e.*, 
+            a.id AS recap_article_id, 
+            a.title AS recap_article_title 
+        FROM events e 
+        LEFT JOIN articles a ON a.event_id = e.id 
+        WHERE e.id = $1
+    `, [id]);
     return result.rows[0];
 };
 

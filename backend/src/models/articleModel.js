@@ -6,7 +6,7 @@ const findAll = async ({ search = '', category = '', sort = 'newest', page = 1, 
 
     if (search && search.trim() !== '') {
         values.push(`%${search.trim()}%`);
-        whereClauses.push(`(a.title ILIKE $${values.length} OR a.content ILIKE $${values.length} OR u.username ILIKE $${values.length})`);
+        whereClauses.push(`(a.title ILIKE $${values.length} OR a.content ILIKE $${values.length} OR u.username ILIKE $${values.length} OR e.title ILIKE $${values.length})`);
     }
 
     if (category && category.trim() !== '' && category.toLowerCase() !== 'all') {
@@ -44,9 +44,12 @@ const findAll = async ({ search = '', category = '', sort = 'newest', page = 1, 
         SELECT 
             a.*, 
             u.username AS author_name, 
+            e.title AS event_title, 
+            e.date AS event_date,
             COUNT(*) OVER()::int AS total_count 
         FROM articles a 
         LEFT JOIN users u ON a.author_id = u.id 
+        LEFT JOIN events e ON a.event_id = e.id 
         ${whereStr} 
         ${orderStr} 
         ${paginationStr}
@@ -66,7 +69,15 @@ const findAll = async ({ search = '', category = '', sort = 'newest', page = 1, 
 
 const findById = async (id) => {
     const result = await db.query(
-        'SELECT a.*, u.username as author_name FROM articles a LEFT JOIN users u ON a.author_id = u.id WHERE a.id = $1',
+        `SELECT 
+            a.*, 
+            u.username AS author_name, 
+            e.title AS event_title, 
+            e.date AS event_date 
+         FROM articles a 
+         LEFT JOIN users u ON a.author_id = u.id 
+         LEFT JOIN events e ON a.event_id = e.id 
+         WHERE a.id = $1`,
         [id]
     );
     return result.rows[0];
@@ -91,25 +102,25 @@ const getCategories = async () => {
 };
 
 const getRelated = async (id, category, limit = 3) => {
-    // First try to find articles with the same category excluding current
     let result = await db.query(
-        `SELECT a.*, u.username as author_name 
+        `SELECT a.*, u.username as author_name, e.title as event_title 
          FROM articles a 
          LEFT JOIN users u ON a.author_id = u.id 
+         LEFT JOIN events e ON a.event_id = e.id 
          WHERE a.id != $1 AND a.category = $2 
          ORDER BY a.created_at DESC 
          LIMIT $3`,
         [id, category || '', limit]
     );
 
-    // If not enough related by category, backfill with most recent articles
     if (result.rows.length < limit) {
         const remaining = limit - result.rows.length;
         const existingIds = [id, ...result.rows.map(r => r.id)];
         const backfill = await db.query(
-            `SELECT a.*, u.username as author_name 
+            `SELECT a.*, u.username as author_name, e.title as event_title 
              FROM articles a 
              LEFT JOIN users u ON a.author_id = u.id 
+             LEFT JOIN events e ON a.event_id = e.id 
              WHERE a.id != ALL($1::int[]) 
              ORDER BY a.created_at DESC 
              LIMIT $2`,
@@ -121,24 +132,30 @@ const getRelated = async (id, category, limit = 3) => {
     return result.rows;
 };
 
-const create = async (title, content, imageUrl, authorId, category = 'General') => {
+const create = async (title, content, imageUrl, authorId, category = 'General', eventId = null, projectUrl = null) => {
+    const parsedEventId = eventId ? parseInt(eventId, 10) : null;
     const result = await db.query(
-        'INSERT INTO articles (title, content, image_url, author_id, category) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-        [title, content, imageUrl, authorId, category || 'General']
+        'INSERT INTO articles (title, content, image_url, author_id, category, event_id, project_url) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+        [title, content, imageUrl, authorId, category || 'General', parsedEventId, projectUrl || null]
     );
     return result.rows[0];
 };
 
-const update = async (id, title, content, imageUrl, category) => {
+const update = async (id, title, content, imageUrl, category, eventId, projectUrl) => {
+    const parsedEventId = eventId !== undefined ? (eventId ? parseInt(eventId, 10) : null) : undefined;
+    
+    // Build query handling optional fields
     const result = await db.query(
         `UPDATE articles 
          SET title = $1, 
              content = $2, 
              image_url = COALESCE($3, image_url), 
              category = COALESCE($4, category),
+             event_id = $5,
+             project_url = $6,
              updated_at = CURRENT_TIMESTAMP 
-         WHERE id = $5 RETURNING *`,
-        [title, content, imageUrl, category, id]
+         WHERE id = $7 RETURNING *`,
+        [title, content, imageUrl, category, parsedEventId ?? null, projectUrl ?? null, id]
     );
     return result.rows[0];
 };

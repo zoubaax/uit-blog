@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, Link, Outlet, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, FileText, Calendar, Users, LogOut, ClipboardList } from 'lucide-react';
 import authService from '../services/authService';
 import logoDark from '../assets/dark.png';
@@ -25,10 +25,9 @@ const AdminLayout = () => {
         <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row">
             {/* Mobile Header */}
             <div className="md:hidden flex items-center justify-between px-4 h-16 bg-white border-b border-gray-200 z-30">
-                <div className="flex items-center gap-3">
-                    <img src={logoDark} alt="Logo" className="h-6 w-auto" />
-                    <span className="text-sm font-bold text-gray-900 uppercase tracking-wider">Admin</span>
-                </div>
+                <Link to="/dashboard" className="flex items-center">
+                    <img src={logoDark} alt="Logo" className="h-7 w-auto" />
+                </Link>
                 <button 
                     onClick={() => setSidebarOpen(!isSidebarOpen)}
                     className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg"
@@ -47,9 +46,10 @@ const AdminLayout = () => {
 
             {/* Sidebar */}
             <aside className={`bg-white border-r border-gray-200 fixed inset-y-0 left-0 z-50 w-64 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300 ease-in-out`}>
-                <div className="hidden md:flex h-16 items-center gap-3 px-6 border-b border-gray-100">
-                    <img src={logoDark} alt="Logo" className="h-6 w-auto" />
-                    <span className="text-lg font-bold text-gray-900">Admin</span>
+                <div className="hidden md:flex h-16 items-center px-6 border-b border-gray-100">
+                    <Link to="/dashboard" className="flex items-center">
+                        <img src={logoDark} alt="Logo" className="h-7 w-auto" />
+                    </Link>
                 </div>
 
                 <nav className="p-4 space-y-1">

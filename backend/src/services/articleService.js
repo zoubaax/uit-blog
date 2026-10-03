@@ -30,11 +30,19 @@ const getRelatedArticles = async (id) => {
 };
 
 const createArticle = async (data, authorId) => {
-    const { title, content, image_url, category } = data;
+    const { title, content, image_url, category, event_id, project_url } = data;
     if (!title || !content) {
         throw new AppError('Title and content are required', 400);
     }
-    return await articleModel.create(title, content, image_url || null, authorId, category || 'General');
+    return await articleModel.create(
+        title, 
+        content, 
+        image_url || null, 
+        authorId, 
+        category || 'General',
+        event_id || null,
+        project_url || null
+    );
 };
 
 const updateArticle = async (id, data) => {
@@ -47,8 +55,10 @@ const updateArticle = async (id, data) => {
     const content = data.content !== undefined ? data.content : existing.content;
     const image_url = data.image_url !== undefined ? data.image_url : existing.image_url;
     const category = data.category !== undefined ? data.category : existing.category;
+    const event_id = data.event_id !== undefined ? data.event_id : existing.event_id;
+    const project_url = data.project_url !== undefined ? data.project_url : existing.project_url;
 
-    return await articleModel.update(id, title, content, image_url, category);
+    return await articleModel.update(id, title, content, image_url, category, event_id, project_url);
 };
 
 const deleteArticle = async (id) => {

@@ -17,7 +17,11 @@ import {
     Sparkles, 
     BookOpen,
     Copy,
-    ChevronRight
+    ChevronRight,
+    Trophy,
+    Camera,
+    Globe,
+    ExternalLink
 } from 'lucide-react';
 import PageLoader from '../components/PageLoader';
 import ArticleCard from '../components/ArticleCard';
@@ -538,6 +542,65 @@ const ArticleDetail = () => {
 
                     {/* Center: Article Body */}
                     <div className="lg:col-span-9 max-w-3xl">
+                        {/* Linked Event Recap Banner */}
+                        {article.event_title && (
+                            <div className="mb-8 p-5 rounded-2xl bg-emerald-50/80 border border-emerald-200/90 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+                                <div className="flex items-center gap-3.5">
+                                    <div className="w-11 h-11 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center flex-shrink-0 shadow-sm">
+                                        <Camera className="w-5 h-5" />
+                                    </div>
+                                    <div>
+                                        <span className="text-[10px] font-extrabold uppercase tracking-widest text-emerald-800 bg-emerald-100/60 px-2 py-0.5 rounded">
+                                            Official Event Recap
+                                        </span>
+                                        <h4 className="text-sm sm:text-base font-bold text-slate-900 mt-1">{article.event_title}</h4>
+                                        {article.event_date && (
+                                            <p className="text-xs text-slate-500 mt-0.5">
+                                                Held on {new Date(article.event_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+                                {article.event_id && (
+                                    <Link 
+                                        to={`/events/${article.event_id}`}
+                                        className="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition-colors self-start sm:self-auto shadow-sm"
+                                    >
+                                        <span>View Event</span>
+                                        <ChevronRight className="w-3.5 h-3.5" />
+                                    </Link>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Hackathon Project Demo Link */}
+                        {article.project_url && (
+                            <div className="mb-8 p-5 rounded-2xl bg-amber-50/90 border border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+                                <div className="flex items-center gap-3.5">
+                                    <div className="w-11 h-11 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center flex-shrink-0 shadow-sm">
+                                        <Trophy className="w-5 h-5" />
+                                    </div>
+                                    <div>
+                                        <span className="text-[10px] font-extrabold uppercase tracking-widest text-amber-900 bg-amber-200/60 px-2 py-0.5 rounded">
+                                            Project Demo & Code
+                                        </span>
+                                        <h4 className="text-sm sm:text-base font-bold text-slate-900 mt-1">Hackathon Prototype Online</h4>
+                                        <p className="text-xs text-slate-600 mt-0.5">Explore the live repository or product demonstration built by the team.</p>
+                                    </div>
+                                </div>
+                                <a 
+                                    href={article.project_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-xl transition-colors self-start sm:self-auto shadow-sm"
+                                >
+                                    <Globe className="w-3.5 h-3.5" />
+                                    <span>Launch Demo</span>
+                                    <ExternalLink className="w-3.5 h-3.5" />
+                                </a>
+                            </div>
+                        )}
+
                         {/* Article Text */}
                         <div className="article-body">
                             {renderMarkdownContent(article.content)}

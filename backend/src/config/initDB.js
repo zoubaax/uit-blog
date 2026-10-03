@@ -53,6 +53,12 @@ const initDB = async () => {
         `);
         console.log('✓ Events table ready');
 
+        // Migration check for articles event link and project demo url
+        await pool.query(`
+            ALTER TABLE articles ADD COLUMN IF NOT EXISTS event_id INTEGER REFERENCES events(id) ON DELETE SET NULL;
+            ALTER TABLE articles ADD COLUMN IF NOT EXISTS project_url VARCHAR(255);
+        `);
+
         // 4. Create Team Members table
         await pool.query(`
             CREATE TABLE IF NOT EXISTS team_members (
