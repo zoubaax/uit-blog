@@ -1,6 +1,7 @@
 import { MapPin, ArrowRight, Camera, CheckCircle2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getOptimizedImageUrl } from '../utils/cloudinaryUtils';
+import { cleanMarkdownExcerpt } from '../utils/textUtils';
 
 const EventCard = ({ event, isPast }) => {
     const eventDate = new Date(event.date);
@@ -51,7 +52,7 @@ const EventCard = ({ event, isPast }) => {
                 </h4>
                 
                 <p className="text-[#475569] dark:text-slate-300 text-sm leading-relaxed max-w-xl mb-4 line-clamp-2">
-                    {event.description}
+                    {cleanMarkdownExcerpt(event.description, 160)}
                 </p>
 
                 <div className="flex items-center gap-2 text-[10px] font-bold text-[#94a3b8] dark:text-slate-400 uppercase tracking-widest mt-auto">

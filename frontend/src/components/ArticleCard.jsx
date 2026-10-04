@@ -1,21 +1,8 @@
 import { Calendar, ArrowRight, Clock, Eye, Trophy, Camera, Rocket, Globe } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getOptimizedImageUrl } from '../utils/cloudinaryUtils';
+import { cleanMarkdownExcerpt } from '../utils/textUtils';
 import logoDark from '../assets/dark.png';
-
-const cleanMarkdownExcerpt = (text = '', maxLength = 140) => {
-    if (!text) return '';
-    const plain = text
-        .replace(/#+\s+/g, '')
-        .replace(/\*\*(.*?)\*\*/g, '$1')
-        .replace(/\*(.*?)\*/g, '$1')
-        .replace(/`{1,3}[^`]*`{1,3}/g, '')
-        .replace(/\[(.*?)\]\(.*?\)/g, '$1')
-        .replace(/>\s+/g, '')
-        .replace(/\n+/g, ' ')
-        .trim();
-    return plain.length > maxLength ? plain.substring(0, maxLength).trim() + '...' : plain;
-};
 
 const getCategoryColor = (category = '') => {
     const lower = category.toLowerCase();

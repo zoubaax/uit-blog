@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import settingsService from '../services/settingsService';
-import { User, Mail, Book, MessageSquare, Send, CheckCircle, Loader2, AlertCircle, ChevronDown } from 'lucide-react';
+import { User, Mail, Phone, GraduationCap, Send, CheckCircle, Loader2, AlertCircle, ChevronDown, Lock } from 'lucide-react';
 
 const JoinForm = ({ onSuccess }) => {
     const [formData, setFormData] = useState({
@@ -56,30 +56,37 @@ const JoinForm = ({ onSuccess }) => {
 
     if (status === 'closed') {
         return (
-            <div className="text-center p-12 bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 italic rounded-xl">
-                <AlertCircle className="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-[#1e3a8a] dark:text-blue-300">Application Period Closed</h3>
-                <p className="text-[#475569] dark:text-slate-400 text-sm mt-2">The membership portal is currently offline. Please join our mailing list or check back next semester.</p>
+            <div className="text-center p-8 sm:p-12 bg-slate-50 dark:bg-slate-950/60 border border-slate-100 dark:border-slate-800 rounded-xl space-y-3">
+                <div className="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto text-slate-400 dark:text-slate-500">
+                    <AlertCircle className="w-6 h-6" />
+                </div>
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Application Period Closed</h3>
+                <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm max-w-sm mx-auto leading-relaxed">
+                    The membership portal is currently offline. Follow our announcements or check back for the next semester.
+                </p>
             </div>
         );
     }
 
     if (success) {
         return (
-            <div className="text-center p-12 bg-[#f0f9ff] dark:bg-blue-950/30 border border-[#bae6fd] dark:border-blue-900/50 rounded-xl animate-in fade-in zoom-in duration-500">
-                <div className="w-16 h-16 bg-[#1e3a8a] dark:bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="text-center p-6 sm:p-10 bg-blue-50/60 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900/50 rounded-2xl animate-in fade-in zoom-in-95 duration-400 space-y-4">
+                <div className="w-14 h-14 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto shadow-lg shadow-blue-600/30">
                     <CheckCircle className="w-8 h-8" />
                 </div>
-                <h3 className="text-2xl font-semibold text-[#1e3a8a] dark:text-blue-300 tracking-tight">Application Transmitted</h3>
-                <p className="text-[#475569] dark:text-slate-300 mt-3 max-w-sm mx-auto leading-relaxed">
-                    Your credentials and motivation have been securely received. Our administration team will review your profile shortly.
+                <h3 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Application Submitted!</h3>
+                <p className="text-slate-600 dark:text-slate-300 text-sm max-w-sm mx-auto leading-relaxed">
+                    Thank you for applying. We received your information and our team will get in touch with you shortly.
                 </p>
-                <div className="mt-8 pt-8 border-t border-[#bae6fd] dark:border-blue-900/60">
+                <div className="pt-4">
                     <button
-                        onClick={() => setSuccess(false)}
-                        className="text-[10px] font-bold text-[#1e3a8a] dark:text-blue-400 hover:underline uppercase tracking-[0.2em]"
+                        onClick={() => {
+                            setFormData({ full_name: '', email: '', phone: '', major: '', motivation: '' });
+                            setSuccess(false);
+                        }}
+                        className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
                     >
-                        Return to Start
+                        Submit another response
                     </button>
                 </div>
             </div>
@@ -87,34 +94,41 @@ const JoinForm = ({ onSuccess }) => {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                {/* Full Name */}
                 <div className="space-y-1.5 flex flex-col">
-                    <label className="text-[10px] font-bold text-[#94a3b8] dark:text-slate-400 uppercase tracking-[0.2em] px-1" htmlFor="full_name">
-                        Full Name
+                    <label className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200" htmlFor="full_name">
+                        Full Name <span className="text-blue-600 dark:text-blue-400">*</span>
                     </label>
                     <div className="relative group">
+                        <User className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none group-focus-within:text-blue-600 dark:group-focus-within:text-blue-400 transition-colors" />
                         <input
                             id="full_name"
                             type="text"
                             required
-                            className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:border-[#1e3a8a] dark:focus:border-blue-500 outline-none transition-all text-sm font-medium text-slate-800 dark:text-slate-100 placeholder:text-slate-300 dark:placeholder:text-slate-600 rounded-lg"
+                            autoComplete="name"
+                            className="w-full pl-10 pr-4 py-3 bg-slate-50/70 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-950 focus:border-blue-600 dark:focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all text-sm font-medium text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg"
                             placeholder="e.g. Alan Turing"
                             value={formData.full_name}
                             onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
                         />
                     </div>
                 </div>
+
+                {/* Email Address */}
                 <div className="space-y-1.5 flex flex-col">
-                    <label className="text-[10px] font-bold text-[#94a3b8] dark:text-slate-400 uppercase tracking-[0.2em] px-1" htmlFor="email">
-                        Email Address
+                    <label className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200" htmlFor="email">
+                        Email Address <span className="text-blue-600 dark:text-blue-400">*</span>
                     </label>
                     <div className="relative group">
+                        <Mail className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none group-focus-within:text-blue-600 dark:group-focus-within:text-blue-400 transition-colors" />
                         <input
                             id="email"
                             type="email"
                             required
-                            className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:border-[#1e3a8a] dark:focus:border-blue-500 outline-none transition-all text-sm font-medium text-slate-800 dark:text-slate-100 placeholder:text-slate-300 dark:placeholder:text-slate-600 rounded-lg"
+                            autoComplete="email"
+                            className="w-full pl-10 pr-4 py-3 bg-slate-50/70 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-950 focus:border-blue-600 dark:focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all text-sm font-medium text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg"
                             placeholder="name@university.edu"
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -123,59 +137,70 @@ const JoinForm = ({ onSuccess }) => {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                {/* Phone Number */}
                 <div className="space-y-1.5 flex flex-col">
-                    <label className="text-[10px] font-bold text-[#94a3b8] dark:text-slate-400 uppercase tracking-[0.2em] px-1" htmlFor="phone">
-                        Phone Number
+                    <label className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200" htmlFor="phone">
+                        Phone / WhatsApp <span className="text-blue-600 dark:text-blue-400">*</span>
                     </label>
                     <div className="relative group">
+                        <Phone className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none group-focus-within:text-blue-600 dark:group-focus-within:text-blue-400 transition-colors" />
                         <input
                             id="phone"
                             type="tel"
                             required
-                            className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:border-[#1e3a8a] dark:focus:border-blue-500 outline-none transition-all text-sm font-medium text-slate-800 dark:text-slate-100 placeholder:text-slate-300 dark:placeholder:text-slate-600 rounded-lg"
-                            placeholder="e.g. +212 600-000000"
+                            autoComplete="tel"
+                            className="w-full pl-10 pr-4 py-3 bg-slate-50/70 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-950 focus:border-blue-600 dark:focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all text-sm font-medium text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg"
+                            placeholder="+212 600-000000"
                             value={formData.phone}
                             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                         />
                     </div>
                 </div>
 
+                {/* Faculty / Major Level */}
                 <div className="space-y-1.5 flex flex-col">
-                    <label className="text-[10px] font-bold text-[#94a3b8] dark:text-slate-400 uppercase tracking-[0.2em] px-1" htmlFor="major">
-                        Faculty / Major
+                    <label className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200" htmlFor="major">
+                        Academic Level <span className="text-blue-600 dark:text-blue-400">*</span>
                     </label>
                     <div className="relative group">
+                        <GraduationCap className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none group-focus-within:text-blue-600 dark:group-focus-within:text-blue-400 transition-colors" />
                         <select
                             id="major"
                             required
-                            className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:border-[#1e3a8a] dark:focus:border-blue-500 outline-none transition-all text-sm font-medium text-slate-800 dark:text-slate-100 cursor-pointer appearance-none pr-10 rounded-lg"
+                            className={`w-full pl-10 pr-10 py-3 bg-slate-50/70 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-950 focus:border-blue-600 dark:focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all text-sm font-medium cursor-pointer appearance-none rounded-lg ${
+                                formData.major ? 'text-slate-900 dark:text-slate-100' : 'text-slate-400 dark:text-slate-500'
+                            }`}
                             value={formData.major}
                             onChange={(e) => setFormData({ ...formData, major: e.target.value })}
                         >
-                            <option value="" disabled className="dark:bg-slate-900 text-slate-400">Select your academic year / level</option>
-                            <option value="1ère Année Ingénieur" className="dark:bg-slate-900 text-slate-800 dark:text-slate-100">1ère Année Ingénieur</option>
-                            <option value="2ème Année Ingénieur" className="dark:bg-slate-900 text-slate-800 dark:text-slate-100">2ème Année Ingénieur</option>
-                            <option value="3ème Année Ingénieur" className="dark:bg-slate-900 text-slate-800 dark:text-slate-100">3ème Année Ingénieur</option>
-                            <option value="4ème Année Ingénieur" className="dark:bg-slate-900 text-slate-800 dark:text-slate-100">4ème Année Ingénieur</option>
-                            <option value="Autre / Other" className="dark:bg-slate-900 text-slate-800 dark:text-slate-100">Autre / Other</option>
+                            <option value="" disabled className="bg-white dark:bg-slate-900 text-slate-400">Select Academic Level</option>
+                            <option value="1ère Année Ingénieur" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">1ère Année Ingénieur</option>
+                            <option value="2ème Année Ingénieur" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">2ème Année Ingénieur</option>
+                            <option value="3ème Année Ingénieur" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">3ème Année Ingénieur</option>
+                            <option value="4ème Année Ingénieur" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">4ème Année Ingénieur</option>
+                            <option value="Autre / Other" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">Autre / Other</option>
                         </select>
-                        <ChevronDown className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none group-hover:text-[#1e3a8a] dark:group-hover:text-blue-400 transition-colors" />
+                        <ChevronDown className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
                     </div>
                 </div>
             </div>
 
+            {/* Motivation Statement */}
             <div className="space-y-1.5 flex flex-col">
-                <label className="text-[10px] font-bold text-[#94a3b8] dark:text-slate-400 uppercase tracking-[0.2em] px-1" htmlFor="motivation">
-                    Statement of Motivation
-                </label>
+                <div className="flex items-center justify-between">
+                    <label className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200" htmlFor="motivation">
+                        Statement of Motivation <span className="text-blue-600 dark:text-blue-400">*</span>
+                    </label>
+                    <span className="text-[11px] text-slate-400 dark:text-slate-500 hidden sm:inline">Brief is great (2-4 sentences)</span>
+                </div>
                 <div className="relative group">
                     <textarea
                         id="motivation"
                         required
-                        rows="4"
-                        className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:border-[#1e3a8a] dark:focus:border-blue-500 outline-none transition-all text-sm font-medium text-slate-800 dark:text-slate-100 placeholder:text-slate-300 dark:placeholder:text-slate-600 resize-none rounded-lg"
-                        placeholder="Describe your technical background and why you wish to contribute to the collective..."
+                        rows="3"
+                        className="w-full p-3.5 bg-slate-50/70 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-950 focus:border-blue-600 dark:focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all text-sm font-medium text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 resize-none rounded-lg"
+                        placeholder="Tell us what you're passionate about, your tech stack, or why you want to join UIT Club..."
                         value={formData.motivation}
                         onChange={(e) => setFormData({ ...formData, motivation: e.target.value })}
                     ></textarea>
@@ -183,27 +208,33 @@ const JoinForm = ({ onSuccess }) => {
             </div>
 
             {error && (
-                <div className="flex items-center gap-3 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/40 p-4 border border-red-100 dark:border-red-900/50 text-[11px] font-bold uppercase tracking-wider rounded-lg">
-                    <AlertCircle className="w-4 h-4 flex-shrink-0" /> {error}
+                <div className="flex items-center gap-2.5 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/40 p-3.5 border border-red-100 dark:border-red-900/50 text-xs font-medium rounded-lg">
+                    <AlertCircle className="w-4 h-4 flex-shrink-0" /> 
+                    <span>{error}</span>
                 </div>
             )}
 
-            <div className="pt-4">
+            <div className="pt-2">
                 <button
                     type="submit"
                     disabled={submitting}
-                    className="w-full py-4 bg-[#1e3a8a] hover:bg-[#1e1e6b] dark:bg-blue-600 dark:hover:bg-blue-500 text-white text-[11px] font-bold uppercase tracking-[0.3em] transition-all active:scale-[0.99] disabled:opacity-70 flex items-center justify-center gap-3 group rounded-lg shadow-sm"
+                    className="w-full py-3.5 bg-blue-600 hover:bg-blue-700 active:scale-[0.99] text-white font-semibold text-sm rounded shadow-sm hover:shadow-md transition-all disabled:opacity-70 flex items-center justify-center gap-2 cursor-pointer group"
                 >
                     {submitting ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <>
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            <span>Submitting Application...</span>
+                        </>
                     ) : (
                         <>
-                            Submit Application <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                            <span>Submit Application</span>
+                            <Send className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                         </>
                     )}
                 </button>
-                <p className="mt-6 text-[10px] text-center text-[#94a3b8] dark:text-slate-500 leading-relaxed italic">
-                    By submitting, you agree to comply with the club's code of conduct<br /> and university data privacy regulations.
+                <p className="mt-4 text-xs text-center text-slate-500 dark:text-slate-400 leading-relaxed max-w-xs sm:max-w-sm mx-auto">
+                    <Lock className="w-3.5 h-3.5 inline-block mr-1.5 align-text-bottom text-slate-400 dark:text-slate-500" />
+                    Your information is strictly used for UIT Club recruitment purposes.
                 </p>
             </div>
         </form>

@@ -5,6 +5,7 @@ import eventService from '../services/eventService';
 import teamService from '../services/teamService';
 import PageLoader from '../components/PageLoader';
 import { getOptimizedImageUrl } from '../utils/cloudinaryUtils';
+import { cleanMarkdownExcerpt } from '../utils/textUtils';
 import bannerImage from '../assets/banner.png';
 
 /**
@@ -88,7 +89,7 @@ const Home = () => {
     return (
         <div className="min-h-screen bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors duration-200">
             {/* 2. HERO */}
-            <header className="relative min-h-[90vh] md:min-h-screen flex items-center justify-center text-center px-8 sm:px-6 overflow-hidden">
+            <header className="relative h-screen h-[100dvh] min-h-[560px] flex items-center justify-center text-center px-4 sm:px-6 overflow-hidden">
                 {/* Background Image */}
                 <div className="absolute inset-0 z-0 overflow-hidden">
                     <img
@@ -96,19 +97,19 @@ const Home = () => {
                         alt="UPF Campus"
                         className="w-full h-full object-cover animate-float"
                     />
-                    {/* Enhanced glass overlay for legibility */}
-                    <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-white dark:from-black/60 dark:via-black/70 dark:to-slate-950 backdrop-blur-[2px]"></div>
+                    {/* Shadow gradient fade (dégradé) */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/45 to-white dark:from-black/60 dark:via-black/70 dark:to-slate-950 backdrop-blur-[2px]"></div>
                 </div>
 
                 {/* Content */}
-                <div className="relative z-10 w-full max-w-7xl mx-auto pt-20">
-                    <h1 className="text-3xl sm:text-5xl md:text-7xl font-semibold text-white leading-[1.1] mb-4 md:mb-6 max-w-4xl mx-auto drop-shadow-lg reveal-element delay-100">
+                <div className="relative z-10 w-full max-w-7xl mx-auto pt-14 sm:pt-20 px-4 flex flex-col items-center justify-center">
+                    <h1 className="text-3xl sm:text-5xl md:text-7xl font-semibold text-white leading-[1.12] mb-3 sm:mb-6 max-w-4xl mx-auto drop-shadow-lg reveal-element delay-100">
                         Built by students.<br /> Driven by knowledge.
                     </h1>
-                    <p className="text-base sm:text-lg md:text-xl text-white/90 max-w-2xl mx-auto mb-6 md:mb-10 leading-relaxed drop-shadow reveal-element delay-200">
+                    <p className="text-sm sm:text-lg md:text-xl text-white/90 max-w-2xl mx-auto mb-6 md:mb-10 leading-relaxed drop-shadow reveal-element delay-200">
                         A technical collective dedicated to fostering engineering excellence and research collaboration across the university campus.
                     </p>
-                    <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mb-12 md:mb-16 w-full sm:w-auto px-4 sm:px-0 reveal-element delay-300">
+                    <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mb-4 sm:mb-6 w-full sm:w-auto px-4 sm:px-0 reveal-element delay-300">
                         <Link
                             to="/articles"
                             className="px-6 py-3 sm:px-8 sm:py-3 bg-white dark:bg-blue-600 text-[#1e3a8a] dark:text-white font-medium rounded hover:bg-slate-50 dark:hover:bg-blue-500 transition-all active:scale-95 shadow-sm text-center"
@@ -196,7 +197,7 @@ const Home = () => {
                                             {article.title}
                                         </h3>
                                         <p className="text-sm text-[#475569] dark:text-slate-300 mb-4 line-clamp-2 leading-relaxed flex-1">
-                                            {article.content?.substring(0, 120)}...
+                                            {cleanMarkdownExcerpt(article.content, 120)}
                                         </p>
                                         <div className="mt-auto flex items-center justify-between text-[11px] text-[#94a3b8] dark:text-slate-400 uppercase font-semibold tracking-wide pt-4 border-t border-slate-50 dark:border-slate-800/60">
                                             <span>{new Date(article.created_at).toLocaleDateString()}</span>
@@ -265,7 +266,7 @@ const Home = () => {
                                     <div className="flex flex-col justify-center">
                                         <h4 className="text-xl font-semibold text-[#1e3a8a] dark:text-slate-100 mb-2 group-hover:text-[#2563eb] dark:group-hover:text-blue-400 transition-colors">{event.title}</h4>
                                         <p className="text-[#475569] dark:text-slate-300 text-sm leading-relaxed max-w-xl">
-                                            {event.description?.substring(0, 120)}...
+                                            {cleanMarkdownExcerpt(event.description, 120)}
                                         </p>
                                         <span className="inline-block mt-3 text-[#2563eb] dark:text-blue-400 text-xs font-semibold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity">
                                             View Details →

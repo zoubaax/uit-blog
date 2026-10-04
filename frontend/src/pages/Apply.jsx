@@ -2,23 +2,23 @@ import JoinForm from '../components/JoinForm';
 
 const Apply = () => {
   return (
-    <div className="bg-white dark:bg-slate-950 min-h-screen transition-colors duration-200">
+    <div className="bg-slate-50/60 dark:bg-slate-950 min-h-screen transition-colors duration-200">
       {/* Header Section */}
-      <header className="pt-24 md:pt-32 pb-8 md:pb-12 px-4 sm:px-6 max-w-7xl mx-auto border-b border-slate-100 dark:border-slate-800 mb-8 md:mb-12 text-center">
-        <div className="reveal-element">
-          <span className="inline-block px-3 py-1 bg-[#dbeafe] dark:bg-blue-950/60 text-[#2563eb] dark:text-blue-400 text-[10px] uppercase font-bold tracking-widest rounded border border-transparent dark:border-blue-800/40 mb-6">
-            Membership
-          </span>
-          <h1 className="text-4xl md:text-6xl font-semibold text-[#1e3a8a] dark:text-white leading-tight">
+      <header className="pt-20 sm:pt-24 md:pt-28 pb-4 sm:pb-6 px-4 max-w-4xl mx-auto text-center">
+        <div className="reveal-element space-y-2">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-slate-900 dark:text-white tracking-tight">
             Join UIT Club
           </h1>
+          <p className="text-xs sm:text-sm md:text-base text-slate-500 dark:text-slate-400 max-w-md mx-auto leading-relaxed">
+            Be part of our university engineering & research collective. Complete this quick form to get started.
+          </p>
         </div>
       </header>
 
       {/* Form Section */}
-      <main className="max-w-3xl mx-auto px-6 pb-24">
+      <main className="max-w-2xl mx-auto px-3.5 sm:px-6 pb-20">
         <div className="reveal-element">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl shadow-slate-200/50 dark:shadow-black/40 border border-slate-100 dark:border-slate-800 p-8 md:p-12">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl shadow-slate-200/50 dark:shadow-black/50 border border-slate-200/80 dark:border-slate-800 p-4 sm:p-7 md:p-10 transition-all">
             <JoinForm />
           </div>
         </div>

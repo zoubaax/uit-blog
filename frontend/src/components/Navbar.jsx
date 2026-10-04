@@ -45,7 +45,7 @@ const Navbar = () => {
                     />
                 </Link>
 
-                <div className="flex items-center gap-3 md:gap-6">
+                <div className="flex items-center gap-2 sm:gap-3 md:gap-6">
                     <div className="hidden md:flex items-center gap-6">
                         <Link 
                             to="/articles" 
@@ -106,20 +106,22 @@ const Navbar = () => {
                         </Link>
                     </div>
 
-                    {/* Theme Toggle (Desktop) */}
-                    <ThemeToggle transparentOnTop={isTransparent} className="hidden sm:flex" />
+                    {/* Theme Toggle (Mobile & Desktop) */}
+                    <ThemeToggle transparentOnTop={isTransparent} className="flex" />
 
-                    <Link 
-                        to="/register"
-                        className={`px-3 py-2 md:px-4 md:py-2 text-xs font-semibold rounded transition-all active:scale-95 inline-flex items-center justify-center shadow-xs ${
-                            !isTransparent
-                                ? 'bg-blue-600 hover:bg-blue-700 text-white hover:shadow-md dark:bg-blue-600 dark:hover:bg-blue-500'
-                                : 'bg-white text-[#1e3a8a] hover:bg-white/90'
-                        }`}
-                    >
-                        <span className="hidden sm:inline">Join Club</span>
-                        <span className="sm:hidden">Join</span>
-                    </Link>
+                    {!location.pathname.startsWith('/register') && !location.pathname.startsWith('/apply') && !location.pathname.startsWith('/regester') && (
+                        <Link 
+                            to="/register"
+                            className={`px-3 py-2 md:px-4 md:py-2 text-xs font-semibold rounded transition-all active:scale-95 inline-flex items-center justify-center shadow-xs ${
+                                !isTransparent
+                                    ? 'bg-blue-600 hover:bg-blue-700 text-white hover:shadow-md dark:bg-blue-600 dark:hover:bg-blue-500'
+                                    : 'bg-white text-[#1e3a8a] hover:bg-white/90'
+                            }`}
+                        >
+                            <span className="hidden sm:inline">Join Club</span>
+                            <span className="sm:hidden">Join</span>
+                        </Link>
+                    )}
 
                     <JoinModal isOpen={showJoinModal} onClose={() => setShowJoinModal(false)} />
 
