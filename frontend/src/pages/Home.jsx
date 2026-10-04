@@ -7,6 +7,7 @@ import PageLoader from '../components/PageLoader';
 import { getOptimizedImageUrl } from '../utils/cloudinaryUtils';
 import { cleanMarkdownExcerpt } from '../utils/textUtils';
 import bannerImage from '../assets/banner.png';
+import FAQSection from '../components/FAQSection';
 
 /**
  * UIT CLUB HOMEPAGE
@@ -289,7 +290,10 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* 6. JOIN THE CLUB CTA */}
+            {/* 6. FREQUENTLY ASKED QUESTIONS */}
+            <FAQSection />
+
+            {/* 7. JOIN THE CLUB CTA */}
             <section className="bg-[#1e3a8a] dark:bg-slate-900 py-32 px-6 text-center border-t border-transparent dark:border-slate-800 transition-colors">
                 <div className="max-w-4xl mx-auto reveal-element">
                     <h2 className="text-3xl md:text-5xl font-semibold text-white mb-6">
@@ -299,7 +303,7 @@ const Home = () => {
                         We are always looking for driven individuals to join our ranks and contribute to the next generation of campus technology.
                     </p>
                     <Link
-                        to="/apply"
+                        to="/register"
                         className="inline-block px-10 py-4 bg-white dark:bg-blue-600 text-[#1e3a8a] dark:text-white font-semibold rounded hover:bg-slate-50 dark:hover:bg-blue-500 transition-all active:scale-95 shadow-lg shadow-blue-950/20"
                     >
                         Apply for Membership
