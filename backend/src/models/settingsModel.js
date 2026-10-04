@@ -14,11 +14,12 @@ const updateSetting = async (key, value) => {
 };
 
 const createApplication = async (data) => {
-    const { full_name, email, major, motivation } = data;
+    const { full_name, email, major, niveau } = data;
     const phone = data.phone || data.number || null;
+    const motivation = data.motivation || null;
     const result = await db.query(
-        'INSERT INTO club_applications (full_name, email, major, motivation, phone) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-        [full_name, email, major, motivation, phone]
+        'INSERT INTO club_applications (full_name, email, major, motivation, phone, niveau) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+        [full_name, email, major, motivation, phone, niveau || null]
     );
     return result.rows[0];
 };

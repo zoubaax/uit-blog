@@ -14,7 +14,6 @@ import {
     AlertCircle,
     CheckCircle,
     ClipboardList,
-    MessageSquare,
     Eye,
     X,
     Loader2
@@ -124,7 +123,7 @@ const Applications = () => {
             app.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             app.phone?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             app.major?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            app.motivation?.toLowerCase().includes(searchTerm.toLowerCase());
+            app.niveau?.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesMajor = selectedMajor === 'all' || app.major === selectedMajor;
         return matchesSearch && matchesMajor;
     });
@@ -168,7 +167,7 @@ const Applications = () => {
 
                     {/* Export CSV */}
                     <button
-                        onClick={() => exportToCSV(filteredApplications, 'club_applications', ['Full Name', 'Email', 'Phone', 'Major', 'Motivation', 'Created At'])}
+                        onClick={() => exportToCSV(filteredApplications, 'club_applications', ['Full Name', 'Email', 'Phone', 'Major', 'Niveau', 'Created At'])}
                         className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 text-gray-700 dark:text-slate-200 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors font-semibold text-xs shadow-sm"
                     >
                         <Download className="w-4 h-4 text-gray-500 dark:text-slate-400" />
@@ -205,7 +204,7 @@ const Applications = () => {
                         <GraduationCap className="w-6 h-6" />
                     </div>
                     <div>
-                        <p className="text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">Academic Levels</p>
+                        <p className="text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">Filières</p>
                         <p className="text-2xl font-bold text-gray-900 dark:text-white mt-0.5">
                             {majors.filter(m => m !== 'all').length || 0}
                         </p>
@@ -235,7 +234,7 @@ const Applications = () => {
                         <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-slate-500" />
                         <input
                             type="text"
-                            placeholder="Search by candidate name, email, phone, or motivation..."
+                            placeholder="Search by candidate name, email, phone, or filière..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-950 rounded-xl border border-gray-200 dark:border-slate-800 text-sm text-gray-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white dark:focus:bg-slate-900 transition-all placeholder:text-gray-400 dark:placeholder:text-slate-600"
@@ -250,7 +249,7 @@ const Applications = () => {
                             onChange={(e) => setSelectedMajor(e.target.value)}
                             className="w-full px-3 py-2.5 bg-gray-50 dark:bg-slate-950 rounded-xl border border-gray-200 dark:border-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white dark:focus:bg-slate-900 transition-all cursor-pointer font-medium text-gray-700 dark:text-slate-200"
                         >
-                            <option value="all">All Departments / Years</option>
+                            <option value="all">Toutes les filières</option>
                             {majors.filter(m => m !== 'all').map((major, index) => (
                                 <option key={index} value={major}>
                                     {major}
@@ -287,8 +286,8 @@ const Applications = () => {
                                     <th className="px-6 py-4 w-12 text-center">#</th>
                                     <th className="px-6 py-4">Candidate</th>
                                     <th className="px-6 py-4">Contact Details</th>
-                                    <th className="px-6 py-4">Faculty / Major</th>
-                                    <th className="px-6 py-4">Motivation</th>
+                                    <th className="px-6 py-4">Filière</th>
+                                    <th className="px-6 py-4">Niveau</th>
                                     <th className="px-6 py-4">Date Applied</th>
                                     <th className="px-6 py-4 text-right">Actions</th>
                                 </tr>
@@ -358,25 +357,19 @@ const Applications = () => {
                                                 )}
                                             </td>
 
-                                            {/* Faculty / Major */}
+                                            {/* Filière */}
                                             <td className="px-6 py-4">
                                                 <span className="inline-flex items-center px-2.5 py-1 bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 text-xs font-semibold rounded-lg border border-blue-100 dark:border-blue-900/60">
                                                     <GraduationCap className="w-3 h-3 mr-1" />
-                                                    {app.major || 'Engineering'}
+                                                    {app.major || '—'}
                                                 </span>
                                             </td>
 
-                                            {/* Motivation Snippet */}
-                                            <td className="px-6 py-4 max-w-xs">
-                                                <div 
-                                                    className="flex items-center gap-2 text-xs text-gray-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer"
-                                                    title="Click to read full statement"
-                                                >
-                                                    <MessageSquare className="w-3.5 h-3.5 text-gray-400 dark:text-slate-500 flex-shrink-0" />
-                                                    <p className="truncate italic">
-                                                        "{app.motivation || 'No motivation provided.'}"
-                                                    </p>
-                                                </div>
+                                            {/* Niveau */}
+                                            <td className="px-6 py-4">
+                                                <span className="text-xs font-semibold text-gray-700 dark:text-slate-200">
+                                                    {app.niveau || '—'}
+                                                </span>
                                             </td>
 
                                             {/* Applied Date */}
@@ -440,7 +433,7 @@ const Applications = () => {
                                     <h3 className="text-lg font-bold text-gray-900 dark:text-white">{selectedApp.full_name}</h3>
                                     <span className="inline-flex items-center text-xs font-semibold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/50 px-2.5 py-0.5 rounded border border-blue-100 dark:border-blue-900/60 mt-0.5">
                                         <GraduationCap className="w-3 h-3 mr-1" />
-                                        {selectedApp.major || 'Engineering'}
+                                        {[selectedApp.major, selectedApp.niveau].filter(Boolean).join(' · ') || '—'}
                                     </span>
                                 </div>
                             </div>
@@ -490,14 +483,14 @@ const Applications = () => {
                             </div>
                         </div>
 
-                        {/* Full Motivation Statement */}
-                        <div>
-                            <p className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                                <MessageSquare className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                                Statement of Motivation
-                            </p>
-                            <div className="bg-slate-50 dark:bg-slate-950 rounded-xl p-4 border border-slate-100 dark:border-slate-800 text-sm text-gray-800 dark:text-slate-200 leading-relaxed max-h-60 overflow-y-auto whitespace-pre-wrap font-sans">
-                                {selectedApp.motivation || 'No motivation statement provided.'}
+                        <div className="grid grid-cols-2 gap-3 text-xs">
+                            <div className="bg-gray-50 dark:bg-slate-950 rounded-xl p-3.5 border border-gray-100 dark:border-slate-800">
+                                <p className="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-0.5">Filière</p>
+                                <p className="font-semibold text-gray-800 dark:text-slate-100">{selectedApp.major || '—'}</p>
+                            </div>
+                            <div className="bg-gray-50 dark:bg-slate-950 rounded-xl p-3.5 border border-gray-100 dark:border-slate-800">
+                                <p className="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-0.5">Niveau</p>
+                                <p className="font-semibold text-gray-800 dark:text-slate-100">{selectedApp.niveau || '—'}</p>
                             </div>
                         </div>
 

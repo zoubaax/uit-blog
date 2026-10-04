@@ -22,6 +22,10 @@ router.post('/apply', async (req, res, next) => {
         if (enabled !== true && enabled !== 'true') {
             throw new AppError('The join form is currently closed.', 400);
         }
+        const { full_name, email, major, niveau } = req.body;
+        if (!full_name || !email || !major || !niveau) {
+            throw new AppError('Full name, email, filière, and niveau are required.', 400);
+        }
         const app = await settingsModel.createApplication(req.body);
         res.status(201).json({ success: true, data: app });
     } catch (error) {

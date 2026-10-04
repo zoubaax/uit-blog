@@ -1,15 +1,23 @@
 import { useState, useEffect } from 'react';
 import settingsService from '../services/settingsService';
+import { UPF_FILIERES, NIVEAUX } from '../data/upfFilieres';
 import { User, Mail, Phone, GraduationCap, Send, CheckCircle, Loader2, AlertCircle, ChevronDown, Lock } from 'lucide-react';
 
+const emptyForm = {
+    full_name: '',
+    email: '',
+    phone: '',
+    major: '',
+    niveau: '',
+};
+
+const selectClass = (filled) =>
+    `w-full pl-10 pr-10 py-3 bg-slate-50/70 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-950 focus:border-blue-600 dark:focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all text-sm font-medium cursor-pointer appearance-none rounded-lg ${
+        filled ? 'text-slate-900 dark:text-slate-100' : 'text-slate-400 dark:text-slate-500'
+    }`;
+
 const JoinForm = ({ onSuccess }) => {
-    const [formData, setFormData] = useState({
-        full_name: '',
-        email: '',
-        phone: '',
-        major: '',
-        motivation: ''
-    });
+    const [formData, setFormData] = useState(emptyForm);
     const [status, setStatus] = useState('loading'); // loading, open, closed
     const [submitting, setSubmitting] = useState(false);
     const [success, setSuccess] = useState(false);
@@ -40,7 +48,8 @@ const JoinForm = ({ onSuccess }) => {
                 setTimeout(() => onSuccess(), 2000);
             }
         } catch (err) {
-            setError(err.response?.data?.message || 'Failed to submit application');
+            const message = typeof err === 'string' ? err : err?.response?.data?.message;
+            setError(message || 'Failed to submit application');
         } finally {
             setSubmitting(false);
         }
@@ -81,7 +90,7 @@ const JoinForm = ({ onSuccess }) => {
                 <div className="pt-4">
                     <button
                         onClick={() => {
-                            setFormData({ full_name: '', email: '', phone: '', major: '', motivation: '' });
+                            setFormData(emptyForm);
                             setSuccess(false);
                         }}
                         className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
@@ -158,52 +167,58 @@ const JoinForm = ({ onSuccess }) => {
                     </div>
                 </div>
 
-                {/* Faculty / Major Level */}
+                {/* Niveau */}
                 <div className="space-y-1.5 flex flex-col">
-                    <label className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200" htmlFor="major">
-                        Academic Level <span className="text-blue-600 dark:text-blue-400">*</span>
+                    <label className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200" htmlFor="niveau">
+                        Niveau <span className="text-blue-600 dark:text-blue-400">*</span>
                     </label>
                     <div className="relative group">
                         <GraduationCap className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none group-focus-within:text-blue-600 dark:group-focus-within:text-blue-400 transition-colors" />
                         <select
-                            id="major"
+                            id="niveau"
                             required
-                            className={`w-full pl-10 pr-10 py-3 bg-slate-50/70 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-950 focus:border-blue-600 dark:focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all text-sm font-medium cursor-pointer appearance-none rounded-lg ${
-                                formData.major ? 'text-slate-900 dark:text-slate-100' : 'text-slate-400 dark:text-slate-500'
-                            }`}
-                            value={formData.major}
-                            onChange={(e) => setFormData({ ...formData, major: e.target.value })}
+                            className={selectClass(formData.niveau)}
+                            value={formData.niveau}
+                            onChange={(e) => setFormData({ ...formData, niveau: e.target.value })}
                         >
-                            <option value="" disabled className="bg-white dark:bg-slate-900 text-slate-400">Select Academic Level</option>
-                            <option value="1ère Année Ingénieur" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">1ère Année Ingénieur</option>
-                            <option value="2ème Année Ingénieur" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">2ème Année Ingénieur</option>
-                            <option value="3ème Année Ingénieur" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">3ème Année Ingénieur</option>
-                            <option value="4ème Année Ingénieur" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">4ème Année Ingénieur</option>
-                            <option value="Autre / Other" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">Autre / Other</option>
+                            <option value="" disabled className="bg-white dark:bg-slate-900 text-slate-400">Sélectionner le niveau</option>
+                            {NIVEAUX.map((niveau) => (
+                                <option key={niveau} value={niveau} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
+                                    {niveau}
+                                </option>
+                            ))}
                         </select>
                         <ChevronDown className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
                     </div>
                 </div>
             </div>
 
-            {/* Motivation Statement */}
+            {/* Filière */}
             <div className="space-y-1.5 flex flex-col">
-                <div className="flex items-center justify-between">
-                    <label className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200" htmlFor="motivation">
-                        Statement of Motivation <span className="text-blue-600 dark:text-blue-400">*</span>
-                    </label>
-                    <span className="text-[11px] text-slate-400 dark:text-slate-500 hidden sm:inline">Brief is great (2-4 sentences)</span>
-                </div>
+                <label className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200" htmlFor="major">
+                    Filière <span className="text-blue-600 dark:text-blue-400">*</span>
+                </label>
                 <div className="relative group">
-                    <textarea
-                        id="motivation"
+                    <GraduationCap className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none group-focus-within:text-blue-600 dark:group-focus-within:text-blue-400 transition-colors" />
+                    <select
+                        id="major"
                         required
-                        rows="3"
-                        className="w-full p-3.5 bg-slate-50/70 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-950 focus:border-blue-600 dark:focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all text-sm font-medium text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 resize-none rounded-lg"
-                        placeholder="Tell us what you're passionate about, your tech stack, or why you want to join UIT Club..."
-                        value={formData.motivation}
-                        onChange={(e) => setFormData({ ...formData, motivation: e.target.value })}
-                    ></textarea>
+                        className={selectClass(formData.major)}
+                        value={formData.major}
+                        onChange={(e) => setFormData({ ...formData, major: e.target.value })}
+                    >
+                        <option value="" disabled className="bg-white dark:bg-slate-900 text-slate-400">Sélectionner une filière</option>
+                        {UPF_FILIERES.map((group) => (
+                            <optgroup key={group.group} label={group.group} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
+                                {group.options.map((filiere) => (
+                                    <option key={filiere} value={filiere}>
+                                        {filiere}
+                                    </option>
+                                ))}
+                            </optgroup>
+                        ))}
+                    </select>
+                    <ChevronDown className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
                 </div>
             </div>
 

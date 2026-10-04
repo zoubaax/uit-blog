@@ -113,10 +113,13 @@ const initDB = async () => {
                 email VARCHAR(255) NOT NULL,
                 phone VARCHAR(50),
                 major VARCHAR(255) NOT NULL,
-                motivation TEXT NOT NULL,
+                motivation TEXT,
+                niveau VARCHAR(50),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
             ALTER TABLE club_applications ADD COLUMN IF NOT EXISTS phone VARCHAR(50);
+            ALTER TABLE club_applications ADD COLUMN IF NOT EXISTS niveau VARCHAR(50);
+            ALTER TABLE club_applications ALTER COLUMN motivation DROP NOT NULL;
         `);
         console.log('✓ Club Applications table ready');
         console.log('--- DB INITIALIZATION COMPLETE ---');

@@ -11,9 +11,14 @@ const startServer = async () => {
         // Ensure required tables exist
         await initDB();
 
-        app.listen(PORT, () => {
+        const server = app.listen(PORT);
+        server.on('listening', () => {
             console.log(`Server running on port ${PORT}`);
             console.log(`Environment: ${process.env.NODE_ENV}`);
+        });
+        server.on('error', (error) => {
+            console.error('Failed to start server:', error);
+            process.exit(1);
         });
     } catch (error) {
         console.error('Failed to start server:', error);
