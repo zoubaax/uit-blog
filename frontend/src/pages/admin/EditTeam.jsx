@@ -82,13 +82,13 @@ const EditTeam = () => {
                 <div className="flex items-center gap-4">
                     <button
                         onClick={() => navigate('/dashboard/team')}
-                        className="p-2.5 hover:bg-white hover:shadow-md rounded-xl transition-all border border-transparent hover:border-gray-100"
+                        className="p-2.5 hover:bg-white dark:hover:bg-slate-800 hover:shadow-md rounded-xl transition-all border border-transparent hover:border-gray-100 dark:hover:border-slate-700 text-gray-600 dark:text-slate-300"
                     >
-                        <ArrowLeft className="w-5 h-5 text-gray-600" />
+                        <ArrowLeft className="w-5 h-5" />
                     </button>
                     <div>
-                        <h1 className="text-2xl font-bold text-gray-900 leading-tight">Edit Member Profile</h1>
-                        <p className="text-sm text-gray-500">Update identification and social presence</p>
+                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white leading-tight">Edit Member Profile</h1>
+                        <p className="text-sm text-gray-500 dark:text-slate-400">Update identification and social presence</p>
                     </div>
                 </div>
             </div>
@@ -96,12 +96,12 @@ const EditTeam = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Left Column: Image */}
                 <div className="lg:col-span-1 space-y-6">
-                    <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm transition-all hover:shadow-md">
+                    <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm transition-all hover:shadow-md">
                         <ImageUpload
                             initialImage={formData.photo_url}
                             onImageUpload={(url) => setFormData({ ...formData, photo_url: url })}
                         />
-                        <p className="mt-4 text-[11px] text-gray-400 text-center leading-relaxed">
+                        <p className="mt-4 text-[11px] text-gray-400 dark:text-slate-500 text-center leading-relaxed">
                             Recommended: 400x400px squared image with professional background.
                         </p>
                     </div>
@@ -109,28 +109,28 @@ const EditTeam = () => {
 
                 {/* Right Column: Details */}
                 <form onSubmit={handleSubmit} className="lg:col-span-2 space-y-6">
-                    <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm space-y-8">
+                    <div className="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm space-y-8">
                         {/* Identity Section */}
                         <div className="space-y-6">
-                            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-50 pb-4">Identification</h3>
+                            <h3 className="text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-widest border-b border-gray-50 dark:border-slate-800 pb-4">Identification</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
-                                    <label className="block text-sm font-bold text-gray-700">Full Name</label>
+                                    <label className="block text-sm font-bold text-gray-700 dark:text-slate-300">Full Name</label>
                                     <input
                                         type="text"
                                         required
-                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all placeholder:text-gray-300"
+                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-gray-900 dark:text-slate-100 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:border-blue-500 outline-none transition-all placeholder:text-gray-300 dark:placeholder:text-slate-600"
                                         placeholder="Jane Doe"
                                         value={formData.name}
                                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="block text-sm font-bold text-gray-700">Role / Designation</label>
+                                    <label className="block text-sm font-bold text-gray-700 dark:text-slate-300">Role / Designation</label>
                                     <input
                                         type="text"
                                         required
-                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all placeholder:text-gray-300"
+                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-gray-900 dark:text-slate-100 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:border-blue-500 outline-none transition-all placeholder:text-gray-300 dark:placeholder:text-slate-600"
                                         placeholder="Head of Research"
                                         value={formData.role}
                                         onChange={(e) => setFormData({ ...formData, role: e.target.value })}
@@ -141,14 +141,14 @@ const EditTeam = () => {
 
                         {/* Social Section */}
                         <div className="space-y-6">
-                            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-50 pb-4">Social Connect</h3>
+                            <h3 className="text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-widest border-b border-gray-50 dark:border-slate-800 pb-4">Social Connect</h3>
                             <div className="space-y-4">
                                 <div className="group relative">
-                                    <Linkedin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-blue-600 transition-colors" />
+                                    <Linkedin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-blue-600 dark:group-focus-within:text-blue-400 transition-colors" />
                                     <input
                                         type="url"
                                         name="linkedin"
-                                        className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all text-sm placeholder:text-gray-300"
+                                        className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-gray-900 dark:text-slate-100 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:border-blue-500 outline-none transition-all text-sm placeholder:text-gray-300 dark:placeholder:text-slate-600"
                                         placeholder="linkedin.com/in/username"
                                         value={formData.social_links.linkedin}
                                         onChange={handleSocialChange}
@@ -160,7 +160,7 @@ const EditTeam = () => {
                                     <input
                                         type="url"
                                         name="twitter"
-                                        className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-4 focus:ring-sky-100 focus:border-sky-400 outline-none transition-all text-sm placeholder:text-gray-300"
+                                        className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-gray-900 dark:text-slate-100 focus:ring-4 focus:ring-sky-100 dark:focus:ring-sky-900/30 focus:border-sky-400 outline-none transition-all text-sm placeholder:text-gray-300 dark:placeholder:text-slate-600"
                                         placeholder="twitter.com/username"
                                         value={formData.social_links.twitter}
                                         onChange={handleSocialChange}
@@ -168,11 +168,11 @@ const EditTeam = () => {
                                 </div>
 
                                 <div className="group relative">
-                                    <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-emerald-500 transition-colors" />
+                                    <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-emerald-500 dark:group-focus-within:text-emerald-400 transition-colors" />
                                     <input
                                         type="url"
                                         name="website"
-                                        className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 outline-none transition-all text-sm placeholder:text-gray-300"
+                                        className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-gray-900 dark:text-slate-100 focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-900/30 focus:border-emerald-500 outline-none transition-all text-sm placeholder:text-gray-300 dark:placeholder:text-slate-600"
                                         placeholder="portfolio.me"
                                         value={formData.social_links.website}
                                         onChange={handleSocialChange}
@@ -182,18 +182,18 @@ const EditTeam = () => {
                         </div>
 
                         {/* Actions */}
-                        <div className="flex justify-end items-center gap-4 pt-6 border-t border-gray-50">
+                        <div className="flex justify-end items-center gap-4 pt-6 border-t border-gray-50 dark:border-slate-800">
                             <button
                                 type="button"
                                 onClick={() => navigate('/dashboard/team')}
-                                className="px-6 py-2.5 text-sm font-bold text-gray-500 hover:text-gray-700 transition-colors"
+                                className="px-6 py-2.5 text-sm font-bold text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-200 transition-colors"
                             >
                                 Cancel
                             </button>
                             <button
                                 type="submit"
                                 disabled={saving}
-                                className="flex items-center gap-2 bg-[#1e293b] text-white px-8 py-3 rounded-xl font-bold hover:bg-[#0f172a] transition-all shadow-lg shadow-slate-200 disabled:opacity-70 active:scale-95"
+                                className="flex items-center gap-2 bg-[#1e293b] dark:bg-blue-600 hover:bg-[#0f172a] dark:hover:bg-blue-500 text-white px-8 py-3 rounded-xl font-bold transition-all shadow-lg shadow-slate-200 dark:shadow-none disabled:opacity-70 active:scale-95"
                             >
                                 {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
                                 Update Profile

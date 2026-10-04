@@ -46,32 +46,32 @@ const CreateTeam = () => {
             <div className="flex items-center gap-4 mb-6">
                 <button
                     onClick={() => navigate('/dashboard/team')}
-                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                    className="p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full transition-colors text-gray-600 dark:text-slate-300"
                 >
-                    <ArrowLeft className="w-5 h-5 text-gray-600" />
+                    <ArrowLeft className="w-5 h-5" />
                 </button>
-                <h1 className="text-2xl font-bold text-gray-900">Add Team Member</h1>
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Add Team Member</h1>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6 bg-white p-8 rounded-xl shadow-sm border border-gray-100">
+            <form onSubmit={handleSubmit} className="space-y-6 bg-white dark:bg-slate-900 p-8 rounded-xl shadow-sm border border-gray-100 dark:border-slate-800">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">Full Name</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">Full Name</label>
                         <input
                             type="text"
                             required
-                            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all"
+                            className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-600 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:border-blue-500 outline-none transition-all"
                             placeholder="e.g., Jane Doe"
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         />
                     </div>
                     <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">Role / Position</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">Role / Position</label>
                         <input
                             type="text"
                             required
-                            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all"
+                            className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-600 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:border-blue-500 outline-none transition-all"
                             placeholder="e.g., President"
                             value={formData.role}
                             onChange={(e) => setFormData({ ...formData, role: e.target.value })}
@@ -84,14 +84,14 @@ const CreateTeam = () => {
                 />
 
                 <div className="space-y-4">
-                    <h3 className="text-sm font-medium text-gray-900 border-b pb-2">Social Links (Optional)</h3>
+                    <h3 className="text-sm font-medium text-gray-900 dark:text-white border-b border-gray-100 dark:border-slate-800 pb-2">Social Links (Optional)</h3>
 
                     <div className="flex items-center gap-3">
-                        <Linkedin className="w-5 h-5 text-blue-600 shrink-0" />
+                        <Linkedin className="w-5 h-5 text-blue-600 dark:text-blue-400 shrink-0" />
                         <input
                             type="url"
                             name="linkedin"
-                            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all text-sm"
+                            className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-600 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:border-blue-500 outline-none transition-all text-sm"
                             placeholder="LinkedIn Profile URL"
                             value={formData.social_links.linkedin}
                             onChange={handleSocialChange}
@@ -103,7 +103,7 @@ const CreateTeam = () => {
                         <input
                             type="url"
                             name="twitter"
-                            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all text-sm"
+                            className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-600 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:border-blue-500 outline-none transition-all text-sm"
                             placeholder="Twitter Profile URL"
                             value={formData.social_links.twitter}
                             onChange={handleSocialChange}
@@ -111,11 +111,11 @@ const CreateTeam = () => {
                     </div>
 
                     <div className="flex items-center gap-3">
-                        <Globe className="w-5 h-5 text-gray-600 shrink-0" />
+                        <Globe className="w-5 h-5 text-gray-600 dark:text-slate-400 shrink-0" />
                         <input
                             type="url"
                             name="website"
-                            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all text-sm"
+                            className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-600 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:border-blue-500 outline-none transition-all text-sm"
                             placeholder="Personal Website URL"
                             value={formData.social_links.website}
                             onChange={handleSocialChange}
@@ -127,7 +127,7 @@ const CreateTeam = () => {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-70"
+                        className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-medium transition-colors disabled:opacity-70 shadow-sm"
                     >
                         {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                         Save Member

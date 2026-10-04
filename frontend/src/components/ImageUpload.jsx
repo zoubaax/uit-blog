@@ -35,11 +35,11 @@ const ImageUpload = ({ onImageUpload, initialImage }) => {
 
     return (
         <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">Cover Image</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">Cover Image</label>
 
             {/* If we have an image, show preview */}
             {preview ? (
-                <div className="relative w-full h-48 rounded-lg overflow-hidden group border border-gray-200">
+                <div className="relative w-full h-48 rounded-lg overflow-hidden group border border-gray-200 dark:border-slate-700">
                     <img src={preview} alt="Preview" className="w-full h-full object-cover" />
                     <button
                         type="button"
@@ -51,17 +51,17 @@ const ImageUpload = ({ onImageUpload, initialImage }) => {
                 </div>
             ) : (
                 <div className="flex justify-center items-center w-full">
-                    <label className="flex flex-col justify-center items-center w-full h-48 bg-gray-50 rounded-lg border-2 border-gray-300 border-dashed cursor-pointer hover:bg-gray-100 transition-colors">
-                        <div className="flex flex-col justify-center items-center pt-5 pb-6 text-gray-500">
+                    <label className="flex flex-col justify-center items-center w-full h-48 bg-gray-50 dark:bg-slate-900/60 rounded-lg border-2 border-gray-300 dark:border-slate-700 border-dashed cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors">
+                        <div className="flex flex-col justify-center items-center pt-5 pb-6 text-gray-500 dark:text-slate-400">
                             {uploading ? (
-                                <Loader2 className="w-8 h-8 animate-spin mb-3 text-blue-600" />
+                                <Loader2 className="w-8 h-8 animate-spin mb-3 text-blue-600 dark:text-blue-400" />
                             ) : (
                                 <Upload className="w-8 h-8 mb-3" />
                             )}
-                            <p className="mb-2 text-sm text-gray-500">
-                                <span className="font-semibold">{uploading ? 'Uploading...' : 'Click to upload'}</span>
+                            <p className="mb-2 text-sm text-gray-500 dark:text-slate-400">
+                                <span className="font-semibold text-gray-700 dark:text-slate-200">{uploading ? 'Uploading...' : 'Click to upload'}</span>
                             </p>
-                            <p className="text-xs text-gray-500">SVG, PNG, JPG (MAX. 2MB)</p>
+                            <p className="text-xs text-gray-500 dark:text-slate-500">SVG, PNG, JPG (MAX. 2MB)</p>
                         </div>
                         <input
                             type="file"

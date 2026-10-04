@@ -49,35 +49,35 @@ const JoinForm = ({ onSuccess }) => {
     if (status === 'loading') {
         return (
             <div className="flex justify-center p-12">
-                <Loader2 className="w-8 h-8 text-blue-700 animate-spin" />
+                <Loader2 className="w-8 h-8 text-blue-600 dark:text-blue-400 animate-spin" />
             </div>
         );
     }
 
     if (status === 'closed') {
         return (
-            <div className="text-center p-12 bg-slate-50 border border-slate-100 italic">
-                <AlertCircle className="w-10 h-10 text-slate-300 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-[#1e3a8a]">Application Period Closed</h3>
-                <p className="text-[#475569] text-sm mt-2">The membership portal is currently offline. Please join our mailing list or check back next semester.</p>
+            <div className="text-center p-12 bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 italic rounded-xl">
+                <AlertCircle className="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-[#1e3a8a] dark:text-blue-300">Application Period Closed</h3>
+                <p className="text-[#475569] dark:text-slate-400 text-sm mt-2">The membership portal is currently offline. Please join our mailing list or check back next semester.</p>
             </div>
         );
     }
 
     if (success) {
         return (
-            <div className="text-center p-12 bg-[#f0f9ff] border border-[#bae6fd] animate-in fade-in zoom-in duration-500">
-                <div className="w-16 h-16 bg-[#1e3a8a] text-white rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="text-center p-12 bg-[#f0f9ff] dark:bg-blue-950/30 border border-[#bae6fd] dark:border-blue-900/50 rounded-xl animate-in fade-in zoom-in duration-500">
+                <div className="w-16 h-16 bg-[#1e3a8a] dark:bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-6">
                     <CheckCircle className="w-8 h-8" />
                 </div>
-                <h3 className="text-2xl font-semibold text-[#1e3a8a] tracking-tight">Application Transmitted</h3>
-                <p className="text-[#475569] mt-3 max-w-sm mx-auto leading-relaxed">
+                <h3 className="text-2xl font-semibold text-[#1e3a8a] dark:text-blue-300 tracking-tight">Application Transmitted</h3>
+                <p className="text-[#475569] dark:text-slate-300 mt-3 max-w-sm mx-auto leading-relaxed">
                     Your credentials and motivation have been securely received. Our administration team will review your profile shortly.
                 </p>
-                <div className="mt-8 pt-8 border-t border-[#bae6fd]">
+                <div className="mt-8 pt-8 border-t border-[#bae6fd] dark:border-blue-900/60">
                     <button
                         onClick={() => setSuccess(false)}
-                        className="text-[10px] font-bold text-[#1e3a8a] hover:underline uppercase tracking-[0.2em]"
+                        className="text-[10px] font-bold text-[#1e3a8a] dark:text-blue-400 hover:underline uppercase tracking-[0.2em]"
                     >
                         Return to Start
                     </button>
@@ -90,7 +90,7 @@ const JoinForm = ({ onSuccess }) => {
         <form onSubmit={handleSubmit} className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-1.5 flex flex-col">
-                    <label className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-[0.2em] px-1" htmlFor="full_name">
+                    <label className="text-[10px] font-bold text-[#94a3b8] dark:text-slate-400 uppercase tracking-[0.2em] px-1" htmlFor="full_name">
                         Full Name
                     </label>
                     <div className="relative group">
@@ -98,7 +98,7 @@ const JoinForm = ({ onSuccess }) => {
                             id="full_name"
                             type="text"
                             required
-                            className="w-full px-4 py-3 bg-white border border-slate-200 focus:border-[#1e3a8a] outline-none transition-all text-sm font-medium text-slate-800 placeholder:text-slate-300"
+                            className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:border-[#1e3a8a] dark:focus:border-blue-500 outline-none transition-all text-sm font-medium text-slate-800 dark:text-slate-100 placeholder:text-slate-300 dark:placeholder:text-slate-600 rounded-lg"
                             placeholder="e.g. Alan Turing"
                             value={formData.full_name}
                             onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
@@ -106,7 +106,7 @@ const JoinForm = ({ onSuccess }) => {
                     </div>
                 </div>
                 <div className="space-y-1.5 flex flex-col">
-                    <label className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-[0.2em] px-1" htmlFor="email">
+                    <label className="text-[10px] font-bold text-[#94a3b8] dark:text-slate-400 uppercase tracking-[0.2em] px-1" htmlFor="email">
                         Email Address
                     </label>
                     <div className="relative group">
@@ -114,7 +114,7 @@ const JoinForm = ({ onSuccess }) => {
                             id="email"
                             type="email"
                             required
-                            className="w-full px-4 py-3 bg-white border border-slate-200 focus:border-[#1e3a8a] outline-none transition-all text-sm font-medium text-slate-800 placeholder:text-slate-300"
+                            className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:border-[#1e3a8a] dark:focus:border-blue-500 outline-none transition-all text-sm font-medium text-slate-800 dark:text-slate-100 placeholder:text-slate-300 dark:placeholder:text-slate-600 rounded-lg"
                             placeholder="name@university.edu"
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -125,7 +125,7 @@ const JoinForm = ({ onSuccess }) => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-1.5 flex flex-col">
-                    <label className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-[0.2em] px-1" htmlFor="phone">
+                    <label className="text-[10px] font-bold text-[#94a3b8] dark:text-slate-400 uppercase tracking-[0.2em] px-1" htmlFor="phone">
                         Phone Number
                     </label>
                     <div className="relative group">
@@ -133,7 +133,7 @@ const JoinForm = ({ onSuccess }) => {
                             id="phone"
                             type="tel"
                             required
-                            className="w-full px-4 py-3 bg-white border border-slate-200 focus:border-[#1e3a8a] outline-none transition-all text-sm font-medium text-slate-800 placeholder:text-slate-300"
+                            className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:border-[#1e3a8a] dark:focus:border-blue-500 outline-none transition-all text-sm font-medium text-slate-800 dark:text-slate-100 placeholder:text-slate-300 dark:placeholder:text-slate-600 rounded-lg"
                             placeholder="e.g. +212 600-000000"
                             value={formData.phone}
                             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
@@ -142,31 +142,31 @@ const JoinForm = ({ onSuccess }) => {
                 </div>
 
                 <div className="space-y-1.5 flex flex-col">
-                    <label className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-[0.2em] px-1" htmlFor="major">
+                    <label className="text-[10px] font-bold text-[#94a3b8] dark:text-slate-400 uppercase tracking-[0.2em] px-1" htmlFor="major">
                         Faculty / Major
                     </label>
                     <div className="relative group">
                         <select
                             id="major"
                             required
-                            className="w-full px-4 py-3 bg-white border border-slate-200 focus:border-[#1e3a8a] outline-none transition-all text-sm font-medium text-slate-800 cursor-pointer appearance-none pr-10"
+                            className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:border-[#1e3a8a] dark:focus:border-blue-500 outline-none transition-all text-sm font-medium text-slate-800 dark:text-slate-100 cursor-pointer appearance-none pr-10 rounded-lg"
                             value={formData.major}
                             onChange={(e) => setFormData({ ...formData, major: e.target.value })}
                         >
-                            <option value="" disabled>Select your academic year / level</option>
-                            <option value="1ère Année Ingénieur">1ère Année Ingénieur</option>
-                            <option value="2ème Année Ingénieur">2ème Année Ingénieur</option>
-                            <option value="3ème Année Ingénieur">3ème Année Ingénieur</option>
-                            <option value="4ème Année Ingénieur">4ème Année Ingénieur</option>
-                            <option value="Autre / Other">Autre / Other</option>
+                            <option value="" disabled className="dark:bg-slate-900 text-slate-400">Select your academic year / level</option>
+                            <option value="1ère Année Ingénieur" className="dark:bg-slate-900 text-slate-800 dark:text-slate-100">1ère Année Ingénieur</option>
+                            <option value="2ème Année Ingénieur" className="dark:bg-slate-900 text-slate-800 dark:text-slate-100">2ème Année Ingénieur</option>
+                            <option value="3ème Année Ingénieur" className="dark:bg-slate-900 text-slate-800 dark:text-slate-100">3ème Année Ingénieur</option>
+                            <option value="4ème Année Ingénieur" className="dark:bg-slate-900 text-slate-800 dark:text-slate-100">4ème Année Ingénieur</option>
+                            <option value="Autre / Other" className="dark:bg-slate-900 text-slate-800 dark:text-slate-100">Autre / Other</option>
                         </select>
-                        <ChevronDown className="w-4 h-4 text-slate-400 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none group-hover:text-[#1e3a8a] transition-colors" />
+                        <ChevronDown className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none group-hover:text-[#1e3a8a] dark:group-hover:text-blue-400 transition-colors" />
                     </div>
                 </div>
             </div>
 
             <div className="space-y-1.5 flex flex-col">
-                <label className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-[0.2em] px-1" htmlFor="motivation">
+                <label className="text-[10px] font-bold text-[#94a3b8] dark:text-slate-400 uppercase tracking-[0.2em] px-1" htmlFor="motivation">
                     Statement of Motivation
                 </label>
                 <div className="relative group">
@@ -174,7 +174,7 @@ const JoinForm = ({ onSuccess }) => {
                         id="motivation"
                         required
                         rows="4"
-                        className="w-full px-4 py-3 bg-white border border-slate-200 focus:border-[#1e3a8a] outline-none transition-all text-sm font-medium text-slate-800 placeholder:text-slate-300 resize-none"
+                        className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:border-[#1e3a8a] dark:focus:border-blue-500 outline-none transition-all text-sm font-medium text-slate-800 dark:text-slate-100 placeholder:text-slate-300 dark:placeholder:text-slate-600 resize-none rounded-lg"
                         placeholder="Describe your technical background and why you wish to contribute to the collective..."
                         value={formData.motivation}
                         onChange={(e) => setFormData({ ...formData, motivation: e.target.value })}
@@ -183,8 +183,8 @@ const JoinForm = ({ onSuccess }) => {
             </div>
 
             {error && (
-                <div className="flex items-center gap-3 text-red-600 bg-red-50 p-4 border border-red-100 text-[11px] font-bold uppercase tracking-wider">
-                    <AlertCircle className="w-4 h-4" /> {error}
+                <div className="flex items-center gap-3 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/40 p-4 border border-red-100 dark:border-red-900/50 text-[11px] font-bold uppercase tracking-wider rounded-lg">
+                    <AlertCircle className="w-4 h-4 flex-shrink-0" /> {error}
                 </div>
             )}
 
@@ -192,7 +192,7 @@ const JoinForm = ({ onSuccess }) => {
                 <button
                     type="submit"
                     disabled={submitting}
-                    className="w-full py-4 bg-[#1e3a8a] hover:bg-[#1e1e6b] text-white text-[11px] font-bold uppercase tracking-[0.3em] transition-all active:scale-[0.99] disabled:opacity-70 flex items-center justify-center gap-3 group"
+                    className="w-full py-4 bg-[#1e3a8a] hover:bg-[#1e1e6b] dark:bg-blue-600 dark:hover:bg-blue-500 text-white text-[11px] font-bold uppercase tracking-[0.3em] transition-all active:scale-[0.99] disabled:opacity-70 flex items-center justify-center gap-3 group rounded-lg shadow-sm"
                 >
                     {submitting ? (
                         <Loader2 className="w-4 h-4 animate-spin" />
@@ -202,7 +202,7 @@ const JoinForm = ({ onSuccess }) => {
                         </>
                     )}
                 </button>
-                <p className="mt-6 text-[10px] text-center text-[#94a3b8] leading-relaxed italic">
+                <p className="mt-6 text-[10px] text-center text-[#94a3b8] dark:text-slate-500 leading-relaxed italic">
                     By submitting, you agree to comply with the club's code of conduct<br /> and university data privacy regulations.
                 </p>
             </div>

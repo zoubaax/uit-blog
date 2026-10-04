@@ -40,11 +40,11 @@ const renderInline = (text) => {
                     <img
                         src={item.src}
                         alt={item.alt || 'Article image'}
-                        className="rounded-2xl max-w-full h-auto mx-auto shadow-md border border-slate-200"
+                        className="rounded-2xl max-w-full h-auto mx-auto shadow-md border border-slate-200 dark:border-slate-800"
                         loading="lazy"
                     />
                     {item.alt && (
-                        <span className="block text-center text-xs text-slate-500 mt-2 italic">
+                        <span className="block text-center text-xs text-slate-500 dark:text-slate-400 mt-2 italic">
                             {item.alt}
                         </span>
                     )}
@@ -78,7 +78,7 @@ const renderInline = (text) => {
                         href={part.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-800 underline font-medium"
+                        className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline font-medium"
                     >
                         {part.text}
                     </a>
@@ -92,7 +92,7 @@ const renderInline = (text) => {
                     return (
                         <code
                             key={`code-${keyIdx++}-${subIdx}`}
-                            className="px-1.5 py-0.5 mx-0.5 bg-slate-100 text-blue-700 font-mono text-xs rounded border border-slate-200"
+                            className="px-1.5 py-0.5 mx-0.5 bg-slate-100 dark:bg-slate-800 text-blue-700 dark:text-blue-300 font-mono text-xs rounded border border-slate-200 dark:border-slate-700"
                         >
                             {token.slice(1, -1)}
                         </code>
@@ -100,14 +100,14 @@ const renderInline = (text) => {
                 }
                 if (token.startsWith('**') && token.endsWith('**')) {
                     return (
-                        <strong key={`bold-${keyIdx++}-${subIdx}`} className="font-bold text-slate-900">
+                        <strong key={`bold-${keyIdx++}-${subIdx}`} className="font-bold text-slate-900 dark:text-white">
                             {token.slice(2, -2)}
                         </strong>
                     );
                 }
                 if (token.startsWith('*') && token.endsWith('*')) {
                     return (
-                        <em key={`em-${keyIdx++}-${subIdx}`} className="italic text-slate-800">
+                        <em key={`em-${keyIdx++}-${subIdx}`} className="italic text-slate-800 dark:text-slate-200">
                             {token.slice(1, -1)}
                         </em>
                     );
@@ -123,7 +123,7 @@ const MarkdownRenderer = ({ content = '' }) => {
 
     if (!content || !content.trim()) {
         return (
-            <div className="text-center py-16 text-slate-400 text-sm italic">
+            <div className="text-center py-16 text-slate-400 dark:text-slate-500 text-sm italic">
                 No content to preview yet. Switch to the &ldquo;Write&rdquo; tab to start drafting.
             </div>
         );
@@ -199,7 +199,7 @@ const MarkdownRenderer = ({ content = '' }) => {
 
         // Horizontal Rule
         if (trimmed === '---' || trimmed === '***' || trimmed === '___') {
-            elements.push(<hr key={`hr-${i}`} className="my-8 border-t border-slate-200" />);
+            elements.push(<hr key={`hr-${i}`} className="my-8 border-t border-slate-200 dark:border-slate-800" />);
             continue;
         }
 
@@ -207,7 +207,7 @@ const MarkdownRenderer = ({ content = '' }) => {
         if (line.startsWith('# ')) {
             const raw = line.replace('# ', '');
             elements.push(
-                <h1 key={`h1-${i}`} id={slugify(raw)} className="text-2xl sm:text-3xl font-black text-slate-900 mt-8 mb-4 tracking-tight leading-snug scroll-mt-24">
+                <h1 key={`h1-${i}`} id={slugify(raw)} className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-slate-100 mt-8 mb-4 tracking-tight leading-snug scroll-mt-24">
                     {renderInline(raw)}
                 </h1>
             );
@@ -216,7 +216,7 @@ const MarkdownRenderer = ({ content = '' }) => {
         if (line.startsWith('## ')) {
             const raw = line.replace('## ', '');
             elements.push(
-                <h2 key={`h2-${i}`} id={slugify(raw)} className="text-xl sm:text-2xl font-bold text-slate-900 mt-8 mb-3.5 pb-2 border-b border-slate-100 tracking-tight leading-snug scroll-mt-24">
+                <h2 key={`h2-${i}`} id={slugify(raw)} className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-slate-100 mt-8 mb-3.5 pb-2 border-b border-slate-100 dark:border-slate-800 tracking-tight leading-snug scroll-mt-24">
                     {renderInline(raw)}
                 </h2>
             );
@@ -225,7 +225,7 @@ const MarkdownRenderer = ({ content = '' }) => {
         if (line.startsWith('### ')) {
             const raw = line.replace('### ', '');
             elements.push(
-                <h3 key={`h3-${i}`} id={slugify(raw)} className="text-lg sm:text-xl font-bold text-slate-900 mt-6 mb-2.5 tracking-tight leading-snug scroll-mt-24">
+                <h3 key={`h3-${i}`} id={slugify(raw)} className="text-lg sm:text-xl font-bold text-slate-900 dark:text-slate-100 mt-6 mb-2.5 tracking-tight leading-snug scroll-mt-24">
                     {renderInline(raw)}
                 </h3>
             );
@@ -234,7 +234,7 @@ const MarkdownRenderer = ({ content = '' }) => {
         if (line.startsWith('#### ')) {
             const raw = line.replace('#### ', '');
             elements.push(
-                <h4 key={`h4-${i}`} id={slugify(raw)} className="text-base sm:text-lg font-bold text-slate-900 mt-5 mb-2 leading-snug scroll-mt-24">
+                <h4 key={`h4-${i}`} id={slugify(raw)} className="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100 mt-5 mb-2 leading-snug scroll-mt-24">
                     {renderInline(raw)}
                 </h4>
             );
@@ -244,7 +244,7 @@ const MarkdownRenderer = ({ content = '' }) => {
         // Blockquotes
         if (line.startsWith('> ')) {
             elements.push(
-                <blockquote key={`quote-${i}`} className="my-5 pl-4 py-2.5 border-l-4 border-blue-500 bg-blue-50/50 rounded-r-xl italic text-slate-700 text-sm sm:text-base leading-relaxed">
+                <blockquote key={`quote-${i}`} className="my-5 pl-4 py-2.5 border-l-4 border-blue-500 bg-blue-50/50 dark:bg-blue-950/30 rounded-r-xl italic text-slate-700 dark:text-slate-300 text-sm sm:text-base leading-relaxed">
                     {renderInline(line.replace('> ', ''))}
                 </blockquote>
             );
@@ -254,7 +254,7 @@ const MarkdownRenderer = ({ content = '' }) => {
         // Bullet Lists (- or *)
         if (line.startsWith('- ') || line.startsWith('* ')) {
             elements.push(
-                <li key={`li-${i}`} className="ml-5 my-1.5 text-slate-700 text-sm sm:text-base list-disc leading-relaxed">
+                <li key={`li-${i}`} className="ml-5 my-1.5 text-slate-700 dark:text-slate-300 text-sm sm:text-base list-disc leading-relaxed">
                     {renderInline(line.substring(2))}
                 </li>
             );
@@ -266,8 +266,8 @@ const MarkdownRenderer = ({ content = '' }) => {
             const match = line.match(/^(\d+)\.\s(.*)/);
             if (match) {
                 elements.push(
-                    <div key={`ol-${i}`} className="flex items-start gap-3 my-2 text-slate-700 text-sm sm:text-base leading-relaxed">
-                        <span className="flex-shrink-0 w-5 h-5 rounded-full bg-blue-100 text-blue-700 font-bold text-xs flex items-center justify-center mt-0.5">
+                    <div key={`ol-${i}`} className="flex items-start gap-3 my-2 text-slate-700 dark:text-slate-300 text-sm sm:text-base leading-relaxed">
+                        <span className="flex-shrink-0 w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-bold text-xs flex items-center justify-center mt-0.5 border border-blue-200 dark:border-blue-800">
                             {match[1]}
                         </span>
                         <div className="flex-1">{renderInline(match[2])}</div>
@@ -285,7 +285,7 @@ const MarkdownRenderer = ({ content = '' }) => {
 
         // Regular Paragraph
         elements.push(
-            <p key={`p-${i}`} className="mb-4 text-slate-700 text-sm sm:text-base leading-relaxed font-normal">
+            <p key={`p-${i}`} className="mb-4 text-slate-700 dark:text-slate-300 text-sm sm:text-base leading-relaxed font-normal">
                 {renderInline(line)}
             </p>
         );

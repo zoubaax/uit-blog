@@ -121,22 +121,26 @@ const DashboardHome = () => {
       {/* Header Section */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">Dashboard Overview</h1>
-          <p className="text-gray-500 mt-2">Welcome back! Here's what's happening with your club.</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Dashboard Overview</h1>
+          <p className="text-gray-500 dark:text-slate-400 mt-2">Welcome back! Here's what's happening with your club.</p>
         </div>
 
         {/* Recruitment Toggle */}
-        <div className={`inline-flex items-center gap-4 px-6 py-4 rounded-2xl border transition-all ${joinEnabled ? 'bg-blue-50 border-blue-200' : 'bg-gray-50 border-gray-200'}`}>
+        <div className={`inline-flex items-center gap-4 px-6 py-4 rounded-2xl border transition-all ${
+          joinEnabled 
+            ? 'bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-800' 
+            : 'bg-gray-50 dark:bg-slate-900 border-gray-200 dark:border-slate-800'
+        }`}>
           <div>
-            <p className="text-sm font-medium text-gray-600">Recruitment Status</p>
-            <p className={`text-lg font-semibold ${joinEnabled ? 'text-blue-700' : 'text-gray-700'}`}>
+            <p className="text-sm font-medium text-gray-600 dark:text-slate-400">Recruitment Status</p>
+            <p className={`text-lg font-semibold ${joinEnabled ? 'text-blue-700 dark:text-blue-300' : 'text-gray-700 dark:text-slate-200'}`}>
               {joinEnabled ? 'Open' : 'Closed'}
             </p>
           </div>
           <button
             onClick={handleToggle}
             disabled={toggling}
-            className={`relative inline-flex h-8 w-16 items-center rounded-full transition-colors ${joinEnabled ? 'bg-blue-600' : 'bg-gray-300'}`}
+            className={`relative inline-flex h-8 w-16 items-center rounded-full transition-colors ${joinEnabled ? 'bg-blue-600' : 'bg-gray-300 dark:bg-slate-700'}`}
           >
             {toggling ? (
               <Loader2 className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-5 h-5 text-white animate-spin" />
@@ -152,19 +156,19 @@ const DashboardHome = () => {
         {statCards.map((card, index) => (
           <div 
             key={index} 
-            className={`bg-gradient-to-br ${card.gradient} p-6 rounded-2xl border border-gray-100 hover:shadow-lg transition-all duration-300 hover:-translate-y-1`}
+            className={`bg-gradient-to-br ${card.gradient} dark:from-slate-900 dark:to-slate-800/80 p-6 rounded-2xl border border-gray-100 dark:border-slate-800 hover:shadow-lg transition-all duration-300 hover:-translate-y-1`}
           >
             <div className="flex items-center justify-between mb-4">
-              <div className={`p-3 rounded-xl ${card.bg} ${card.color}`}>
+              <div className={`p-3 rounded-xl ${card.bg} dark:bg-slate-800/80 ${card.color}`}>
                 <card.icon className="w-6 h-6" />
               </div>
-              <div className="flex items-center text-xs font-medium text-emerald-600">
+              <div className="flex items-center text-xs font-medium text-emerald-600 dark:text-emerald-400">
                 <TrendingUp className="w-3 h-3 mr-1" />
                 Live
               </div>
             </div>
-            <p className="text-3xl font-bold text-gray-900 mb-1">{card.value}</p>
-            <p className="text-sm font-medium text-gray-600">{card.label}</p>
+            <p className="text-3xl font-bold text-gray-900 dark:text-white mb-1">{card.value}</p>
+            <p className="text-sm font-medium text-gray-600 dark:text-slate-400">{card.label}</p>
           </div>
         ))}
       </div>
@@ -172,27 +176,27 @@ const DashboardHome = () => {
       {/* System Health & Tips */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* System Health */}
-        <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-6">
           <div className="flex items-center gap-3 mb-6">
-            <div className="p-3 bg-gray-100 rounded-xl">
-              <Shield className="w-6 h-6 text-gray-700" />
+            <div className="p-3 bg-gray-100 dark:bg-slate-800 rounded-xl">
+              <Shield className="w-6 h-6 text-gray-700 dark:text-slate-300" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-gray-900">System Health</h2>
-              <p className="text-gray-500 text-sm">All systems operational</p>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">System Health</h2>
+              <p className="text-gray-500 dark:text-slate-400 text-sm">All systems operational</p>
             </div>
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {systemHealth.map((item, index) => (
-              <div key={index} className="bg-gray-50 rounded-xl p-4">
+              <div key={index} className="bg-gray-50 dark:bg-slate-950/60 rounded-xl p-4 border border-transparent dark:border-slate-800/60">
                 <div className="flex items-center gap-3 mb-2">
                   <item.icon className={`w-5 h-5 ${item.color}`} />
-                  <span className="text-sm font-medium text-gray-700">{item.label}</span>
+                  <span className="text-sm font-medium text-gray-700 dark:text-slate-300">{item.label}</span>
                 </div>
                 <div className="flex items-center">
                   <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse mr-2"></div>
-                  <span className="font-semibold text-gray-900">{item.status}</span>
+                  <span className="font-semibold text-gray-900 dark:text-white">{item.status}</span>
                 </div>
               </div>
             ))}
@@ -200,7 +204,7 @@ const DashboardHome = () => {
         </div>
 
         {/* Quick Tips */}
-        <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-6 text-white">
+        <div className="bg-gradient-to-br from-blue-600 to-blue-700 dark:from-blue-700 dark:to-blue-900 rounded-2xl p-6 text-white shadow-lg shadow-blue-900/10">
           <div className="mb-6">
             <CheckCircle className="w-10 h-10 text-blue-200 mb-4" />
             <h2 className="text-xl font-bold mb-3">Quick Tips</h2>
@@ -209,19 +213,19 @@ const DashboardHome = () => {
             </p>
           </div>
           
-          <button className="w-full py-3 bg-white text-blue-700 font-semibold rounded-xl hover:bg-blue-50 transition-colors text-sm">
+          <button className="w-full py-3 bg-white text-blue-700 font-semibold rounded-xl hover:bg-blue-50 transition-colors text-sm shadow-sm">
             View Documentation
           </button>
         </div>
       </div>
 
       {/* Recent Activity Placeholder */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-6">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">Recent Activity</h2>
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-6">
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Recent Activity</h2>
         <div className="text-center py-8">
-          <Activity className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-          <p className="text-gray-500 font-medium">Activity feed will appear here</p>
-          <p className="text-gray-400 text-sm mt-1">Actions and updates will be displayed in real-time</p>
+          <Activity className="w-12 h-12 text-gray-300 dark:text-slate-600 mx-auto mb-3" />
+          <p className="text-gray-500 dark:text-slate-400 font-medium">Activity feed will appear here</p>
+          <p className="text-gray-400 dark:text-slate-500 text-sm mt-1">Actions and updates will be displayed in real-time</p>
         </div>
       </div>
     </div>

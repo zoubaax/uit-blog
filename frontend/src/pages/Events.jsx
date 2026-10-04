@@ -32,17 +32,17 @@ const Events = () => {
     const pastEvents = events.filter(e => new Date(e.date) <= new Date());
 
     return (
-        <div className="bg-white min-h-screen">
+        <div className="bg-white dark:bg-slate-950 min-h-screen transition-colors duration-200">
             {/* Header Section */}
-            <header className="pt-28 md:pt-32 pb-12 md:pb-20 px-4 sm:px-6 max-w-7xl mx-auto border-b border-slate-100 mb-12 md:mb-16">
+            <header className="pt-28 md:pt-32 pb-12 md:pb-20 px-4 sm:px-6 max-w-7xl mx-auto border-b border-slate-100 dark:border-slate-800 mb-12 md:mb-16">
                 <div className="reveal-element">
-                    <span className="inline-block px-3 py-1 bg-[#dbeafe] text-[#2563eb] text-[10px] uppercase font-bold tracking-widest rounded mb-6">
+                    <span className="inline-block px-3 py-1 bg-[#dbeafe] dark:bg-blue-950/60 text-[#2563eb] dark:text-blue-400 text-[10px] uppercase font-bold tracking-widest rounded-lg mb-6 border border-transparent dark:border-blue-800">
                         Calendar
                     </span>
-                    <h1 className="text-4xl md:text-6xl font-semibold text-[#1e3a8a] mb-6 leading-tight">
+                    <h1 className="text-4xl md:text-6xl font-semibold text-[#1e3a8a] dark:text-white mb-6 leading-tight">
                         Upcoming Events
                     </h1>
-                    <p className="text-lg text-[#475569] max-w-2xl leading-relaxed">
+                    <p className="text-lg text-[#475569] dark:text-slate-300 max-w-2xl leading-relaxed">
                         Join our technical workshops, research symposiums, and guest lectures designed to foster engineering excellence.
                     </p>
                 </div>
@@ -51,8 +51,8 @@ const Events = () => {
             {/* Events List */}
             <main className="max-w-4xl mx-auto px-6 pb-24">
                 {error ? (
-                    <div className="text-center py-20 bg-[#f8fafc] rounded border border-slate-200">
-                        <p className="text-red-600 font-medium">{error}</p>
+                    <div className="text-center py-20 bg-[#f8fafc] dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800">
+                        <p className="text-red-600 dark:text-red-400 font-medium">{error}</p>
                     </div>
                 ) : upcomingEvents.length > 0 ? (
                     <div className="space-y-4">
@@ -63,19 +63,19 @@ const Events = () => {
                         ))}
                     </div>
                 ) : (
-                    <div className="text-center py-20 bg-[#f8fafc] rounded border border-slate-200 mb-16">
-                        <h3 className="text-xl font-bold text-[#1e3a8a] mb-2">No Upcoming Events</h3>
-                        <p className="text-[#475569]">Check back soon for the next semester schedule.</p>
+                    <div className="text-center py-20 bg-[#f8fafc] dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 mb-16">
+                        <h3 className="text-xl font-bold text-[#1e3a8a] dark:text-slate-100 mb-2">No Upcoming Events</h3>
+                        <p className="text-[#475569] dark:text-slate-400">Check back soon for the next semester schedule.</p>
                     </div>
                 )}
 
                 {/* Past Events Section */}
                 {pastEvents.length > 0 && (
                     <section className="mt-24">
-                        <div className="mb-12 border-b border-slate-100 pb-4">
-                            <h2 className="text-xl font-bold text-[#94a3b8] uppercase tracking-widest">Past Events Archive</h2>
+                        <div className="mb-12 border-b border-slate-100 dark:border-slate-800 pb-4">
+                            <h2 className="text-xl font-bold text-[#94a3b8] dark:text-slate-400 uppercase tracking-widest">Past Events Archive</h2>
                         </div>
-                        <div className="space-y-4 opacity-70">
+                        <div className="space-y-4 opacity-75 dark:opacity-85">
                             {pastEvents.map((event, index) => (
                                 <div key={event.id} className="reveal-element">
                                     <EventCard event={event} isPast={true} />

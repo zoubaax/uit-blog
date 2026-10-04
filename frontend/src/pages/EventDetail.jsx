@@ -49,12 +49,12 @@ const EventDetail = () => {
     const isFull = event.max_participants && event.current_registrations >= event.max_participants;
 
     return (
-        <article className="bg-white min-h-screen pt-20">
+        <article className="bg-white dark:bg-slate-950 min-h-screen pt-20 transition-colors duration-200">
             {/* Header Section */}
-            <header className="max-w-7xl mx-auto px-6 pt-12 pb-20 border-b border-slate-100">
+            <header className="max-w-7xl mx-auto px-6 pt-12 pb-20 border-b border-slate-100 dark:border-slate-800">
                 <button
                     onClick={() => navigate('/events')}
-                    className="flex items-center gap-2 text-[#94a3b8] hover:text-[#1e3a8a] transition-colors mb-12 text-xs font-bold uppercase tracking-widest group"
+                    className="flex items-center gap-2 text-[#94a3b8] dark:text-slate-400 hover:text-[#1e3a8a] dark:hover:text-blue-400 transition-colors mb-12 text-xs font-bold uppercase tracking-widest group"
                 >
                     <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                     Back to Calendar
@@ -63,39 +63,39 @@ const EventDetail = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                     <div className="reveal-element">
                         <div className="flex items-center gap-2 mb-6">
-                            <span className="inline-block px-3 py-1 bg-[#dbeafe] text-[#2563eb] text-[10px] uppercase font-bold tracking-widest rounded">
+                            <span className="inline-block px-3 py-1 bg-[#dbeafe] dark:bg-blue-950/60 text-[#2563eb] dark:text-blue-400 text-[10px] uppercase font-bold tracking-widest rounded-lg border border-transparent dark:border-blue-800">
                                 Campus Event
                             </span>
                             {isPast && (
-                                <span className="inline-block px-3 py-1 bg-slate-100 text-slate-600 text-[10px] uppercase font-bold tracking-widest rounded border border-slate-200">
+                                <span className="inline-block px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[10px] uppercase font-bold tracking-widest rounded-lg border border-slate-200 dark:border-slate-700">
                                     Concluded
                                 </span>
                             )}
                         </div>
 
-                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#0f172a] mb-10 leading-tight tracking-tight">
+                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#0f172a] dark:text-white mb-10 leading-tight tracking-tight">
                             {event.title}
                         </h1>
                         
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 text-[#475569]">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 text-[#475569] dark:text-slate-300">
                             <div className="flex flex-col gap-2">
-                                <span className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-widest">Schedule</span>
-                                <span className="text-sm font-semibold flex items-center gap-2 text-[#1e3a8a]">
-                                    <Calendar className="w-4 h-4 text-[#2563eb]" />
+                                <span className="text-[10px] font-bold text-[#94a3b8] dark:text-slate-400 uppercase tracking-widest">Schedule</span>
+                                <span className="text-sm font-semibold flex items-center gap-2 text-[#1e3a8a] dark:text-blue-400">
+                                    <Calendar className="w-4 h-4 text-[#2563eb] dark:text-blue-400" />
                                     {eventDate.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                                 </span>
                             </div>
                             <div className="flex flex-col gap-2">
-                                <span className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-widest">Venue</span>
-                                <span className="text-sm font-semibold flex items-center gap-2 text-[#1e3a8a]">
-                                    <MapPin className="w-4 h-4 text-[#2563eb]" />
+                                <span className="text-[10px] font-bold text-[#94a3b8] dark:text-slate-400 uppercase tracking-widest">Venue</span>
+                                <span className="text-sm font-semibold flex items-center gap-2 text-[#1e3a8a] dark:text-blue-400">
+                                    <MapPin className="w-4 h-4 text-[#2563eb] dark:text-blue-400" />
                                     {event.location}
                                 </span>
                             </div>
                         </div>
                     </div>
                     
-                    <div className="rounded-2xl border border-slate-200 overflow-hidden shadow-2xl shadow-blue-900/10 bg-slate-50">
+                    <div className="rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-2xl shadow-blue-900/10 bg-slate-50 dark:bg-slate-900">
                         <img
                             src={event.cover_image_url ? getOptimizedImageUrl(event.cover_image_url, 1200) : 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80'}
                             alt={event.title}
@@ -109,8 +109,8 @@ const EventDetail = () => {
             <main className="max-w-7xl mx-auto px-6 py-20">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-20">
                     <div className="lg:col-span-2">
-                        <h2 className="text-xl font-bold text-[#1e3a8a] uppercase tracking-widest mb-8 pb-4 border-b border-slate-50">Overview</h2>
-                        <div className="prose prose-slate prose-lg max-w-none text-[#475569] leading-relaxed whitespace-pre-line">
+                        <h2 className="text-xl font-bold text-[#1e3a8a] dark:text-slate-100 uppercase tracking-widest mb-8 pb-4 border-b border-slate-100 dark:border-slate-800">Overview</h2>
+                        <div className="prose prose-slate prose-lg max-w-none text-[#475569] dark:text-slate-300 leading-relaxed whitespace-pre-line">
                             {event.description}
                         </div>
                     </div>
@@ -119,18 +119,18 @@ const EventDetail = () => {
                         <div className="sticky top-24 space-y-6">
                             {isPast ? (
                                 event.recap_article_id ? (
-                                    <div className="p-7 bg-emerald-50/90 rounded-3xl border border-emerald-200/90 text-center space-y-4 shadow-lg shadow-emerald-500/5">
-                                        <div className="w-14 h-14 bg-emerald-100 text-emerald-700 rounded-2xl flex items-center justify-center mx-auto shadow-sm">
+                                    <div className="p-7 bg-emerald-50/90 dark:bg-emerald-950/40 rounded-3xl border border-emerald-200/90 dark:border-emerald-800/60 text-center space-y-4 shadow-lg shadow-emerald-500/5">
+                                        <div className="w-14 h-14 bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 rounded-2xl flex items-center justify-center mx-auto shadow-xs">
                                             <Camera className="w-7 h-7" />
                                         </div>
                                         <div>
-                                            <span className="text-[10px] font-extrabold uppercase tracking-widest text-emerald-800 bg-emerald-200/60 px-2.5 py-0.5 rounded-full">
+                                            <span className="text-[10px] font-extrabold uppercase tracking-widest text-emerald-800 dark:text-emerald-300 bg-emerald-200/60 dark:bg-emerald-900/60 px-2.5 py-0.5 rounded-full">
                                                 Event Recap Published
                                             </span>
-                                            <h3 className="text-lg font-bold text-slate-900 mt-2">
+                                            <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mt-2">
                                                 See What Happened!
                                             </h3>
-                                            <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                                            <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
                                                 Photos, key takeaways, and speaker highlights from this event are available on our blog.
                                             </p>
                                         </div>
@@ -143,17 +143,17 @@ const EventDetail = () => {
                                         </Link>
                                     </div>
                                 ) : (
-                                    <div className="p-7 bg-slate-50 rounded-3xl border border-slate-200 text-center space-y-3">
-                                        <div className="w-12 h-12 bg-slate-100 text-slate-400 rounded-2xl flex items-center justify-center mx-auto">
+                                    <div className="p-7 bg-slate-50 dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 text-center space-y-3">
+                                        <div className="w-12 h-12 bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 rounded-2xl flex items-center justify-center mx-auto">
                                             <CheckCircle2 className="w-6 h-6" />
                                         </div>
-                                        <h3 className="text-base font-bold text-slate-800">Event Concluded</h3>
-                                        <p className="text-xs text-slate-500 leading-relaxed">
+                                        <h3 className="text-base font-bold text-slate-800 dark:text-slate-100">Event Concluded</h3>
+                                        <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
                                             This event was held on {eventDate.toLocaleDateString()}. Check back soon on our blog for recap photos and future announcements!
                                         </p>
                                         <Link
                                             to="/articles"
-                                            className="inline-flex items-center justify-center gap-1.5 text-xs font-bold text-blue-600 hover:underline pt-2"
+                                            className="inline-flex items-center justify-center gap-1.5 text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline pt-2"
                                         >
                                             <span>Explore Club Blog</span>
                                             <ArrowRight className="w-3.5 h-3.5" />

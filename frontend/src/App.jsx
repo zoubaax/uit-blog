@@ -2,6 +2,7 @@ import { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
 import PrivateRoute from './components/PrivateRoute';
+import { ThemeProvider } from './context/ThemeContext';
 
 // Eagerly load Home for instant 0ms first paint
 import Home from './pages/Home';
@@ -32,43 +33,45 @@ const Applications = lazy(() => import('./pages/admin/Applications'));
 
 function App() {
   return (
-    <BrowserRouter>
-      <Suspense fallback={<div className="min-h-screen bg-white" />}>
-        <Routes>
-          {/* Public Routes using MainLayout */}
-          <Route element={<MainLayout />}>
-            <Route path="/" element={<Home />} />
-            <Route path="articles" element={<Articles />} />
-            <Route path="articles/:id" element={<ArticleDetail />} />
-            <Route path="events" element={<Events />} />
-            <Route path="events/:id" element={<EventDetail />} />
-            <Route path="team" element={<Team />} />
-            <Route path="apply" element={<Apply />} />
-            <Route path="register" element={<Apply />} />
-            <Route path="regester" element={<Apply />} />
-            <Route path="login" element={<Login />} />
-          </Route>
-
-          {/* Protected Admin Routes */}
-          <Route element={<PrivateRoute />}>
-            <Route path="/dashboard" element={<AdminLayout />}>
-              <Route index element={<DashboardHome />} />
-              <Route path="articles" element={<AdminArticles />} />
-              <Route path="articles/new" element={<CreateArticle />} />
-              <Route path="articles/edit/:id" element={<EditArticle />} />
-              <Route path="events" element={<AdminEvents />} />
-              <Route path="events/new" element={<CreateEvent />} />
-              <Route path="events/edit/:id" element={<EditEvent />} />
-              <Route path="events/:eventId/registrations" element={<AdminEventRegistrations />} />
-              <Route path="team" element={<AdminTeam />} />
-              <Route path="team/new" element={<CreateTeam />} />
-              <Route path="team/edit/:id" element={<EditTeam />} />
-              <Route path="applications" element={<Applications />} />
+    <ThemeProvider>
+      <BrowserRouter>
+        <Suspense fallback={<div className="min-h-screen bg-white dark:bg-slate-950" />}>
+          <Routes>
+            {/* Public Routes using MainLayout */}
+            <Route element={<MainLayout />}>
+              <Route path="/" element={<Home />} />
+              <Route path="articles" element={<Articles />} />
+              <Route path="articles/:id" element={<ArticleDetail />} />
+              <Route path="events" element={<Events />} />
+              <Route path="events/:id" element={<EventDetail />} />
+              <Route path="team" element={<Team />} />
+              <Route path="apply" element={<Apply />} />
+              <Route path="register" element={<Apply />} />
+              <Route path="regester" element={<Apply />} />
+              <Route path="login" element={<Login />} />
             </Route>
-          </Route>
-        </Routes>
-      </Suspense>
-    </BrowserRouter>
+
+            {/* Protected Admin Routes */}
+            <Route element={<PrivateRoute />}>
+              <Route path="/dashboard" element={<AdminLayout />}>
+                <Route index element={<DashboardHome />} />
+                <Route path="articles" element={<AdminArticles />} />
+                <Route path="articles/new" element={<CreateArticle />} />
+                <Route path="articles/edit/:id" element={<EditArticle />} />
+                <Route path="events" element={<AdminEvents />} />
+                <Route path="events/new" element={<CreateEvent />} />
+                <Route path="events/edit/:id" element={<EditEvent />} />
+                <Route path="events/:eventId/registrations" element={<AdminEventRegistrations />} />
+                <Route path="team" element={<AdminTeam />} />
+                <Route path="team/new" element={<CreateTeam />} />
+                <Route path="team/edit/:id" element={<EditTeam />} />
+                <Route path="applications" element={<Applications />} />
+              </Route>
+            </Route>
+          </Routes>
+        </Suspense>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 

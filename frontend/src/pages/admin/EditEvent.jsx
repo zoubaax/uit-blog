@@ -89,24 +89,24 @@ const EditEvent = () => {
     if (loading) return <SectionLoader message="Loading event" />;
 
     return (
-        <div className="max-w-2xl mx-auto space-y-6 pb-20">
+        <div className="max-w-2xl mx-auto space-y-6 pb-20 animate-in fade-in duration-500">
             <div className="flex items-center gap-4 mb-6">
                 <button
                     onClick={() => navigate('/dashboard/events')}
-                    className="p-2 hover:bg-gray-100 rounded-full transition-colors group"
+                    className="p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full transition-colors group"
                 >
-                    <ArrowLeft className="w-5 h-5 text-gray-600 group-hover:-translate-x-1 transition-transform" />
+                    <ArrowLeft className="w-5 h-5 text-gray-600 dark:text-slate-300 group-hover:-translate-x-1 transition-transform" />
                 </button>
-                <h1 className="text-2xl font-bold text-gray-900">Edit Event</h1>
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Edit Event</h1>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6 bg-white p-8 rounded-3xl shadow-xl border border-gray-100">
+            <form onSubmit={handleSubmit} className="space-y-6 bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-xl border border-gray-100 dark:border-slate-800">
                 <div className="space-y-2">
-                    <label className="block text-sm font-bold text-gray-700">Event Title</label>
+                    <label className="block text-sm font-bold text-gray-700 dark:text-slate-300">Event Title</label>
                     <input
                         type="text"
                         required
-                        className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all"
+                        className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-slate-800 bg-white dark:bg-slate-950 text-gray-900 dark:text-slate-100 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:border-blue-500 outline-none transition-all"
                         value={formData.title}
                         onChange={(e) => setFormData(p => ({ ...p, title: e.target.value }))}
                     />
@@ -114,45 +114,45 @@ const EditEvent = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                        <label className="block text-sm font-bold text-gray-700 flex items-center gap-2">
+                        <label className="block text-sm font-bold text-gray-700 dark:text-slate-300 flex items-center gap-2">
                             <Calendar className="w-4 h-4 text-blue-500" /> Event Date & Time
                         </label>
                         <input
                             type="datetime-local"
                             required
-                            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all"
+                            className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-slate-800 bg-white dark:bg-slate-950 text-gray-900 dark:text-slate-100 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:border-blue-500 outline-none transition-all"
                             value={formData.date}
                             onChange={(e) => setFormData(p => ({ ...p, date: e.target.value }))}
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <label className="block text-sm font-bold text-gray-700 flex items-center gap-2">
+                        <label className="block text-sm font-bold text-gray-700 dark:text-slate-300 flex items-center gap-2">
                             <MapPin className="w-4 h-4 text-red-500" /> Location
                         </label>
                         <input
                             type="text"
                             required
-                            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all"
+                            className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-slate-800 bg-white dark:bg-slate-950 text-gray-900 dark:text-slate-100 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:border-blue-500 outline-none transition-all"
                             value={formData.location}
                             onChange={(e) => setFormData(p => ({ ...p, location: e.target.value }))}
                         />
                     </div>
                 </div>
 
-                <div className="p-6 bg-gray-50 rounded-2xl space-y-6 border border-gray-100">
-                    <div className="flex items-center justify-between border-b border-gray-200 pb-4">
+                <div className="p-6 bg-gray-50 dark:bg-slate-950/50 rounded-2xl space-y-6 border border-gray-100 dark:border-slate-800">
+                    <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-800 pb-4">
                         <div className="flex items-center gap-3">
-                            {formData.is_hidden ? <EyeOff className="text-gray-500" /> : <Eye className="text-green-600" />}
+                            {formData.is_hidden ? <EyeOff className="text-gray-500 dark:text-slate-400" /> : <Eye className="text-green-600 dark:text-emerald-400" />}
                             <div>
-                                <p className="text-sm font-bold text-gray-900">Visibility Status</p>
-                                <p className="text-xs text-gray-500">{formData.is_hidden ? 'Hidden' : 'Visible'}</p>
+                                <p className="text-sm font-bold text-gray-900 dark:text-white">Visibility Status</p>
+                                <p className="text-xs text-gray-500 dark:text-slate-400">{formData.is_hidden ? 'Hidden' : 'Visible'}</p>
                             </div>
                         </div>
                         <button
                             type="button"
                             onClick={() => setFormData(p => ({ ...p, is_hidden: !p.is_hidden }))}
-                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-all ${formData.is_hidden ? 'bg-gray-300' : 'bg-blue-600'}`}
+                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-all ${formData.is_hidden ? 'bg-gray-300 dark:bg-slate-700' : 'bg-blue-600'}`}
                         >
                             <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-all ${formData.is_hidden ? 'translate-x-1' : 'translate-x-6'}`} />
                         </button>
@@ -160,25 +160,25 @@ const EditEvent = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
-                            <label className="block text-sm font-bold text-gray-700 flex items-center gap-2">
+                            <label className="block text-sm font-bold text-gray-700 dark:text-slate-300 flex items-center gap-2">
                                 <Clock className="w-4 h-4 text-amber-500" /> Registration Deadline
                             </label>
                             <input
                                 type="datetime-local"
-                                className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none bg-white"
+                                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-gray-900 dark:text-slate-100 outline-none"
                                 value={formData.registration_deadline}
                                 onChange={(e) => setFormData(p => ({ ...p, registration_deadline: e.target.value }))}
                             />
                         </div>
 
                         <div className="space-y-2">
-                            <label className="block text-sm font-bold text-gray-700 flex items-center gap-2">
+                            <label className="block text-sm font-bold text-gray-700 dark:text-slate-300 flex items-center gap-2">
                                 <Users className="w-4 h-4 text-purple-500" /> Participant Limit
                             </label>
                             <input
                                 type="number"
                                 min="1"
-                                className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none bg-white"
+                                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-600 outline-none"
                                 placeholder="Unlimited"
                                 value={formData.max_participants}
                                 onChange={(e) => setFormData(p => ({ ...p, max_participants: e.target.value }))}
@@ -193,28 +193,28 @@ const EditEvent = () => {
                 />
 
                 <div className="space-y-2">
-                    <label className="block text-sm font-bold text-gray-700">Description</label>
+                    <label className="block text-sm font-bold text-gray-700 dark:text-slate-300">Description</label>
                     <textarea
                         required
                         rows="6"
-                        className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all resize-none"
+                        className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-slate-800 bg-white dark:bg-slate-950 text-gray-900 dark:text-slate-100 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:border-blue-500 outline-none transition-all resize-none"
                         value={formData.description}
                         onChange={(e) => setFormData(p => ({ ...p, description: e.target.value }))}
                     />
                 </div>
 
-                <div className="flex justify-end pt-6 border-t border-gray-100 gap-4">
+                <div className="flex justify-end pt-6 border-t border-gray-100 dark:border-slate-800 gap-4">
                     <button
                         type="button"
                         onClick={() => navigate('/dashboard/events')}
-                        className="px-6 py-3 rounded-xl font-bold text-gray-500 hover:bg-gray-100 transition-all"
+                        className="px-6 py-3 rounded-xl font-bold text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition-all"
                     >
                         Discard
                     </button>
                     <button
                         type="submit"
                         disabled={saving}
-                        className="flex items-center justify-center gap-2 bg-blue-600 text-white px-10 py-3 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg"
+                        className="flex items-center justify-center gap-2 bg-blue-600 text-white px-10 py-3 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20"
                     >
                         {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
                         Save Event

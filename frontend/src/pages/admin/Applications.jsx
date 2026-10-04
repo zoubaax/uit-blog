@@ -138,8 +138,8 @@ const Applications = () => {
             {/* Header */}
             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
                 <div>
-                    <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Membership Applications</h1>
-                    <p className="text-gray-500 mt-1">
+                    <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">Membership Applications</h1>
+                    <p className="text-gray-500 dark:text-slate-400 mt-1">
                         {applications.length} candidate{applications.length !== 1 ? 's' : ''} applied for club membership
                     </p>
                 </div>
@@ -151,13 +151,13 @@ const Applications = () => {
                         disabled={toggling}
                         className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl border text-xs font-semibold transition-all ${
                             joinEnabled
-                                ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
-                                : 'bg-gray-100 text-gray-600 border-gray-200 hover:bg-gray-200'
+                                ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-950/60'
+                                : 'bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-slate-300 border-gray-200 dark:border-slate-700 hover:bg-gray-200 dark:hover:bg-slate-700'
                         }`}
                         title="Toggle whether public applications are currently open or closed"
                     >
                         {toggling ? (
-                            <Loader2 className="w-4 h-4 animate-spin text-gray-500" />
+                            <Loader2 className="w-4 h-4 animate-spin text-gray-500 dark:text-slate-400" />
                         ) : joinEnabled ? (
                             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                         ) : (
@@ -169,9 +169,9 @@ const Applications = () => {
                     {/* Export CSV */}
                     <button
                         onClick={() => exportToCSV(filteredApplications, 'club_applications', ['Full Name', 'Email', 'Phone', 'Major', 'Motivation', 'Created At'])}
-                        className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors font-semibold text-xs shadow-sm"
+                        className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 text-gray-700 dark:text-slate-200 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors font-semibold text-xs shadow-sm"
                     >
-                        <Download className="w-4 h-4 text-gray-500" />
+                        <Download className="w-4 h-4 text-gray-500 dark:text-slate-400" />
                         Export CSV
                     </button>
 
@@ -179,7 +179,7 @@ const Applications = () => {
                     {applications.length > 0 && (
                         <button
                             onClick={handleClearAll}
-                            className="flex items-center gap-2 px-4 py-2.5 bg-red-50 text-red-600 border border-red-200 rounded-xl hover:bg-red-100 transition-colors font-semibold text-xs"
+                            className="flex items-center gap-2 px-4 py-2.5 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/50 rounded-xl hover:bg-red-100 dark:hover:bg-red-950/60 transition-colors font-semibold text-xs"
                         >
                             <Trash2 className="w-4 h-4" />
                             Purge All
@@ -190,37 +190,37 @@ const Applications = () => {
 
             {/* Quick Metrics Bar */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="bg-white rounded-xl border border-gray-200 p-5 flex items-center gap-4">
-                    <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center font-bold">
+                <div className="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-800 p-5 flex items-center gap-4">
+                    <div className="w-12 h-12 bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 rounded-xl flex items-center justify-center font-bold">
                         <ClipboardList className="w-6 h-6" />
                     </div>
                     <div>
-                        <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Total Dossiers</p>
-                        <p className="text-2xl font-bold text-gray-900 mt-0.5">{applications.length}</p>
+                        <p className="text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">Total Dossiers</p>
+                        <p className="text-2xl font-bold text-gray-900 dark:text-white mt-0.5">{applications.length}</p>
                     </div>
                 </div>
 
-                <div className="bg-white rounded-xl border border-gray-200 p-5 flex items-center gap-4">
-                    <div className="w-12 h-12 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center font-bold">
+                <div className="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-800 p-5 flex items-center gap-4">
+                    <div className="w-12 h-12 bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 rounded-xl flex items-center justify-center font-bold">
                         <GraduationCap className="w-6 h-6" />
                     </div>
                     <div>
-                        <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Academic Levels</p>
-                        <p className="text-2xl font-bold text-gray-900 mt-0.5">
+                        <p className="text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">Academic Levels</p>
+                        <p className="text-2xl font-bold text-gray-900 dark:text-white mt-0.5">
                             {majors.filter(m => m !== 'all').length || 0}
                         </p>
                     </div>
                 </div>
 
-                <div className="bg-white rounded-xl border border-gray-200 p-5 flex items-center gap-4">
+                <div className="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-800 p-5 flex items-center gap-4">
                     <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold ${
-                        joinEnabled ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-100 text-gray-500'
+                        joinEnabled ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400' : 'bg-gray-100 dark:bg-slate-800 text-gray-500 dark:text-slate-400'
                     }`}>
                         {joinEnabled ? <CheckCircle className="w-6 h-6" /> : <AlertCircle className="w-6 h-6" />}
                     </div>
                     <div>
-                        <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Portal Status</p>
-                        <p className={`text-2xl font-bold mt-0.5 ${joinEnabled ? 'text-emerald-600' : 'text-gray-700'}`}>
+                        <p className="text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">Portal Status</p>
+                        <p className={`text-2xl font-bold mt-0.5 ${joinEnabled ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-700 dark:text-slate-300'}`}>
                             {joinEnabled ? 'Active' : 'Offline'}
                         </p>
                     </div>
@@ -228,27 +228,27 @@ const Applications = () => {
             </div>
 
             {/* Search and Filters */}
-            <div className="bg-white rounded-xl border border-gray-200 p-4">
+            <div className="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-800 p-4">
                 <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
                     {/* Search */}
                     <div className="relative flex-1">
-                        <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                        <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-slate-500" />
                         <input
                             type="text"
                             placeholder="Search by candidate name, email, phone, or motivation..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2.5 bg-gray-50 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all placeholder:text-gray-400"
+                            className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-950 rounded-xl border border-gray-200 dark:border-slate-800 text-sm text-gray-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white dark:focus:bg-slate-900 transition-all placeholder:text-gray-400 dark:placeholder:text-slate-600"
                         />
                     </div>
 
                     {/* Filter by Major */}
                     <div className="flex items-center gap-2 min-w-[240px]">
-                        <Filter className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                        <Filter className="w-4 h-4 text-gray-400 dark:text-slate-500 flex-shrink-0" />
                         <select
                             value={selectedMajor}
                             onChange={(e) => setSelectedMajor(e.target.value)}
-                            className="w-full px-3 py-2.5 bg-gray-50 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all cursor-pointer font-medium text-gray-700"
+                            className="w-full px-3 py-2.5 bg-gray-50 dark:bg-slate-950 rounded-xl border border-gray-200 dark:border-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white dark:focus:bg-slate-900 transition-all cursor-pointer font-medium text-gray-700 dark:text-slate-200"
                         >
                             <option value="all">All Departments / Years</option>
                             {majors.filter(m => m !== 'all').map((major, index) => (
@@ -259,7 +259,7 @@ const Applications = () => {
                         </select>
                     </div>
 
-                    <div className="text-xs font-semibold text-gray-400 px-2 self-center">
+                    <div className="text-xs font-semibold text-gray-400 dark:text-slate-500 px-2 self-center">
                         {filteredApplications.length} candidate{filteredApplications.length !== 1 ? 's' : ''}
                     </div>
                 </div>
@@ -267,22 +267,22 @@ const Applications = () => {
 
             {/* Table Area */}
             {filteredApplications.length === 0 ? (
-                <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
-                    <div className="w-16 h-16 bg-blue-50 text-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <div className="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-800 p-12 text-center">
+                    <div className="w-16 h-16 bg-blue-50 dark:bg-blue-950/40 text-blue-500 dark:text-blue-400 rounded-2xl flex items-center justify-center mx-auto mb-4">
                         <ClipboardList className="w-8 h-8" />
                     </div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-1">No applications found</h3>
-                    <p className="text-gray-500 text-sm">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">No applications found</h3>
+                    <p className="text-gray-500 dark:text-slate-400 text-sm">
                         {searchTerm || selectedMajor !== 'all'
                             ? 'No applications match your current search or department filter'
                             : 'New candidates applying through the registration page will appear here'}
                     </p>
                 </div>
             ) : (
-                <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-sm overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="w-full text-left text-sm">
-                            <thead className="bg-gray-50/80 border-b border-gray-200 text-gray-500 uppercase tracking-wider text-[11px] font-semibold">
+                            <thead className="bg-gray-50/80 dark:bg-slate-800/60 border-b border-gray-200 dark:border-slate-800 text-gray-500 dark:text-slate-400 uppercase tracking-wider text-[11px] font-semibold">
                                 <tr>
                                     <th className="px-6 py-4 w-12 text-center">#</th>
                                     <th className="px-6 py-4">Candidate</th>
@@ -293,7 +293,7 @@ const Applications = () => {
                                     <th className="px-6 py-4 text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-100">
+                            <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
                                 {filteredApplications.map((app, index) => {
                                     const initials = app.full_name
                                         ?.split(' ')
@@ -305,11 +305,11 @@ const Applications = () => {
                                     return (
                                         <tr 
                                             key={app.id} 
-                                            className="hover:bg-blue-50/30 transition-colors group cursor-pointer"
+                                            className="hover:bg-blue-50/30 dark:hover:bg-slate-800/50 transition-colors group cursor-pointer"
                                             onClick={() => setSelectedApp(app)}
                                         >
                                             {/* Row Index */}
-                                            <td className="px-6 py-4 text-center text-xs font-semibold text-gray-400">
+                                            <td className="px-6 py-4 text-center text-xs font-semibold text-gray-400 dark:text-slate-500">
                                                 {index + 1}
                                             </td>
 
@@ -320,10 +320,10 @@ const Applications = () => {
                                                         {initials}
                                                     </div>
                                                     <div>
-                                                        <p className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                                                        <p className="font-bold text-gray-900 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                                                             {app.full_name}
                                                         </p>
-                                                        <span className="inline-flex items-center gap-1 text-[11px] text-gray-400 font-medium">
+                                                        <span className="inline-flex items-center gap-1 text-[11px] text-gray-400 dark:text-slate-500 font-medium">
                                                             ID #{app.id}
                                                         </span>
                                                     </div>
@@ -334,9 +334,9 @@ const Applications = () => {
                                             <td className="px-6 py-4 space-y-1" onClick={(e) => e.stopPropagation()}>
                                                 <a
                                                     href={`mailto:${app.email}`}
-                                                    className="flex items-center gap-2 text-xs font-medium text-gray-600 hover:text-blue-600 transition-colors"
+                                                    className="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                                                 >
-                                                    <Mail className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+                                                    <Mail className="w-3.5 h-3.5 text-gray-400 dark:text-slate-500 flex-shrink-0" />
                                                     <span>{app.email}</span>
                                                 </a>
                                                 {app.phone ? (
@@ -344,14 +344,14 @@ const Applications = () => {
                                                         href={getWhatsAppUrl(app.phone)}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
-                                                        className="inline-flex items-center gap-2 text-xs font-medium text-gray-600 hover:text-emerald-600 transition-colors group/phone"
+                                                        className="inline-flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors group/phone"
                                                         title={`Open WhatsApp chat with ${app.phone}`}
                                                     >
                                                         <WhatsAppIcon className="w-3.5 h-3.5 text-emerald-500 group-hover/phone:scale-110 transition-transform flex-shrink-0" />
                                                         <span className="group-hover/phone:underline font-mono">{app.phone}</span>
                                                     </a>
                                                 ) : (
-                                                    <span className="flex items-center gap-2 text-xs text-gray-300">
+                                                    <span className="flex items-center gap-2 text-xs text-gray-300 dark:text-slate-600">
                                                         <Phone className="w-3.5 h-3.5 flex-shrink-0" />
                                                         <span>No phone</span>
                                                     </span>
@@ -360,7 +360,7 @@ const Applications = () => {
 
                                             {/* Faculty / Major */}
                                             <td className="px-6 py-4">
-                                                <span className="inline-flex items-center px-2.5 py-1 bg-blue-50 text-blue-700 text-xs font-semibold rounded-lg border border-blue-100">
+                                                <span className="inline-flex items-center px-2.5 py-1 bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 text-xs font-semibold rounded-lg border border-blue-100 dark:border-blue-900/60">
                                                     <GraduationCap className="w-3 h-3 mr-1" />
                                                     {app.major || 'Engineering'}
                                                 </span>
@@ -369,10 +369,10 @@ const Applications = () => {
                                             {/* Motivation Snippet */}
                                             <td className="px-6 py-4 max-w-xs">
                                                 <div 
-                                                    className="flex items-center gap-2 text-xs text-gray-600 hover:text-blue-600 transition-colors cursor-pointer"
+                                                    className="flex items-center gap-2 text-xs text-gray-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer"
                                                     title="Click to read full statement"
                                                 >
-                                                    <MessageSquare className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+                                                    <MessageSquare className="w-3.5 h-3.5 text-gray-400 dark:text-slate-500 flex-shrink-0" />
                                                     <p className="truncate italic">
                                                         "{app.motivation || 'No motivation provided.'}"
                                                     </p>
@@ -380,9 +380,9 @@ const Applications = () => {
                                             </td>
 
                                             {/* Applied Date */}
-                                            <td className="px-6 py-4 text-xs text-gray-500 whitespace-nowrap">
+                                            <td className="px-6 py-4 text-xs text-gray-500 dark:text-slate-400 whitespace-nowrap">
                                                 <div className="flex items-center gap-1.5">
-                                                    <Calendar className="w-3.5 h-3.5 text-gray-400" />
+                                                    <Calendar className="w-3.5 h-3.5 text-gray-400 dark:text-slate-500" />
                                                     <span>
                                                         {new Date(app.created_at).toLocaleDateString('en-US', {
                                                             month: 'short',
@@ -398,14 +398,14 @@ const Applications = () => {
                                                 <div className="flex items-center justify-end gap-1">
                                                     <button
                                                         onClick={() => setSelectedApp(app)}
-                                                        className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                                        className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-slate-800 rounded-lg transition-colors"
                                                         title="View Full Application"
                                                     >
                                                         <Eye className="w-4 h-4" />
                                                     </button>
                                                     <button
                                                         onClick={(e) => handleDelete(app.id, e)}
-                                                        className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                                        className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-lg transition-colors"
                                                         title="Delete Dossier"
                                                     >
                                                         <Trash2 className="w-4 h-4" />
@@ -423,10 +423,10 @@ const Applications = () => {
 
             {/* Application Detail Modal */}
             {selectedApp && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
-                    <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-gray-100 space-y-5 animate-in zoom-in-95 duration-200">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 dark:bg-black/70 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-gray-100 dark:border-slate-800 space-y-5 animate-in zoom-in-95 duration-200">
                         {/* Modal Header */}
-                        <div className="flex items-start justify-between border-b border-gray-100 pb-4">
+                        <div className="flex items-start justify-between border-b border-gray-100 dark:border-slate-800 pb-4">
                             <div className="flex items-center gap-3">
                                 <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-[#1e3a8a] text-white rounded-xl flex items-center justify-center font-bold text-base shadow-sm">
                                     {selectedApp.full_name
@@ -437,8 +437,8 @@ const Applications = () => {
                                         .toUpperCase() || 'U'}
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-bold text-gray-900">{selectedApp.full_name}</h3>
-                                    <span className="inline-flex items-center text-xs font-semibold text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded border border-blue-100 mt-0.5">
+                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">{selectedApp.full_name}</h3>
+                                    <span className="inline-flex items-center text-xs font-semibold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/50 px-2.5 py-0.5 rounded border border-blue-100 dark:border-blue-900/60 mt-0.5">
                                         <GraduationCap className="w-3 h-3 mr-1" />
                                         {selectedApp.major || 'Engineering'}
                                     </span>
@@ -446,45 +446,45 @@ const Applications = () => {
                             </div>
                             <button
                                 onClick={() => setSelectedApp(null)}
-                                className="p-1.5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                                className="p-1.5 text-gray-400 hover:text-gray-700 dark:hover:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
                             >
                                 <X className="w-5 h-5" />
                             </button>
                         </div>
 
                         {/* Contact Information */}
-                        <div className="grid grid-cols-2 gap-3 text-xs bg-gray-50 rounded-xl p-3.5 border border-gray-100">
+                        <div className="grid grid-cols-2 gap-3 text-xs bg-gray-50 dark:bg-slate-950 rounded-xl p-3.5 border border-gray-100 dark:border-slate-800">
                             <div>
-                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Email Address</p>
-                                <a href={`mailto:${selectedApp.email}`} className="text-blue-600 font-semibold hover:underline break-all">
+                                <p className="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-0.5">Email Address</p>
+                                <a href={`mailto:${selectedApp.email}`} className="text-blue-600 dark:text-blue-400 font-semibold hover:underline break-all">
                                     {selectedApp.email}
                                 </a>
                             </div>
                             <div>
-                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Phone Number</p>
+                                <p className="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-0.5">Phone Number</p>
                                 <div>
                                     {selectedApp.phone ? (
                                         <a 
                                             href={getWhatsAppUrl(selectedApp.phone)} 
                                             target="_blank" 
                                             rel="noopener noreferrer"
-                                            className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600 hover:text-emerald-700 hover:underline bg-emerald-50 hover:bg-emerald-100/80 px-2.5 py-1 rounded-lg border border-emerald-200 transition-colors"
+                                            className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 hover:underline bg-emerald-50 dark:bg-emerald-950/50 hover:bg-emerald-100/80 px-2.5 py-1 rounded-lg border border-emerald-200 dark:border-emerald-800 transition-colors"
                                             title={`Open WhatsApp chat with ${selectedApp.phone}`}
                                         >
-                                            <WhatsAppIcon className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
+                                            <WhatsAppIcon className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
                                             <span className="font-mono">{selectedApp.phone}</span>
-                                            <span className="text-[9px] uppercase tracking-wider bg-white text-emerald-700 px-1 py-0.5 rounded font-bold border border-emerald-200 ml-0.5">
+                                            <span className="text-[9px] uppercase tracking-wider bg-white dark:bg-slate-900 text-emerald-700 dark:text-emerald-300 px-1 py-0.5 rounded font-bold border border-emerald-200 dark:border-emerald-800 ml-0.5">
                                                 WhatsApp
                                             </span>
                                         </a>
                                     ) : (
-                                        <span className="text-xs text-gray-400 font-medium">Not specified</span>
+                                        <span className="text-xs text-gray-400 dark:text-slate-500 font-medium">Not specified</span>
                                     )}
                                 </div>
                             </div>
-                            <div className="col-span-2 pt-2 border-t border-gray-200/60 flex items-center justify-between">
-                                <span className="text-gray-400">Date Received</span>
-                                <span className="font-semibold text-gray-700">
+                            <div className="col-span-2 pt-2 border-t border-gray-200/60 dark:border-slate-800 flex items-center justify-between">
+                                <span className="text-gray-400 dark:text-slate-500">Date Received</span>
+                                <span className="font-semibold text-gray-700 dark:text-slate-300">
                                     {new Date(selectedApp.created_at).toLocaleString()}
                                 </span>
                             </div>
@@ -492,11 +492,11 @@ const Applications = () => {
 
                         {/* Full Motivation Statement */}
                         <div>
-                            <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                                <MessageSquare className="w-4 h-4 text-blue-600" />
+                            <p className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                <MessageSquare className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                                 Statement of Motivation
                             </p>
-                            <div className="bg-slate-50 rounded-xl p-4 border border-slate-100 text-sm text-gray-800 leading-relaxed max-h-60 overflow-y-auto whitespace-pre-wrap font-sans">
+                            <div className="bg-slate-50 dark:bg-slate-950 rounded-xl p-4 border border-slate-100 dark:border-slate-800 text-sm text-gray-800 dark:text-slate-200 leading-relaxed max-h-60 overflow-y-auto whitespace-pre-wrap font-sans">
                                 {selectedApp.motivation || 'No motivation statement provided.'}
                             </div>
                         </div>
@@ -505,13 +505,13 @@ const Applications = () => {
                         <div className="pt-2 flex justify-between items-center">
                             <button
                                 onClick={() => handleDelete(selectedApp.id)}
-                                className="px-4 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 rounded-xl transition-colors"
+                                className="px-4 py-2 text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-xl transition-colors"
                             >
                                 Delete Dossier
                             </button>
                             <button
                                 onClick={() => setSelectedApp(null)}
-                                className="px-5 py-2.5 bg-gray-900 text-white text-xs font-semibold rounded-xl hover:bg-gray-800 transition-colors shadow-sm"
+                                className="px-5 py-2.5 bg-gray-900 hover:bg-gray-800 dark:bg-blue-600 dark:hover:bg-blue-500 text-white text-xs font-semibold rounded-xl transition-colors shadow-sm"
                             >
                                 Close
                             </button>
