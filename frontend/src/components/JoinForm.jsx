@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import settingsService from '../services/settingsService';
-import { User, Mail, Book, MessageSquare, Send, CheckCircle, Loader2, AlertCircle } from 'lucide-react';
+import { User, Mail, Book, MessageSquare, Send, CheckCircle, Loader2, AlertCircle, ChevronDown } from 'lucide-react';
 
 const JoinForm = ({ onSuccess }) => {
     const [formData, setFormData] = useState({
         full_name: '',
         email: '',
+        phone: '',
         major: '',
         motivation: ''
     });
@@ -122,20 +123,45 @@ const JoinForm = ({ onSuccess }) => {
                 </div>
             </div>
 
-            <div className="space-y-1.5 flex flex-col">
-                <label className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-[0.2em] px-1" htmlFor="major">
-                    Faculty / Major
-                </label>
-                <div className="relative group">
-                    <input
-                        id="major"
-                        type="text"
-                        required
-                        className="w-full px-4 py-3 bg-white border border-slate-200 focus:border-[#1e3a8a] outline-none transition-all text-sm font-medium text-slate-800 placeholder:text-slate-300"
-                        placeholder="e.g. Computer Science & Information Technology"
-                        value={formData.major}
-                        onChange={(e) => setFormData({ ...formData, major: e.target.value })}
-                    />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-1.5 flex flex-col">
+                    <label className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-[0.2em] px-1" htmlFor="phone">
+                        Phone Number
+                    </label>
+                    <div className="relative group">
+                        <input
+                            id="phone"
+                            type="tel"
+                            required
+                            className="w-full px-4 py-3 bg-white border border-slate-200 focus:border-[#1e3a8a] outline-none transition-all text-sm font-medium text-slate-800 placeholder:text-slate-300"
+                            placeholder="e.g. +212 600-000000"
+                            value={formData.phone}
+                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        />
+                    </div>
+                </div>
+
+                <div className="space-y-1.5 flex flex-col">
+                    <label className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-[0.2em] px-1" htmlFor="major">
+                        Faculty / Major
+                    </label>
+                    <div className="relative group">
+                        <select
+                            id="major"
+                            required
+                            className="w-full px-4 py-3 bg-white border border-slate-200 focus:border-[#1e3a8a] outline-none transition-all text-sm font-medium text-slate-800 cursor-pointer appearance-none pr-10"
+                            value={formData.major}
+                            onChange={(e) => setFormData({ ...formData, major: e.target.value })}
+                        >
+                            <option value="" disabled>Select your academic year / level</option>
+                            <option value="1ère Année Ingénieur">1ère Année Ingénieur</option>
+                            <option value="2ème Année Ingénieur">2ème Année Ingénieur</option>
+                            <option value="3ème Année Ingénieur">3ème Année Ingénieur</option>
+                            <option value="4ème Année Ingénieur">4ème Année Ingénieur</option>
+                            <option value="Autre / Other">Autre / Other</option>
+                        </select>
+                        <ChevronDown className="w-4 h-4 text-slate-400 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none group-hover:text-[#1e3a8a] transition-colors" />
+                    </div>
                 </div>
             </div>
 

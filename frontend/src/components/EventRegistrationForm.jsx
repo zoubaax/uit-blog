@@ -96,6 +96,18 @@ const EventRegistrationForm = ({ eventId, eventTitle, isDeadlinePassed, isFull, 
                     </div>
 
                     <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-widest block">Phone Number</label>
+                        <input
+                            name="phone"
+                            type="tel"
+                            placeholder="e.g. +212 600-000000"
+                            className="w-full px-4 py-3 border border-slate-200 outline-none text-sm focus:border-[#1e3a8a] transition-colors"
+                            value={formData.phone}
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                    <div className="space-y-1">
                         <label className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-widest block">Academic Institution</label>
                         <input
                             name="school_name"

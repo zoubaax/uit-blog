@@ -27,6 +27,7 @@ import PageLoader from '../components/PageLoader';
 import ArticleCard from '../components/ArticleCard';
 import MarkdownRenderer from '../components/MarkdownRenderer';
 import { getOptimizedImageUrl } from '../utils/cloudinaryUtils';
+import logoDark from '../assets/dark.png';
 
 const slugify = (text = '') => {
     return text
@@ -201,7 +202,7 @@ const ArticleDetail = () => {
         <article className="bg-white min-h-screen">
             {/* Scroll Progress Bar */}
             <div 
-                className="fixed top-0 left-0 h-1 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 z-50 transition-all duration-100"
+                className="fixed top-0 left-0 h-1 bg-gradient-to-r from-[#1e3a8a] via-blue-600 to-blue-400 z-50 transition-all duration-100"
                 style={{ width: `${scrollProgress}%` }}
             />
 
@@ -232,11 +233,13 @@ const ArticleDetail = () => {
                     <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-slate-100 text-xs text-slate-500">
                         {/* Author info */}
                         <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 text-white font-bold flex items-center justify-center text-xs shadow-sm">
-                                {(article.author_name || 'U')[0].toUpperCase()}
+                            <div className="w-9 h-9 rounded-full bg-white border border-slate-200/90 p-1 flex items-center justify-center shadow-sm overflow-hidden flex-shrink-0">
+                                <img src={logoDark} alt="UIT Club" className="w-full h-full object-contain" />
                             </div>
                             <div>
-                                <p className="font-bold text-slate-900 text-xs leading-none">{article.author_name || 'UIT Club Team'}</p>
+                                <p className="font-bold text-slate-900 text-xs leading-none">
+                                    {(article.author_name?.toLowerCase() === 'uit' || !article.author_name) ? 'UIT Club' : article.author_name}
+                                </p>
                                 <p className="text-[11px] text-slate-400 mt-0.5">Research & Technical Author</p>
                             </div>
                         </div>
@@ -478,12 +481,14 @@ const ArticleDetail = () => {
                         {/* Author Bio Box */}
                         <div className="mt-14 p-6 sm:p-8 bg-gradient-to-br from-slate-50 to-white rounded-3xl border border-slate-200/80 shadow-sm">
                             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
-                                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white font-extrabold text-2xl flex items-center justify-center flex-shrink-0 shadow-md">
-                                    {(article.author_name || 'U')[0].toUpperCase()}
+                                <div className="w-16 h-16 rounded-2xl bg-white border border-slate-200/80 p-2.5 flex items-center justify-center flex-shrink-0 shadow-md overflow-hidden">
+                                    <img src={logoDark} alt="UIT Club" className="w-full h-full object-contain" />
                                 </div>
                                 <div className="flex-1">
                                     <div className="flex items-center gap-2 mb-1">
-                                        <h3 className="text-xl font-bold text-slate-900">{article.author_name || 'UIT Club Team'}</h3>
+                                        <h3 className="text-xl font-bold text-slate-900">
+                                            {(article.author_name?.toLowerCase() === 'uit' || !article.author_name) ? 'UIT Club' : article.author_name}
+                                        </h3>
                                         <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-[10px] font-bold rounded-full">Author</span>
                                     </div>
                                     <p className="text-sm text-slate-600 leading-relaxed">

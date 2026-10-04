@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import settingsService from '../../services/settingsService';
 import {
     Mail,
+    Phone,
     GraduationCap,
     Clock,
     User,
@@ -67,6 +68,7 @@ const Applications = () => {
     const filteredApplications = applications.filter(app => {
         const matchesSearch = app.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             app.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            app.phone?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             app.motivation?.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesMajor = selectedMajor === 'all' || app.major === selectedMajor;
         return matchesSearch && matchesMajor;
@@ -90,7 +92,7 @@ const Applications = () => {
 
                 <div className="flex items-center gap-4">
                     <button
-                        onClick={() => exportToCSV(filteredApplications, 'club_applications', ['Full Name', 'Email', 'Major', 'Motivation', 'Created At'])}
+                        onClick={() => exportToCSV(filteredApplications, 'club_applications', ['Full Name', 'Email', 'Phone', 'Major', 'Motivation', 'Created At'])}
                         className="px-6 py-3 border border-slate-200 text-[#0f172a] text-[10px] font-black uppercase tracking-widest hover:bg-[#0f172a] hover:text-white transition-all duration-300 shadow-sm"
                     >
                         Export Data
@@ -164,6 +166,12 @@ const Applications = () => {
                                             <Mail className="w-3.5 h-3.5 text-slate-300" />
                                             {app.email}
                                         </div>
+                                        {app.phone && (
+                                            <div className="flex items-center gap-2 text-xs font-semibold text-slate-600">
+                                                <Phone className="w-3.5 h-3.5 text-slate-300" />
+                                                {app.phone}
+                                            </div>
+                                        )}
                                         <div className="flex items-center gap-2 text-xs font-semibold text-slate-400">
                                             <Clock className="w-3.5 h-3.5 text-slate-200" />
                                             RECEIVED: {new Date(app.created_at).toLocaleDateString()}

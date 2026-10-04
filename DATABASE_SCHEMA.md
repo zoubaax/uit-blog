@@ -133,6 +133,7 @@ Membership applications to join the club.
 | `id` | integer | PRIMARY KEY | `nextval('club_applications_id_seq')` |
 | `full_name` | varchar(255) | NOT NULL | - |
 | `email` | varchar(255) | NOT NULL | - |
+| `phone` | varchar(50) | - | - |
 | `major` | varchar(255) | NOT NULL | - |
 | `motivation` | text | NOT NULL | - |
 | `created_at` | timestamp | - | `CURRENT_TIMESTAMP` |
@@ -314,6 +315,7 @@ CREATE TABLE public.club_applications (
     id integer NOT NULL,
     full_name character varying(255) NOT NULL,
     email character varying(255) NOT NULL,
+    phone character varying(50),
     major character varying(255) NOT NULL,
     motivation text NOT NULL,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP

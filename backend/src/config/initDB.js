@@ -111,10 +111,12 @@ const initDB = async () => {
                 id SERIAL PRIMARY KEY,
                 full_name VARCHAR(255) NOT NULL,
                 email VARCHAR(255) NOT NULL,
+                phone VARCHAR(50),
                 major VARCHAR(255) NOT NULL,
                 motivation TEXT NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
+            ALTER TABLE club_applications ADD COLUMN IF NOT EXISTS phone VARCHAR(50);
         `);
         console.log('✓ Club Applications table ready');
         console.log('--- DB INITIALIZATION COMPLETE ---');

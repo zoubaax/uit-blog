@@ -1,6 +1,7 @@
 import { Calendar, ArrowRight, Clock, Eye, Trophy, Camera, Rocket, Globe } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getOptimizedImageUrl } from '../utils/cloudinaryUtils';
+import logoDark from '../assets/dark.png';
 
 const cleanMarkdownExcerpt = (text = '', maxLength = 140) => {
     if (!text) return '';
@@ -117,11 +118,11 @@ const ArticleCard = ({ article }) => {
 
                     <div className="mt-auto pt-3.5 border-t border-slate-100 flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                            <div className="w-6 h-6 bg-gradient-to-br from-blue-600 to-indigo-600 text-white rounded-full flex items-center justify-center text-[10px] font-bold shadow-sm">
-                                {(article.author_name || 'U')[0].toUpperCase()}
+                            <div className="w-6 h-6 rounded-full bg-white border border-slate-200/90 p-0.5 flex items-center justify-center shadow-sm overflow-hidden flex-shrink-0">
+                                <img src={logoDark} alt="UIT Club" className="w-full h-full object-contain" />
                             </div>
                             <span className="text-xs font-semibold text-slate-700 truncate max-w-[120px]">
-                                {article.author_name || 'UIT Club'}
+                                {(article.author_name?.toLowerCase() === 'uit' || !article.author_name) ? 'UIT Club' : article.author_name}
                             </span>
                         </div>
 

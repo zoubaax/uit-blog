@@ -49,12 +49,12 @@ const Footer = () => {
                         <Link to="/articles" className="text-sm font-medium text-[#475569] hover:text-[#1e3a8a] transition-colors">Articles</Link>
                         <Link to="/events" className="text-sm font-medium text-[#475569] hover:text-[#1e3a8a] transition-colors">Events</Link>
                         <Link to="/team" className="text-sm font-medium text-[#475569] hover:text-[#1e3a8a] transition-colors">Team</Link>
-                        <button 
-                            onClick={() => setShowJoinModal(true)}
-                            className="w-full sm:w-auto px-4 py-2.5 bg-[#1e3a8a] text-white text-sm font-semibold rounded hover:bg-[#1e1e6b] hover:shadow-md transition-all active:scale-95"
+                        <Link 
+                            to="/register"
+                            className="w-full sm:w-auto px-4 py-2.5 bg-[#1e3a8a] text-white text-sm font-semibold rounded hover:bg-[#1e1e6b] hover:shadow-md transition-all active:scale-95 inline-flex items-center justify-center"
                         >
                             Join Club
-                        </button>
+                        </Link>
                     </div>
                 </div>
                 

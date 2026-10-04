@@ -37,6 +37,8 @@ function App() {
           <Route path="events/:id" element={<EventDetail />} />
           <Route path="team" element={<Team />} />
           <Route path="apply" element={<Apply />} />
+          <Route path="register" element={<Apply />} />
+          <Route path="regester" element={<Apply />} />
           <Route path="login" element={<Login />} />
         </Route>
 

@@ -101,9 +101,9 @@ const Navbar = () => {
                         </Link>
                     </div>
 
-                    <button 
-                        onClick={() => setShowJoinModal(true)}
-                        className={`px-3 py-2 md:px-4 md:py-2 text-xs font-semibold rounded transition-all active:scale-95 ${
+                    <Link 
+                        to="/register"
+                        className={`px-3 py-2 md:px-4 md:py-2 text-xs font-semibold rounded transition-all active:scale-95 inline-flex items-center justify-center ${
                             !isHomePage || isScrolled
                                 ? 'bg-[#1e3a8a] text-white hover:bg-[#1e1e6b] hover:shadow-md'
                                 : 'bg-white text-[#1e3a8a] hover:bg-white/90'
@@ -111,7 +111,7 @@ const Navbar = () => {
                     >
                         <span className="hidden sm:inline">Join Club</span>
                         <span className="sm:hidden">Join</span>
-                    </button>
+                    </Link>
 
                     <JoinModal isOpen={showJoinModal} onClose={() => setShowJoinModal(false)} />
 
@@ -155,12 +155,13 @@ const Navbar = () => {
                         Team
                     </Link>
                     <div className="pt-2 mt-2 border-t border-slate-100">
-                        <button 
-                            onClick={() => { setIsOpen(false); setShowJoinModal(true); }}
-                            className="w-full px-4 py-3 bg-[#1e3a8a] text-white text-sm font-semibold rounded-lg active:scale-[0.98] transition-all text-center"
+                        <Link 
+                            to="/register"
+                            onClick={() => setIsOpen(false)}
+                            className="block w-full px-4 py-3 bg-[#1e3a8a] text-white text-sm font-semibold rounded-lg active:scale-[0.98] transition-all text-center"
                         >
                             Join Club
-                        </button>
+                        </Link>
                     </div>
                 </div>
             )}
