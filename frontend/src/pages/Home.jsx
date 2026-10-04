@@ -14,7 +14,7 @@ import bannerImage from '../assets/banner.png';
  */
 
 // --- DYNAMIC DATA HOOKS ---
-const useReveal = () => {
+const useReveal = (dep) => {
     useEffect(() => {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -27,62 +27,63 @@ const useReveal = () => {
 
         const elements = document.querySelectorAll('.reveal-element');
         elements.forEach(el => {
-            el.classList.add('reveal-hidden');
+            if (!el.classList.contains('reveal-visible')) {
+                el.classList.add('reveal-hidden');
+            }
             observer.observe(el);
         });
 
         return () => observer.disconnect();
-    }, []);
+    }, [dep]);
 };
 
 const Home = () => {
-    useReveal();
-
     const [stats, setStats] = useState({ members: 0, articles: 0, events: 0 });
     const [articles, setArticles] = useState([]);
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    useReveal(loading);
+
     useEffect(() => {
+        let isMounted = true;
         const fetchData = async () => {
             try {
-                // Fetch articles
-                const articlesResponse = await articleService.getAll();
-                const allArticles = articlesResponse.data || [];
-                setArticles(allArticles.slice(0, 3)); // Get first 3 for homepage
+                // Fetch in parallel for maximum speed
+                const [articlesResponse, eventsResponse, teamResponse] = await Promise.all([
+                    articleService.getAll({ limit: 3 }),
+                    eventService.getAll(),
+                    teamService.getAll()
+                ]);
 
-                // Fetch events
-                const eventsResponse = await eventService.getAll();
-                const allEvents = eventsResponse.data || [];
+                if (!isMounted) return;
+
+                const allArticles = articlesResponse?.data || [];
+                setArticles(allArticles.slice(0, 3));
+
+                const allEvents = eventsResponse?.data || [];
                 const upcomingEvents = allEvents
                     .filter(e => new Date(e.date) > new Date())
                     .sort((a, b) => new Date(a.date) - new Date(b.date))
-                    .slice(0, 4); // Get next 4 upcoming events
+                    .slice(0, 4);
                 setEvents(upcomingEvents);
 
-                // Fetch team members count
-                const teamResponse = await teamService.getAll();
-                const members = teamResponse.data || [];
-
-                // Update stats
+                const members = teamResponse?.data || [];
                 setStats({
                     members: members.length,
-                    articles: articlesResponse.total ?? allArticles.length,
+                    articles: articlesResponse?.total ?? allArticles.length,
                     events: allEvents.length
                 });
             } catch (error) {
                 console.error('Error fetching homepage data:', error);
             } finally {
-                setLoading(false);
+                if (isMounted) setLoading(false);
             }
         };
 
         fetchData();
+        return () => { isMounted = false; };
     }, []);
-
-    if (loading) {
-        return <PageLoader />;
-    }
 
     return (
         <div className="min-h-screen bg-white">
@@ -150,7 +151,21 @@ const Home = () => {
                     </div>
 
                     <div className="grid md:grid-cols-3 gap-8 mb-12">
-                        {articles.length > 0 ? (
+                        {loading ? (
+                            [1, 2, 3].map((n) => (
+                                <div key={n} className="flex flex-col bg-white border border-slate-100 rounded-lg overflow-hidden animate-pulse">
+                                    <div className="w-full h-48 bg-slate-100" />
+                                    <div className="flex flex-col p-6 flex-1 space-y-4">
+                                        <div className="h-5 bg-slate-200/80 rounded w-3/4" />
+                                        <div className="space-y-2 flex-1">
+                                            <div className="h-3.5 bg-slate-100 rounded w-full" />
+                                            <div className="h-3.5 bg-slate-100 rounded w-5/6" />
+                                        </div>
+                                        <div className="h-3.5 bg-slate-100 rounded w-1/3 pt-2" />
+                                    </div>
+                                </div>
+                            ))
+                        ) : articles.length > 0 ? (
                             articles.map((article, i) => (
                                 <Link
                                     key={article.id}
@@ -213,44 +228,51 @@ const Home = () => {
                     </div>
 
                     <div className="max-w-4xl">
-                        {events.length > 0 ? (
-                            events.map((event, i) => {
-                                const eventDate = new Date(event.date);
-                                const day = eventDate.getDate().toString().padStart(2, '0');
-                                const month = eventDate.toLocaleString('en-US', { month: 'short' }).toUpperCase();
-
-                                return (
-                                    <Link
-                                        key={event.id}
-                                        to={`/events/${event.id}`}
-                                        className="grid grid-cols-[80px_1fr] md:grid-cols-[120px_1fr] lg:grid-cols-[140px_1fr] py-8 border-b border-slate-100 first:pt-0 reveal-element hover:bg-slate-50/50 -mx-4 px-4 rounded-lg transition-colors group gap-6"
-                                        style={{ transitionDelay: `${i * 100}ms` }}
-                                    >
-                                        <div className="flex flex-col gap-3">
-                                            <div className="flex flex-col">
-                                                <span className="text-2xl font-bold text-[#1e3a8a]">{day}</span>
-                                                <span className="text-xs font-bold text-[#94a3b8]">{month}</span>
-                                            </div>
-                                            <div className="w-full aspect-square md:aspect-[4/5] rounded-lg overflow-hidden border border-slate-100 shadow-sm">
-                                                <img
-                                                    src={event.cover_image_url ? getOptimizedImageUrl(event.cover_image_url, 300, 375) : 'https://images.unsplash.com/photo-1540575861501-7ad058138a31?auto=format&fit=crop&q=80&w=300'}
-                                                    alt={event.title}
-                                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                                />
-                                            </div>
+                        {loading ? (
+                            [1, 2].map((n) => (
+                                <div key={n} className="grid grid-cols-[80px_1fr] md:grid-cols-[120px_1fr] py-8 border-b border-slate-100 gap-6 animate-pulse">
+                                    <div className="space-y-3">
+                                        <div className="h-8 w-12 bg-slate-200/70 rounded" />
+                                        <div className="w-full aspect-square rounded-lg bg-slate-100" />
+                                    </div>
+                                    <div className="flex flex-col justify-center space-y-3">
+                                        <div className="h-5 bg-slate-200/80 rounded w-2/3" />
+                                        <div className="h-3.5 bg-slate-100 rounded w-full max-w-md" />
+                                    </div>
+                                </div>
+                            ))
+                        ) : events.length > 0 ? (
+                            events.map((event, i) => (
+                                <Link
+                                    key={event.id}
+                                    to={`/events/${event.id}`}
+                                    className="grid grid-cols-[80px_1fr] md:grid-cols-[120px_1fr] lg:grid-cols-[140px_1fr] py-8 border-b border-slate-100 first:pt-0 reveal-element hover:bg-slate-50/50 -mx-4 px-4 rounded-lg transition-colors group gap-6"
+                                    style={{ transitionDelay: `${i * 100}ms` }}
+                                >
+                                    <div className="flex flex-col gap-3">
+                                        <div className="flex flex-col">
+                                            <span className="text-2xl font-bold text-[#1e3a8a]">{new Date(event.date).getDate().toString().padStart(2, '0')}</span>
+                                            <span className="text-xs font-bold text-[#94a3b8]">{new Date(event.date).toLocaleString('en-US', { month: 'short' }).toUpperCase()}</span>
                                         </div>
-                                        <div className="flex flex-col justify-center">
-                                            <h4 className="text-xl font-semibold text-[#1e3a8a] mb-2 group-hover:text-[#2563eb] transition-colors">{event.title}</h4>
-                                            <p className="text-[#475569] text-sm leading-relaxed max-w-xl">
-                                                {event.description?.substring(0, 120)}...
-                                            </p>
-                                            <span className="inline-block mt-3 text-[#2563eb] text-xs font-semibold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity">
-                                                View Details →
-                                            </span>
+                                        <div className="w-full aspect-square md:aspect-[4/5] rounded-lg overflow-hidden border border-slate-100 shadow-sm">
+                                            <img
+                                                src={event.cover_image_url ? getOptimizedImageUrl(event.cover_image_url, 300, 375) : 'https://images.unsplash.com/photo-1540575861501-7ad058138a31?auto=format&fit=crop&q=80&w=300'}
+                                                alt={event.title}
+                                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                            />
                                         </div>
-                                    </Link>
-                                );
-                            })
+                                    </div>
+                                    <div className="flex flex-col justify-center">
+                                        <h4 className="text-xl font-semibold text-[#1e3a8a] mb-2 group-hover:text-[#2563eb] transition-colors">{event.title}</h4>
+                                        <p className="text-[#475569] text-sm leading-relaxed max-w-xl">
+                                            {event.description?.substring(0, 120)}...
+                                        </p>
+                                        <span className="inline-block mt-3 text-[#2563eb] text-xs font-semibold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity">
+                                            View Details →
+                                        </span>
+                                    </div>
+                                </Link>
+                            ))
                         ) : (
                             <div className="text-center py-12 bg-[#f8fafc] rounded border border-slate-200">
                                 <p className="text-[#475569]">No upcoming events scheduled.</p>

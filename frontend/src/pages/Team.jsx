@@ -24,10 +24,6 @@ const Team = () => {
         fetchMembers();
     }, []);
 
-    if (loading) {
-        return <PageLoader message="Loading team" />;
-    }
-
     return (
         <div className="bg-white min-h-screen">
             {/* Header Section */}
@@ -47,7 +43,17 @@ const Team = () => {
 
             {/* Team Grid */}
             <main className="max-w-7xl mx-auto px-6 pb-24">
-                {error ? (
+                {loading ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
+                        {[1, 2, 3, 4].map((n) => (
+                            <div key={n} className="flex flex-col items-center space-y-4 animate-pulse">
+                                <div className="w-48 h-48 rounded-2xl bg-slate-100" />
+                                <div className="h-5 bg-slate-200/80 rounded w-32" />
+                                <div className="h-3.5 bg-slate-100 rounded w-24" />
+                            </div>
+                        ))}
+                    </div>
+                ) : error ? (
                     <div className="text-center py-20 bg-[#f8fafc] rounded border border-slate-200">
                         <p className="text-red-600 font-medium">{error}</p>
                     </div>

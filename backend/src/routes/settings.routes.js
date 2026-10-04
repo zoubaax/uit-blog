@@ -3,9 +3,10 @@ const router = express.Router();
 const settingsModel = require('../models/settingsModel');
 const { protect } = require('../middlewares/authMiddleware');
 const AppError = require('../utils/appError');
+const { cacheMiddleware, invalidatePrefix } = require('../utils/cache');
 
-// Public: Get join form status
-router.get('/join-status', async (req, res, next) => {
+// Public: Get join form status (cached for 30s)
+router.get('/join-status', cacheMiddleware(30, '/api/v1/settings'), async (req, res, next) => {
     try {
         const enabled = await settingsModel.getSetting('join_form_enabled');
         res.json({ success: true, enabled: enabled === true || enabled === 'true' });
@@ -31,6 +32,7 @@ router.post('/apply', async (req, res, next) => {
 // Admin: Toggle join form
 router.put('/join-toggle', protect, async (req, res, next) => {
     try {
+        invalidatePrefix('/api/v1/settings');
         const { enabled } = req.body;
         const value = await settingsModel.updateSetting('join_form_enabled', enabled);
         res.json({ success: true, enabled: value });
