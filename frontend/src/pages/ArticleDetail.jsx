@@ -493,7 +493,7 @@ const ArticleDetail = () => {
                                         <span className="px-2 py-0.5 bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 text-[10px] font-bold rounded-full border border-blue-200 dark:border-blue-800">Author</span>
                                     </div>
                                     <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-                                        Active contributor at the University of IT Club (UPF). Sharing research, hands-on tutorials, and engineering best practices to inspire student innovation.
+                                        Active contributor at the UIT Club (UPF University). Sharing research, hands-on tutorials, and engineering best practices to inspire student innovation.
                                     </p>
                                 </div>
                             </div>

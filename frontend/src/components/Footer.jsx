@@ -68,7 +68,7 @@ const Footer = () => {
                 </div>
                 
                 <div className="pt-6 md:pt-8 border-t border-slate-100 dark:border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-medium text-slate-400 dark:text-slate-500 uppercase tracking-widest">
-                    <div className="text-center md:text-left">© {new Date().getFullYear()} University of IT Club. All rights reserved.</div>
+                    <div className="text-center md:text-left">© {new Date().getFullYear()} UIT Club — UPF University. All rights reserved.</div>
                     <div className="text-center md:text-right">Made with care by UIT Dev Team</div>
                 </div>
             </div>
