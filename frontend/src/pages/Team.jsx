@@ -2,8 +2,14 @@ import { useState, useEffect } from 'react';
 import teamService from '../services/teamService';
 import TeamCard from '../components/TeamCard';
 import PageLoader from '../components/PageLoader';
+import usePageMeta from '../hooks/usePageMeta';
 
 const Team = () => {
+    usePageMeta({
+        title: 'Leadership & Team',
+        description: 'Meet the executive board and leads driving innovation at UIT Club, UPF University.'
+    });
+
     const [members, setMembers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);

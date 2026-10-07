@@ -5,6 +5,7 @@ import { ArrowLeft, MapPin, Calendar, Clock, Camera, ArrowRight, CheckCircle2 } 
 import PageLoader from '../components/PageLoader';
 import EventRegistrationForm from '../components/EventRegistrationForm';
 import { getOptimizedImageUrl } from '../utils/cloudinaryUtils';
+import usePageMeta from '../hooks/usePageMeta';
 
 const EventDetail = () => {
     const { id } = useParams();
@@ -12,6 +13,12 @@ const EventDetail = () => {
     const [event, setEvent] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    usePageMeta({
+        title: event?.title,
+        description: event?.description,
+        image: event?.cover_image
+    });
 
     useEffect(() => {
         const fetchEvent = async () => {

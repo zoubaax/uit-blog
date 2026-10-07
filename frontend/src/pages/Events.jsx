@@ -2,8 +2,14 @@ import { useState, useEffect } from 'react';
 import eventService from '../services/eventService';
 import EventCard from '../components/EventCard';
 import PageLoader from '../components/PageLoader';
+import usePageMeta from '../hooks/usePageMeta';
 
 const Events = () => {
+    usePageMeta({
+        title: 'Upcoming Events & Workshops',
+        description: 'Explore upcoming tech workshops, hackathons, and conferences organized by UIT Club at UPF University.'
+    });
+
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);

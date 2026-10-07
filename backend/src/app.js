@@ -10,20 +10,31 @@ const app = express();
 const allowedOrigins = [
     'http://localhost:5173',
     'http://localhost:3000',
+    'https://uit-upf.tech',
+    'https://www.uit-upf.tech',
+    'https://uit-blog.vercel.app',
     process.env.FRONTEND_URL
-].filter(Boolean); // Removes undefined if FRONTEND_URL isn't set
+].filter(Boolean);
+
+const isOriginAllowed = (origin) => {
+    if (!origin) return true; // Allow mobile apps, curl, or server-to-server requests
+    if (allowedOrigins.includes(origin)) return true;
+    if (/^https:\/\/(www\.)?uit-upf\.tech$/.test(origin)) return true;
+    if (/^https:\/\/uit-blog.*\.vercel\.app$/.test(origin)) return true;
+    return false;
+};
 
 app.use(cors({
     origin: (origin, callback) => {
-        // Allow requests with no origin (like mobile apps or curl requests)
-        if (!origin) return callback(null, true);
-        if (allowedOrigins.indexOf(origin) === -1) {
-            const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-            return callback(new Error(msg), false);
+        if (isOriginAllowed(origin)) {
+            return callback(null, true);
         }
-        return callback(null, true);
+        const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+        return callback(new Error(msg), false);
     },
-    credentials: true
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
 }));
 
 // 2. Set Security HTTP headers
@@ -43,7 +54,7 @@ app.get('/health', (req, res) => {
 // Root route for deployment testing
 app.get('/', (req, res) => {
     res.status(200).json({ 
-        message: 'University of IT Club API is live!',
+        message: 'UIT Club API is live!',
         version: '1.0.0',
         environment: process.env.NODE_ENV
     });

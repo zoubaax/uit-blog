@@ -1,6 +1,32 @@
 {
   "rewrites": [
     {
+      "source": "/articles/:id",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": ".*(bot|facebookexternalhit|whatsapp|twitterbot|pinterest|googlebot|linkedinbot|telegrambot|discordbot|slackbot).*"
+        }
+      ],
+      "destination": "/api/og?type=article&id=:id"
+    },
+    {
+      "source": "/events/:id",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": ".*(bot|facebookexternalhit|whatsapp|twitterbot|pinterest|googlebot|linkedinbot|telegrambot|discordbot|slackbot).*"
+        }
+      ],
+      "destination": "/api/og?type=event&id=:id"
+    },
+    {
+      "source": "/api/v1/:path*",
+      "destination": "https://uit-blog-i5lz.vercel.app/api/v1/:path*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

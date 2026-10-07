@@ -3,8 +3,14 @@ import articleService from '../services/articleService';
 import ArticleCard from '../components/ArticleCard';
 import PageLoader from '../components/PageLoader';
 import { Search, X, SlidersHorizontal, BookOpen, Sparkles, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
+import usePageMeta from '../hooks/usePageMeta';
 
 const Articles = () => {
+    usePageMeta({
+        title: 'Articles & Research',
+        description: 'Explore engineering articles, technical tutorials, and academic publications from UIT Club at UPF University.'
+    });
+
     const [articles, setArticles] = useState([]);
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState('All');

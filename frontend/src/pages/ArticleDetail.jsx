@@ -28,6 +28,7 @@ import ArticleCard from '../components/ArticleCard';
 import MarkdownRenderer from '../components/MarkdownRenderer';
 import { getOptimizedImageUrl } from '../utils/cloudinaryUtils';
 import logoDark from '../assets/dark.png';
+import usePageMeta from '../hooks/usePageMeta';
 
 const slugify = (text = '') => {
     return text
@@ -49,6 +50,12 @@ const ArticleDetail = () => {
     const [scrollProgress, setScrollProgress] = useState(0);
     const [liked, setLiked] = useState(false);
     const [likeCount, setLikeCount] = useState(0);
+
+    usePageMeta({
+        title: article?.title,
+        description: article?.excerpt,
+        image: article?.cover_image
+    });
 
     // Track scroll progress
     useEffect(() => {
