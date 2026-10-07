@@ -1,12 +1,43 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { ArrowUpRight, CalendarDays, FileText, Home, Menu, Users, X } from 'lucide-react';
 import JoinModal from './JoinModal';
 import ThemeToggle from './ThemeToggle';
 import { useTheme } from '../context/ThemeContext';
 
 import logo from '../assets/logo.png';
 import logoDark from '../assets/dark.png';
+
+const NAV_LINKS = [
+    {
+        to: '/articles',
+        label: 'Articles',
+        icon: FileText,
+        isActive: (path) => path.startsWith('/articles'),
+    },
+    {
+        to: '/events',
+        label: 'Events',
+        icon: CalendarDays,
+        isActive: (path) => path.startsWith('/events'),
+    },
+    {
+        to: '/team',
+        label: 'Team',
+        icon: Users,
+        isActive: (path) => path === '/team',
+    },
+];
+
+const MOBILE_LINKS = [
+    {
+        to: '/',
+        label: 'Home',
+        icon: Home,
+        isActive: (path) => path === '/' || path === '',
+    },
+    ...NAV_LINKS,
+];
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -25,16 +56,51 @@ const Navbar = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+    useEffect(() => {
+        setIsOpen(false);
+    }, [location.pathname]);
+
+    useEffect(() => {
+        const media = window.matchMedia('(min-width: 768px)');
+        const closeOnDesktop = () => {
+            if (media.matches) setIsOpen(false);
+        };
+
+        media.addEventListener('change', closeOnDesktop);
+        return () => media.removeEventListener('change', closeOnDesktop);
+    }, []);
+
+    useEffect(() => {
+        if (!isOpen) return undefined;
+
+        const previousOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+
+        const handleKeyDown = (event) => {
+            if (event.key === 'Escape') setIsOpen(false);
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => {
+            document.body.style.overflow = previousOverflow;
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [isOpen]);
+
     const isTransparent = isHomePage && !isScrolled;
+    const showJoin = !location.pathname.startsWith('/register')
+        && !location.pathname.startsWith('/apply')
+        && !location.pathname.startsWith('/regester');
 
     return (
-        <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        <>
+        <nav className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
             !isTransparent
-                ? 'bg-white/95 dark:bg-slate-950/90 backdrop-blur-md border-b border-slate-100 dark:border-slate-800/80 py-3 md:py-4 shadow-xs' 
-                : 'bg-transparent py-4 md:py-6'
+                ? 'bg-white/90 dark:bg-slate-950/85 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800'
+                : 'bg-transparent'
         }`}>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
-                <Link to="/" className="flex items-center">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 md:h-[4.5rem] flex items-center justify-between gap-4">
+                <Link to="/" onClick={() => setIsOpen(false)} className="flex items-center shrink-0">
                     <img 
                         src={isTransparent ? logo : logoDark} 
                         alt="UIT Logo" 
@@ -45,143 +111,141 @@ const Navbar = () => {
                     />
                 </Link>
 
-                <div className="flex items-center gap-2 sm:gap-3 md:gap-6">
-                    <div className="hidden md:flex items-center gap-6">
-                        <Link 
-                            to="/articles" 
-                            className={`relative text-sm font-medium transition-all group ${
-                                !isTransparent
-                                    ? location.pathname.startsWith('/articles') 
-                                        ? 'text-blue-600 dark:text-blue-400 font-semibold' 
-                                        : 'text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400'
-                                    : location.pathname.startsWith('/articles') 
-                                        ? 'text-white font-semibold' 
-                                        : 'text-white/90 hover:text-white'
-                            }`}
-                        >
-                            Articles
-                            <span className={`absolute -bottom-1 left-0 h-0.5 transition-all duration-300 ${
-                                location.pathname.startsWith('/articles') 
-                                    ? 'w-full bg-current' 
-                                    : 'w-0 group-hover:w-full bg-current'
-                            }`}></span>
-                        </Link>
-                        <Link 
-                            to="/events" 
-                            className={`relative text-sm font-medium transition-all group ${
-                                !isTransparent
-                                    ? location.pathname.startsWith('/events') 
-                                        ? 'text-blue-600 dark:text-blue-400 font-semibold' 
-                                        : 'text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400'
-                                    : location.pathname.startsWith('/events') 
-                                        ? 'text-white font-semibold' 
-                                        : 'text-white/90 hover:text-white'
-                            }`}
-                        >
-                            Events
-                            <span className={`absolute -bottom-1 left-0 h-0.5 transition-all duration-300 ${
-                                location.pathname.startsWith('/events') 
-                                    ? 'w-full bg-current' 
-                                    : 'w-0 group-hover:w-full bg-current'
-                            }`}></span>
-                        </Link>
-                        <Link 
-                            to="/team" 
-                            className={`relative text-sm font-medium transition-all group ${
-                                !isTransparent
-                                    ? location.pathname === '/team' 
-                                        ? 'text-blue-600 dark:text-blue-400 font-semibold' 
-                                        : 'text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400'
-                                    : location.pathname === '/team' 
-                                        ? 'text-white font-semibold' 
-                                        : 'text-white/90 hover:text-white'
-                            }`}
-                        >
-                            Team
-                            <span className={`absolute -bottom-1 left-0 h-0.5 transition-all duration-300 ${
-                                location.pathname === '/team' 
-                                    ? 'w-full bg-current' 
-                                    : 'w-0 group-hover:w-full bg-current'
-                            }`}></span>
-                        </Link>
+                <div className="flex items-center gap-1 sm:gap-2">
+                    <div className="hidden md:flex items-center gap-1">
+                        {NAV_LINKS.map((item) => {
+                            const active = item.isActive(location.pathname);
+                            return (
+                                <Link
+                                    key={item.to}
+                                    to={item.to}
+                                    aria-current={active ? 'page' : undefined}
+                                    className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
+                                        !isTransparent
+                                            ? active
+                                                ? 'bg-blue-50 text-blue-700 dark:bg-blue-500/15 dark:text-blue-300'
+                                                : 'text-slate-600 hover:bg-slate-100 hover:text-blue-600 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-blue-300'
+                                            : active
+                                                ? 'bg-white/15 text-white'
+                                                : 'text-white/90 hover:bg-white/10 hover:text-white'
+                                    }`}
+                                >
+                                    {item.label}
+                                </Link>
+                            );
+                        })}
                     </div>
 
-                    {/* Theme Toggle (Mobile & Desktop) */}
-                    <ThemeToggle transparentOnTop={isTransparent} className="flex" />
+                    <span
+                        className={`hidden md:block mx-1 h-5 w-px ${
+                            isTransparent ? 'bg-white/30' : 'bg-slate-200 dark:bg-slate-700'
+                        }`}
+                        aria-hidden="true"
+                    />
 
-                    {!location.pathname.startsWith('/register') && !location.pathname.startsWith('/apply') && !location.pathname.startsWith('/regester') && (
-                        <Link 
+                    <ThemeToggle transparentOnTop={isTransparent} />
+
+                    {showJoin && (
+                        <Link
                             to="/register"
-                            className={`px-3 py-2 md:px-4 md:py-2 text-xs font-semibold rounded transition-all active:scale-95 inline-flex items-center justify-center shadow-xs ${
+                            className={`hidden md:inline-flex h-10 items-center justify-center rounded-lg px-4 text-sm font-semibold transition-colors active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
                                 !isTransparent
-                                    ? 'bg-blue-600 hover:bg-blue-700 text-white hover:shadow-md dark:bg-blue-600 dark:hover:bg-blue-500'
+                                    ? 'bg-blue-600 text-white hover:bg-blue-500 dark:bg-blue-600 dark:hover:bg-blue-500'
                                     : 'bg-white text-[#1e3a8a] hover:bg-white/90'
                             }`}
                         >
-                            <span className="hidden sm:inline">Join Club</span>
-                            <span className="sm:hidden">Join</span>
+                            Join Club
                         </Link>
                     )}
 
                     <JoinModal isOpen={showJoinModal} onClose={() => setShowJoinModal(false)} />
 
-                    {/* Mobile Toggle */}
                     <button
-                        onClick={() => setIsOpen(!isOpen)}
-                        className={`md:hidden p-2 rounded-lg transition-colors ${
+                        type="button"
+                        onClick={() => setIsOpen((open) => !open)}
+                        className={`md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
                             !isTransparent
-                                ? 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800' 
+                                ? 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
                                 : 'text-white hover:bg-white/10'
                         }`}
-                        aria-label="Toggle menu"
+                        aria-label={isOpen ? 'Close menu' : 'Open menu'}
+                        aria-expanded={isOpen}
+                        aria-controls="mobile-menu"
                     >
                         {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                     </button>
                 </div>
             </div>
+        </nav>
 
-            {/* Mobile Menu */}
             {isOpen && (
-                <div className="md:hidden absolute top-full left-0 w-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 py-4 px-4 flex flex-col gap-2 animate-in fade-in slide-in-from-top-4 duration-200 shadow-xl">
-                    <Link 
-                        to="/articles" 
-                        onClick={() => setIsOpen(false)} 
-                        className="px-4 py-3 text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-800/60 rounded-xl transition-all"
-                    >
-                        Articles
-                    </Link>
-                    <Link 
-                        to="/events" 
-                        onClick={() => setIsOpen(false)} 
-                        className="px-4 py-3 text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-800/60 rounded-xl transition-all"
-                    >
-                        Events
-                    </Link>
-                    <Link 
-                        to="/team" 
-                        onClick={() => setIsOpen(false)} 
-                        className="px-4 py-3 text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-800/60 rounded-xl transition-all"
-                    >
-                        Team
-                    </Link>
+                <div id="mobile-menu" className="md:hidden fixed inset-0 z-[60] mobile-menu-panel">
+                    <button
+                        type="button"
+                        className="absolute inset-0 bg-slate-950/40 backdrop-blur-[2px]"
+                        aria-label="Close menu"
+                        onClick={() => setIsOpen(false)}
+                    />
+                    <div className="mobile-menu-drawer absolute inset-y-0 right-0 flex h-full w-[min(86%,340px)] flex-col bg-white text-slate-900 shadow-[0_0_40px_rgba(15,23,42,0.18)] dark:bg-slate-950 dark:text-slate-100 dark:shadow-[0_0_40px_rgba(0,0,0,0.45)]">
+                        <div className="flex items-center justify-between px-5 pt-5 pb-4">
+                            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-blue-600 dark:text-blue-400">
+                                Menu
+                            </p>
+                            <button
+                                type="button"
+                                onClick={() => setIsOpen(false)}
+                                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 text-slate-500 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-900"
+                                aria-label="Close menu"
+                            >
+                                <X className="h-4 w-4" />
+                            </button>
+                        </div>
 
-                    <div className="flex items-center justify-between px-4 py-2.5 my-1 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800">
-                        <span className="text-xs font-medium text-slate-600 dark:text-slate-300">Appearance</span>
-                        <ThemeToggle />
-                    </div>
+                        <nav className="flex flex-1 flex-col gap-1 px-3">
+                            {MOBILE_LINKS.map((item) => {
+                                const active = item.isActive(location.pathname);
+                                const Icon = item.icon;
+                                return (
+                                    <Link
+                                        key={item.to}
+                                        to={item.to}
+                                        onClick={() => setIsOpen(false)}
+                                        aria-current={active ? 'page' : undefined}
+                                        className={`flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] font-medium transition-colors ${
+                                            active
+                                                ? 'bg-blue-50 text-blue-700 dark:bg-blue-500/15 dark:text-blue-300'
+                                                : 'text-slate-700 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-900'
+                                        }`}
+                                    >
+                                        <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
+                                            active
+                                                ? 'bg-blue-600 text-white dark:bg-blue-500'
+                                                : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-300'
+                                        }`}>
+                                            <Icon className="h-4 w-4" />
+                                        </span>
+                                        {item.label}
+                                    </Link>
+                                );
+                            })}
+                        </nav>
 
-                    <div className="pt-2 mt-1 border-t border-slate-100 dark:border-slate-800">
-                        <Link 
-                            to="/register"
-                            onClick={() => setIsOpen(false)}
-                            className="block w-full px-4 py-3 bg-blue-600 text-white text-sm font-semibold rounded active:scale-[0.98] transition-all text-center shadow-sm"
-                        >
-                            Join Club
-                        </Link>
+                        {showJoin && (
+                            <div className="p-4">
+                                <Link
+                                    to="/register"
+                                    onClick={() => setIsOpen(false)}
+                                    className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 text-sm font-semibold text-white transition-colors hover:bg-blue-500"
+                                >
+                                    Join Club
+                                    <ArrowUpRight className="h-4 w-4" />
+                                </Link>
+                            </div>
+                        )}
                     </div>
                 </div>
             )}
-        </nav>
+        </>
     );
 };
 
