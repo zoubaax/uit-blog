@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, ArrowUpRight, Users } from 'lucide-react';
+import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import articleService from '../services/articleService';
 import eventService from '../services/eventService';
 import teamService from '../services/teamService';
@@ -111,27 +111,20 @@ const Home = () => {
                     <p className="text-sm sm:text-lg md:text-xl text-white/90 max-w-2xl mx-auto mb-6 md:mb-10 leading-relaxed drop-shadow reveal-element delay-200">
                         A technical collective dedicated to fostering engineering excellence and research collaboration across the university campus.
                     </p>
-                    <div className="flex flex-col sm:flex-row sm:flex-wrap justify-center items-stretch gap-3 sm:gap-4 mb-4 sm:mb-6 w-full sm:w-auto px-4 sm:px-0 reveal-element delay-300">
+                    <div className="flex flex-col lg:flex-row lg:flex-nowrap justify-center items-stretch gap-2.5 sm:gap-3 lg:gap-4 mb-2 sm:mb-6 w-full max-w-sm lg:max-w-none mx-auto reveal-element delay-300">
                         <Link
                             to="/articles"
-                            className="group inline-flex w-full sm:w-auto items-center justify-center gap-2 h-12 sm:h-[52px] px-6 sm:px-8 rounded-lg bg-blue-600 border border-blue-600 text-white text-sm sm:text-[15px] font-semibold hover:bg-blue-500 hover:border-blue-500 hover:-translate-y-0.5 hover:shadow-md hover:shadow-blue-950/30 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-blue-950/40 transition-all duration-200 ease-out"
+                            className="group inline-flex w-full lg:w-auto items-center justify-center gap-2 h-11 sm:h-12 lg:h-[52px] px-5 lg:px-8 rounded-lg bg-blue-600 border border-blue-600 text-white text-sm lg:text-[15px] font-semibold lg:hover:-translate-y-0.5 lg:hover:shadow-md lg:hover:shadow-blue-950/30 hover:bg-blue-500 hover:border-blue-500 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-blue-950/40 transition-all duration-200 ease-out"
                         >
                             Explore Articles
                             <ArrowRight className="w-4 h-4 transition-transform duration-200 ease-out group-hover:translate-x-0.5" />
                         </Link>
                         <Link
                             to="/register"
-                            className="group inline-flex w-full sm:w-auto items-center justify-center gap-2 h-12 sm:h-[52px] px-6 sm:px-8 rounded-lg bg-white border border-blue-100 text-[#1e3a8a] text-sm sm:text-[15px] font-semibold hover:bg-blue-50 hover:-translate-y-0.5 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-blue-950/40 transition-all duration-200 ease-out"
+                            className="group inline-flex w-full lg:w-auto items-center justify-center gap-2 h-11 sm:h-12 lg:h-[52px] px-5 lg:px-8 rounded-lg bg-white border border-blue-100 text-[#1e3a8a] text-sm lg:text-[15px] font-semibold hover:bg-blue-50 lg:hover:-translate-y-0.5 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-blue-950/40 transition-all duration-200 ease-out"
                         >
                             Join the Team
                             <ArrowUpRight className="w-4 h-4 transition-transform duration-200 ease-out group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                        </Link>
-                        <Link
-                            to="/team"
-                            className="group inline-flex w-full sm:w-auto items-center justify-center gap-2 h-12 sm:h-[52px] px-6 sm:px-8 rounded-lg bg-transparent border border-white/70 text-white text-sm sm:text-[15px] font-semibold hover:bg-white hover:text-[#1e3a8a] hover:border-white hover:-translate-y-0.5 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-blue-950/40 transition-all duration-200 ease-out"
-                        >
-                            <Users className="w-4 h-4 transition-transform duration-200 ease-out group-hover:scale-105" />
-                            Meet the Team
                         </Link>
                     </div>
                 </div>
