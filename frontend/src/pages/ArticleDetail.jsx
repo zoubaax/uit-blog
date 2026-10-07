@@ -490,7 +490,7 @@ const ArticleDetail = () => {
                         <div className="mt-14 p-6 sm:p-8 bg-gradient-to-br from-slate-50 to-white dark:from-slate-900 dark:to-slate-900/80 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
                             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
                                 <div className="w-16 h-16 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 p-2.5 flex items-center justify-center flex-shrink-0 shadow-md overflow-hidden">
-                                    <img src={logoDark} alt="UIT Club" className="w-full h-full object-contain" />
+                                    <img src={logoDark} alt="UIT Club" className="w-full h-full object-contain dark:brightness-0 dark:invert" />
                                 </div>
                                 <div className="flex-1">
                                     <div className="flex items-center gap-2 mb-1">

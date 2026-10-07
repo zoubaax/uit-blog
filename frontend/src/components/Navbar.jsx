@@ -104,10 +104,9 @@ const Navbar = () => {
                     <img 
                         src={isTransparent ? logo : logoDark} 
                         alt="UIT Logo" 
-                        className="h-8 md:h-10 w-auto transition-all" 
-                        style={{ 
-                            filter: isTransparent || isDark ? 'brightness(0) invert(1)' : 'none' 
-                        }}
+                        className={`h-8 md:h-10 w-auto transition-all ${
+                            isTransparent ? 'brightness-0 invert' : 'dark:brightness-0 dark:invert'
+                        }`} 
                     />
                 </Link>
 

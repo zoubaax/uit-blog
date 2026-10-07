@@ -30,8 +30,7 @@ const PageLoader = ({ message = 'Loading' }) => {
                 <img
                     src={logoDark}
                     alt="UIT Club"
-                    className="h-12 md:h-16 w-auto transition-all"
-                    style={{ filter: isDark ? 'brightness(0) invert(1)' : 'none' }}
+                    className="h-12 md:h-16 w-auto transition-all dark:brightness-0 dark:invert"
                 />
             </div>
 

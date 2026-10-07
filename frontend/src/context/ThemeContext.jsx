@@ -3,31 +3,26 @@ import { createContext, useContext, useEffect, useState } from 'react';
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-    // Theme options: 'light', 'dark', 'system'
+    // Theme options: 'light', 'dark'
     const [theme, setTheme] = useState(() => {
         const saved = localStorage.getItem('uit_theme');
-        if (saved === 'dark' || saved === 'light' || saved === 'system') {
+        if (saved === 'dark' || saved === 'light') {
             return saved;
         }
-        return 'system';
+        return 'light'; // Light is the default
     });
 
     const [isDark, setIsDark] = useState(() => {
         if (typeof window === 'undefined') return false;
         const saved = localStorage.getItem('uit_theme');
-        if (saved === 'dark') return true;
-        if (saved === 'light') return false;
-        return window.matchMedia('(prefers-color-scheme: dark)').matches;
+        return saved === 'dark'; // Light is the default
     });
 
     useEffect(() => {
         const root = document.documentElement;
-        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
         const updateTheme = () => {
-            const systemDark = mediaQuery.matches;
-            const activeDark = theme === 'dark' || (theme === 'system' && systemDark);
-
+            const activeDark = theme === 'dark';
             setIsDark(activeDark);
 
             if (activeDark) {
@@ -40,15 +35,6 @@ export const ThemeProvider = ({ children }) => {
         };
 
         updateTheme();
-
-        const handleChange = () => {
-            if (theme === 'system') {
-                updateTheme();
-            }
-        };
-
-        mediaQuery.addEventListener('change', handleChange);
-        return () => mediaQuery.removeEventListener('change', handleChange);
     }, [theme]);
 
     const setThemeMode = (mode) => {
@@ -57,7 +43,6 @@ export const ThemeProvider = ({ children }) => {
     };
 
     const toggleTheme = () => {
-        // Simple toggle between light and dark
         const next = isDark ? 'light' : 'dark';
         setThemeMode(next);
     };

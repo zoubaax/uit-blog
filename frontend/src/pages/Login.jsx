@@ -46,8 +46,7 @@ const Login = () => {
                         <img 
                             src={logoDark} 
                             alt="UIT Logo" 
-                            className="h-12 w-auto transition-all" 
-                            style={{ filter: isDark ? 'brightness(0) invert(1)' : 'none' }}
+                            className="h-12 w-auto transition-all dark:brightness-0 dark:invert" 
                         />
                     </div>
                     <span className="text-[10px] font-bold text-[#2563eb] dark:text-blue-400 uppercase tracking-[0.2em] mb-4 block">Portal Access</span>

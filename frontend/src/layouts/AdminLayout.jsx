@@ -32,8 +32,7 @@ const AdminLayout = () => {
                     <img 
                         src={logoDark} 
                         alt="Logo" 
-                        className="h-7 w-auto transition-all" 
-                        style={{ filter: isDark ? 'brightness(0) invert(1)' : 'none' }}
+                        className="h-7 w-auto transition-all dark:brightness-0 dark:invert" 
                     />
                 </Link>
                 <div className="flex items-center gap-2">
@@ -63,8 +62,7 @@ const AdminLayout = () => {
                         <img 
                             src={logoDark} 
                             alt="Logo" 
-                            className="h-7 w-auto transition-all" 
-                            style={{ filter: isDark ? 'brightness(0) invert(1)' : 'none' }}
+                            className="h-7 w-auto transition-all dark:brightness-0 dark:invert" 
                         />
                     </Link>
                     <ThemeToggle />
