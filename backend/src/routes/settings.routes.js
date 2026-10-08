@@ -75,4 +75,96 @@ router.delete('/applications', protect, async (req, res, next) => {
     }
 });
 
+// Public: Get current announcement & history
+router.get('/announcement', cacheMiddleware(30, '/api/v1/settings'), async (req, res, next) => {
+    try {
+        const announcement = await settingsModel.getSetting('announcement');
+        const history = await settingsModel.getSetting('announcement_history') || [];
+        res.json({ 
+            success: true, 
+            data: announcement || {
+                is_active: false,
+                type: 'custom',
+                target_id: null,
+                title: '',
+                poster_url: '',
+                link_url: '',
+                button_text: 'Learn More'
+            },
+            history: Array.isArray(history) ? history : []
+        });
+    } catch (error) {
+        next(error);
+    }
+});
+
+// Admin: Update announcement configuration & auto-archive to history
+router.put('/announcement', protect, async (req, res, next) => {
+    try {
+        invalidatePrefix('/api/v1/settings');
+        const announcement = req.body;
+        const updated = await settingsModel.updateSetting('announcement', announcement);
+
+        let history = await settingsModel.getSetting('announcement_history') || [];
+        if (!Array.isArray(history)) history = [];
+
+        // Archive into history if there's a poster_url
+        if (announcement.poster_url) {
+            const existingIndex = history.findIndex(h => h.poster_url === announcement.poster_url);
+            const historyEntry = {
+                id: (existingIndex >= 0 ? history[existingIndex].id : Date.now().toString()),
+                title: announcement.title || 'Announcement',
+                poster_url: announcement.poster_url,
+                link_url: announcement.link_url || '',
+                button_text: announcement.button_text || 'View Details',
+                type: announcement.type || 'custom',
+                target_id: announcement.target_id || null,
+                is_active: announcement.is_active,
+                updated_at: new Date().toISOString()
+            };
+
+            if (existingIndex >= 0) {
+                history[existingIndex] = {
+                    ...history[existingIndex],
+                    ...historyEntry
+                };
+            } else {
+                history.unshift({
+                    ...historyEntry,
+                    created_at: new Date().toISOString()
+                });
+            }
+
+            // Sync is_active in history so only current is active
+            history = history.map(item => ({
+                ...item,
+                is_active: item.poster_url === announcement.poster_url && announcement.is_active
+            }));
+
+            // Keep up to 25 items in history
+            history = history.slice(0, 25);
+            await settingsModel.updateSetting('announcement_history', history);
+        }
+
+        res.json({ success: true, data: updated, history });
+    } catch (error) {
+        next(error);
+    }
+});
+
+// Admin: Delete item from announcement history
+router.delete('/announcement/history/:id', protect, async (req, res, next) => {
+    try {
+        invalidatePrefix('/api/v1/settings');
+        let history = await settingsModel.getSetting('announcement_history') || [];
+        if (Array.isArray(history)) {
+            history = history.filter(h => String(h.id) !== String(req.params.id));
+            await settingsModel.updateSetting('announcement_history', history);
+        }
+        res.json({ success: true, history });
+    } catch (error) {
+        next(error);
+    }
+});
+
 module.exports = router;

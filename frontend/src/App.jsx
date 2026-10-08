@@ -30,6 +30,7 @@ const AdminTeam = lazy(() => import('./pages/admin/AdminTeam'));
 const CreateTeam = lazy(() => import('./pages/admin/CreateTeam'));
 const EditTeam = lazy(() => import('./pages/admin/EditTeam'));
 const Applications = lazy(() => import('./pages/admin/Applications'));
+const AdminAnnouncement = lazy(() => import('./pages/admin/AdminAnnouncement'));
 
 function App() {
   return (
@@ -55,6 +56,7 @@ function App() {
             <Route element={<PrivateRoute />}>
               <Route path="/dashboard" element={<AdminLayout />}>
                 <Route index element={<DashboardHome />} />
+                <Route path="announcement" element={<AdminAnnouncement />} />
                 <Route path="articles" element={<AdminArticles />} />
                 <Route path="articles/new" element={<CreateArticle />} />
                 <Route path="articles/edit/:id" element={<EditArticle />} />

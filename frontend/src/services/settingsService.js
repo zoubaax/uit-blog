@@ -24,6 +24,18 @@ const settingsService = {
 
     clearAllApplications: async () => {
         return await api.delete('/settings/applications');
+    },
+
+    getAnnouncement: async () => {
+        return await api.get('/settings/announcement');
+    },
+
+    updateAnnouncement: async (data) => {
+        return await api.put('/settings/announcement', data);
+    },
+
+    deleteAnnouncementHistory: async (id) => {
+        return await api.delete(`/settings/announcement/history/${id}`);
     }
 };
 

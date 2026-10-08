@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import settingsService from '../../services/settingsService';
 import articleService from '../../services/articleService';
 import eventService from '../../services/eventService';
@@ -16,7 +17,10 @@ import {
   CheckCircle,
   Shield,
   Database,
-  Cloud
+  Cloud,
+  Megaphone,
+  History,
+  ArrowRight
 } from 'lucide-react';
 import { SectionLoader } from '../../components/PageLoader';
 
@@ -30,16 +34,20 @@ const DashboardHome = () => {
   const [joinEnabled, setJoinEnabled] = useState(false);
   const [loading, setLoading] = useState(true);
   const [toggling, setToggling] = useState(false);
+  const [announcement, setAnnouncement] = useState(null);
+  const [announcementHistory, setAnnouncementHistory] = useState([]);
+  const [togglingAnnouncement, setTogglingAnnouncement] = useState(false);
 
   useEffect(() => {
     const loadDashboardData = async () => {
       try {
-        const [statusRes, articlesRes, eventsRes, teamRes, appsRes] = await Promise.all([
+        const [statusRes, articlesRes, eventsRes, teamRes, appsRes, announcementRes] = await Promise.all([
           settingsService.getJoinStatus(),
           articleService.getAll(),
           eventService.getAll(true),
           teamService.getAll(),
-          settingsService.getApplications()
+          settingsService.getApplications(),
+          settingsService.getAnnouncement()
         ]);
 
         setJoinEnabled(statusRes.enabled);
@@ -49,6 +57,13 @@ const DashboardHome = () => {
           team: teamRes.data?.length || 0,
           applications: appsRes.data?.length || 0
         });
+
+        const annData = announcementRes?.data?.data || announcementRes?.data;
+        if (annData && typeof annData === 'object' && !Array.isArray(annData)) {
+          setAnnouncement(annData);
+        }
+        const annHistory = announcementRes?.history || announcementRes?.data?.history || [];
+        setAnnouncementHistory(Array.isArray(annHistory) ? annHistory : []);
       } catch (err) {
         console.error('Failed to load dashboard data:', err);
       } finally {
@@ -57,6 +72,30 @@ const DashboardHome = () => {
     };
     loadDashboardData();
   }, []);
+
+  const handleAnnouncementToggle = async () => {
+    if (!announcement) return;
+    setTogglingAnnouncement(true);
+    try {
+      const updated = { ...announcement, is_active: !announcement.is_active };
+      const res = await settingsService.updateAnnouncement(updated);
+      const saved = res?.data?.data || res?.data || updated;
+      setAnnouncement(saved);
+      const savedHistory = res?.history || res?.data?.history;
+      if (Array.isArray(savedHistory)) {
+        setAnnouncementHistory(savedHistory);
+      } else {
+        setAnnouncementHistory(prev => prev.map(item => ({
+          ...item,
+          is_active: item.poster_url === updated.poster_url && updated.is_active
+        })));
+      }
+    } catch (err) {
+      alert('Failed to update announcement status');
+    } finally {
+      setTogglingAnnouncement(false);
+    }
+  };
 
   const handleToggle = async () => {
     setToggling(true);
@@ -171,6 +210,158 @@ const DashboardHome = () => {
             <p className="text-sm font-medium text-gray-600 dark:text-slate-400">{card.label}</p>
           </div>
         ))}
+      </div>
+
+      {/* Pop-up Announcement & History Widget */}
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-6 space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 dark:border-slate-800/80 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400">
+              <Megaphone className="w-5 h-5" />
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-gray-900 dark:text-white">Pop-up Announcement & History</h2>
+              <p className="text-xs text-gray-500 dark:text-slate-400">Manage pop-up modal flyers shown to website visitors and review past announcements</p>
+            </div>
+          </div>
+          <Link
+            to="/dashboard/announcement"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+          >
+            <span>Open Studio</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* Active Campaign Card */}
+          <div className="lg:col-span-5 bg-gray-50 dark:bg-slate-950/60 p-5 rounded-2xl border border-gray-200/80 dark:border-slate-800/80 flex flex-col justify-between space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-slate-400">
+                Active Campaign
+              </span>
+              <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold ${
+                announcement?.is_active
+                  ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60'
+                  : 'bg-slate-200/70 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+              }`}>
+                <span className={`w-1.5 h-1.5 rounded-full ${announcement?.is_active ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'}`} />
+                {announcement?.is_active ? 'LIVE ON SITE' : 'INACTIVE'}
+              </span>
+            </div>
+
+            {announcement?.poster_url ? (
+              <div className="flex gap-4 items-center">
+                <div className="w-20 h-28 rounded-xl bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 p-1 shrink-0 overflow-hidden flex items-center justify-center shadow-xs">
+                  <img
+                    src={announcement.poster_url}
+                    alt={announcement.title || 'Announcement'}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <div className="flex-1 min-w-0 space-y-1.5">
+                  <h3 className="font-bold text-sm text-gray-900 dark:text-white truncate">
+                    {announcement.title || 'Untitled Poster'}
+                  </h3>
+                  <p className="text-xs text-gray-500 dark:text-slate-400">
+                    Source: <span className="capitalize font-semibold text-gray-700 dark:text-slate-300">{announcement.type || 'Custom'}</span>
+                  </p>
+                  <p className="text-[11px] text-gray-400 dark:text-slate-500">
+                    {announcement.is_active ? 'Shown to every visitor in modal' : 'Hidden from site visitors'}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="py-6 text-center text-xs text-slate-400">
+                No active poster configured yet
+              </div>
+            )}
+
+            <div className="pt-2 border-t border-gray-200/60 dark:border-slate-800/80 flex items-center justify-between gap-3">
+              <span className="text-xs font-medium text-gray-600 dark:text-slate-400">
+                Pop-up Status
+              </span>
+              <button
+                type="button"
+                onClick={handleAnnouncementToggle}
+                disabled={togglingAnnouncement || !announcement?.poster_url}
+                className={`relative inline-flex h-7 w-14 items-center rounded-full transition-colors cursor-pointer disabled:opacity-50 ${
+                  announcement?.is_active ? 'bg-emerald-600' : 'bg-gray-300 dark:bg-slate-700'
+                }`}
+                title={announcement?.poster_url ? 'Toggle Pop-up On/Off' : 'Upload a poster first'}
+              >
+                {togglingAnnouncement ? (
+                  <Loader2 className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4 h-4 text-white animate-spin" />
+                ) : (
+                  <span className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${announcement?.is_active ? 'translate-x-8' : 'translate-x-1'}`} />
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Announcement History Column */}
+          <div className="lg:col-span-7 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <History className="w-4 h-4 text-slate-500" />
+                <span className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-slate-300">
+                  Recent History
+                </span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                  {announcementHistory.length}
+                </span>
+              </div>
+              <Link
+                to="/dashboard/announcement"
+                className="text-xs text-blue-600 dark:text-blue-400 hover:underline font-semibold"
+              >
+                Manage All
+              </Link>
+            </div>
+
+            {announcementHistory.length === 0 ? (
+              <div className="p-8 text-center rounded-xl bg-gray-50 dark:bg-slate-950/60 border border-gray-200/80 dark:border-slate-800/80 text-xs text-slate-400">
+                No past announcements saved in history yet.
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {announcementHistory.slice(0, 3).map((item) => {
+                  const isActive = announcement?.poster_url === item.poster_url && announcement?.is_active;
+                  return (
+                    <Link
+                      key={item.id}
+                      to="/dashboard/announcement"
+                      className={`group p-3 rounded-xl border bg-gray-50 dark:bg-slate-950/60 hover:bg-white dark:hover:bg-slate-900 transition-all flex flex-col justify-between space-y-2.5 ${
+                        isActive
+                          ? 'border-emerald-500/80 ring-1 ring-emerald-500/30'
+                          : 'border-gray-200/80 dark:border-slate-800/80 hover:border-blue-400'
+                      }`}
+                    >
+                      <div className="w-full h-28 rounded-lg bg-white dark:bg-slate-900 overflow-hidden flex items-center justify-center p-1 border border-gray-100 dark:border-slate-800/80">
+                        <img
+                          src={item.poster_url}
+                          alt={item.title || 'Announcement'}
+                          className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                      <div className="min-w-0">
+                        <h4 className="font-bold text-xs text-gray-900 dark:text-white truncate">
+                          {item.title || 'Untitled'}
+                        </h4>
+                        <div className="flex items-center justify-between text-[10px] text-gray-400 dark:text-slate-500 mt-1">
+                          <span className="capitalize">{item.type || 'Custom'}</span>
+                          {isActive && (
+                            <span className="text-emerald-600 dark:text-emerald-400 font-bold">LIVE</span>
+                          )}
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* System Health & Tips */}

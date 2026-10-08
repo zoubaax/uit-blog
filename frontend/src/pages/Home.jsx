@@ -9,6 +9,7 @@ import { getOptimizedImageUrl } from '../utils/cloudinaryUtils';
 import { cleanMarkdownExcerpt } from '../utils/textUtils';
 import bannerImage from '../assets/banner.png';
 import FAQSection from '../components/FAQSection';
+import ExecutiveTeamSection from '../components/ExecutiveTeamSection';
 
 /**
  * UIT CLUB HOMEPAGE
@@ -44,6 +45,7 @@ const Home = () => {
     const [stats, setStats] = useState({ members: 0, articles: 0, events: 0 });
     const [articles, setArticles] = useState([]);
     const [events, setEvents] = useState([]);
+    const [teamMembers, setTeamMembers] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useReveal(loading);
@@ -72,6 +74,7 @@ const Home = () => {
                 setEvents(upcomingEvents);
 
                 const members = teamResponse?.data || [];
+                setTeamMembers(members);
                 setStats({
                     members: members.length,
                     articles: articlesResponse?.total ?? allArticles.length,
@@ -146,7 +149,10 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* 4. FEATURED ARTICLES */}
+            {/* 4. MEET THE TEAM */}
+            <ExecutiveTeamSection members={teamMembers} loading={loading} />
+
+            {/* 5. FEATURED ARTICLES */}
             <section className="py-24 px-6 max-w-7xl mx-auto">
                 <div className="reveal-element">
                     <div className="mb-12">
@@ -293,7 +299,7 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* 6. FREQUENTLY ASKED QUESTIONS */}
+            {/* 7. FREQUENTLY ASKED QUESTIONS */}
             <FAQSection />
 
             {/* 7. JOIN THE CLUB CTA */}
