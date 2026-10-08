@@ -100,6 +100,10 @@ const EditTeam = () => {
                         <ImageUpload
                             initialImage={formData.photo_url}
                             onImageUpload={(url) => setFormData({ ...formData, photo_url: url })}
+                            label="Member Photo"
+                            aspectRatio={1}
+                            circularCrop={true}
+                            enableCrop={true}
                         />
                         <p className="mt-4 text-[11px] text-gray-400 dark:text-slate-500 text-center leading-relaxed">
                             Recommended: 400x400px squared image with professional background.

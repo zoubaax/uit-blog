@@ -80,7 +80,12 @@ const CreateTeam = () => {
                 </div>
 
                 <ImageUpload
+                    initialImage={formData.photo_url}
                     onImageUpload={(url) => setFormData({ ...formData, photo_url: url })}
+                    label="Member Photo"
+                    aspectRatio={1}
+                    circularCrop={true}
+                    enableCrop={true}
                 />
 
                 <div className="space-y-4">
