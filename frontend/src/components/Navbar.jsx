@@ -147,13 +147,17 @@ const Navbar = () => {
                     {showJoin && (
                         <Link
                             to="/register"
-                            className={`hidden md:inline-flex h-10 items-center justify-center rounded-lg px-4 text-sm font-semibold transition-colors active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
+                            onClick={() => setIsOpen(false)}
+                            className={`inline-flex items-center justify-center font-semibold rounded-lg transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
+                                'h-8 px-2.5 sm:px-3 text-xs md:h-10 md:px-4 md:text-sm'
+                            } ${
                                 !isTransparent
-                                    ? 'bg-blue-600 text-white hover:bg-blue-500 dark:bg-blue-600 dark:hover:bg-blue-500'
-                                    : 'bg-white text-[#1e3a8a] hover:bg-white/90'
+                                    ? 'bg-blue-600 text-white shadow-sm hover:bg-blue-500 dark:bg-blue-600 dark:hover:bg-blue-500'
+                                    : 'bg-white text-[#1e3a8a] shadow-sm hover:bg-white/90'
                             }`}
                         >
-                            Join Club
+                            <span className="inline min-[360px]:hidden">Join</span>
+                            <span className="hidden min-[360px]:inline">Join Club</span>
                         </Link>
                     )}
 
