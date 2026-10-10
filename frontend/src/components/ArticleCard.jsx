@@ -2,7 +2,7 @@ import { Calendar, ArrowRight, Clock, Eye, Trophy, Camera, Rocket, Globe } from 
 import { Link } from 'react-router-dom';
 import { getOptimizedImageUrl } from '../utils/cloudinaryUtils';
 import { cleanMarkdownExcerpt } from '../utils/textUtils';
-import logoDark from '../assets/dark.png';
+import Logo from './Logo';
 
 const getCategoryColor = (category = '') => {
     const lower = category.toLowerCase();
@@ -106,7 +106,7 @@ const ArticleCard = ({ article }) => {
                     <div className="mt-auto pt-3.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <div className="w-6 h-6 rounded-full bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700 p-0.5 flex items-center justify-center shadow-xs overflow-hidden flex-shrink-0">
-                                <img src={logoDark} alt="UIT Club" className="w-full h-full object-contain dark:brightness-0 dark:invert" />
+                                <Logo className="w-full h-full" />
                             </div>
                             <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate max-w-[120px]">
                                 {(article.author_name?.toLowerCase() === 'uit' || !article.author_name) ? 'UIT Club' : article.author_name}

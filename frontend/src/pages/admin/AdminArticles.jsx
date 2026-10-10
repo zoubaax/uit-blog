@@ -15,6 +15,7 @@ import {
   TrendingUp
 } from 'lucide-react';
 import { SectionLoader } from '../../components/PageLoader';
+import ConfirmModal from '../../components/ConfirmModal';
 
 const AdminArticles = () => {
   const [articles, setArticles] = useState([]);
@@ -22,6 +23,8 @@ const AdminArticles = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState('all'); // all, recent, oldest, popular
   const [categoryFilter, setCategoryFilter] = useState('all');
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [deleting, setDeleting] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,14 +42,17 @@ const AdminArticles = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this article? This action cannot be undone.')) {
-      try {
-        await articleService.delete(id);
-        setArticles(articles.filter(a => a.id !== id));
-      } catch (error) {
-        alert('Failed to delete article');
-      }
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    try {
+      await articleService.delete(deleteTarget.id);
+      setArticles(prev => prev.filter(a => a.id !== deleteTarget.id));
+      setDeleteTarget(null);
+    } catch (error) {
+      console.error('Failed to delete article:', error);
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -201,8 +207,8 @@ const AdminArticles = () => {
                       <Edit2 className="w-3.5 h-3.5" />
                     </button>
                     <button
-                      onClick={() => handleDelete(article.id)}
-                      className="p-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur text-red-600 dark:text-red-400 rounded-lg shadow-sm hover:bg-white dark:hover:bg-slate-800 hover:text-red-700 dark:hover:text-red-300 transition-colors"
+                      onClick={() => setDeleteTarget(article)}
+                      className="p-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur text-red-600 dark:text-red-400 rounded-lg shadow-sm hover:bg-white dark:hover:bg-slate-800 hover:text-red-700 dark:hover:text-red-300 transition-colors cursor-pointer"
                       title="Delete"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -247,7 +253,7 @@ const AdminArticles = () => {
                     </span>
                     <button
                       onClick={() => navigate(`/articles/${article.slug || article.id}`)}
-                      className="flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-bold"
+                      className="flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-bold cursor-pointer"
                     >
                       <Eye className="w-3.5 h-3.5" />
                       View Post
@@ -288,6 +294,43 @@ const AdminArticles = () => {
           </div>
         </div>
       )}
+
+      {/* Custom Modern In-App Confirm Modal */}
+      <ConfirmModal
+        isOpen={Boolean(deleteTarget)}
+        onClose={() => !deleting && setDeleteTarget(null)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Article?"
+        message="Are you sure you want to delete this article? This action is permanent and cannot be undone."
+        confirmText="Delete Article"
+        cancelText="Cancel"
+        variant="danger"
+        loading={deleting}
+        itemPreview={
+          deleteTarget ? (
+            <div className="flex items-center gap-3">
+              <div className="w-14 h-14 rounded-xl bg-gray-100 dark:bg-slate-800 overflow-hidden shrink-0 border border-gray-200 dark:border-slate-700">
+                <img
+                  src={deleteTarget.image_url || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&q=80&w=800'}
+                  alt={deleteTarget.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="min-w-0 flex-1 space-y-0.5">
+                <span className="inline-block px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300">
+                  {deleteTarget.category || 'General'}
+                </span>
+                <h4 className="font-bold text-sm text-gray-900 dark:text-white truncate">
+                  {deleteTarget.title}
+                </h4>
+                <p className="text-xs text-gray-500 dark:text-slate-400">
+                  By {deleteTarget.author_name || 'Admin'} • {deleteTarget.views || 0} views
+                </p>
+              </div>
+            </div>
+          ) : null
+        }
+      />
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import { useTheme } from '../context/ThemeContext';
-import logoDark from '../assets/dark.png';
+import Logo from './Logo';
 
 /**
  * PageLoader — Premium full-page loading screen for public pages.
@@ -27,11 +27,7 @@ const PageLoader = ({ message = 'Loading' }) => {
 
             {/* Logo with pulse */}
             <div className="relative mb-8 animate-loader-breathe">
-                <img
-                    src={logoDark}
-                    alt="UIT Club"
-                    className="h-12 md:h-16 w-auto transition-all dark:brightness-0 dark:invert"
-                />
+                <Logo className="h-12 md:h-16" />
             </div>
 
             {/* Animated progress bar */}

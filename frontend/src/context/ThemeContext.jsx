@@ -5,17 +5,24 @@ const ThemeContext = createContext();
 export const ThemeProvider = ({ children }) => {
     // Theme options: 'light', 'dark'
     const [theme, setTheme] = useState(() => {
+        if (typeof window === 'undefined') return 'light';
         const saved = localStorage.getItem('uit_theme');
         if (saved === 'dark' || saved === 'light') {
             return saved;
         }
-        return 'light'; // Light is the default
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            return 'dark';
+        }
+        return 'light';
     });
 
     const [isDark, setIsDark] = useState(() => {
         if (typeof window === 'undefined') return false;
         const saved = localStorage.getItem('uit_theme');
-        return saved === 'dark'; // Light is the default
+        if (saved === 'dark' || saved === 'light') {
+            return saved === 'dark';
+        }
+        return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
     });
 
     useEffect(() => {

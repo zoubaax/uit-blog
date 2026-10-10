@@ -17,12 +17,15 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { SectionLoader } from '../../components/PageLoader';
+import ConfirmModal from '../../components/ConfirmModal';
 
 const AdminEvents = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState('all'); // all, upcoming, past, hidden
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [deleting, setDeleting] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,14 +43,17 @@ const AdminEvents = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this event?')) {
-      try {
-        await eventService.delete(id);
-        setEvents(events.filter(e => e.id !== id));
-      } catch (error) {
-        alert('Failed to delete event');
-      }
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    try {
+      await eventService.delete(deleteTarget.id);
+      setEvents(prev => prev.filter(e => e.id !== deleteTarget.id));
+      setDeleteTarget(null);
+    } catch (error) {
+      console.error('Failed to delete event:', error);
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -204,8 +210,8 @@ const AdminEvents = () => {
                           <Edit2 className="w-4 h-4" />
                         </button>
                         <button
-                          onClick={() => handleDelete(event.id)}
-                          className="p-2 text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-lg transition-colors"
+                          onClick={() => setDeleteTarget(event)}
+                          className="p-2 text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-lg transition-colors cursor-pointer"
                           title="Delete"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -332,6 +338,41 @@ const AdminEvents = () => {
           </div>
         </div>
       )}
+
+      {/* Custom Modern In-App Confirm Modal */}
+      <ConfirmModal
+        isOpen={Boolean(deleteTarget)}
+        onClose={() => !deleting && setDeleteTarget(null)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Event?"
+        message="Are you sure you want to delete this event? All participant registrations associated with it will also be deleted."
+        confirmText="Delete Event"
+        cancelText="Cancel"
+        variant="danger"
+        loading={deleting}
+        itemPreview={
+          deleteTarget ? (
+            <div className="space-y-2">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                  <Calendar className="w-5 h-5" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h4 className="font-bold text-sm text-gray-900 dark:text-white truncate">
+                    {deleteTarget.title}
+                  </h4>
+                  <p className="text-xs text-gray-500 dark:text-slate-400 truncate">
+                    {deleteTarget.location} • {new Date(deleteTarget.date).toLocaleDateString()}
+                  </p>
+                </div>
+              </div>
+              <div className="text-xs text-amber-600 dark:text-amber-400 font-medium">
+                {deleteTarget.current_registrations || 0} registered participant{deleteTarget.current_registrations !== 1 ? 's' : ''} will be affected.
+              </div>
+            </div>
+          ) : null
+        }
+      />
     </div>
   );
 };

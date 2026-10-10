@@ -28,7 +28,7 @@ import PageLoader from '../components/PageLoader';
 import ArticleCard from '../components/ArticleCard';
 import MarkdownRenderer from '../components/MarkdownRenderer';
 import { getOptimizedImageUrl } from '../utils/cloudinaryUtils';
-import logoDark from '../assets/dark.png';
+import Logo from '../components/Logo';
 import usePageMeta from '../hooks/usePageMeta';
 
 const slugify = (text = '') => {
@@ -251,8 +251,8 @@ const ArticleDetail = () => {
                     <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400">
                         {/* Author info */}
                         <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-full bg-white border border-slate-200/90 p-1 flex items-center justify-center shadow-sm overflow-hidden flex-shrink-0">
-                                <img src={logoDark} alt="UIT Club" className="w-full h-full object-contain" />
+                            <div className="w-9 h-9 rounded-full bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700 p-1 flex items-center justify-center shadow-sm overflow-hidden flex-shrink-0">
+                                <Logo className="w-full h-full" />
                             </div>
                             <div>
                                 <p className="font-bold text-slate-900 text-xs leading-none">
@@ -501,7 +501,7 @@ const ArticleDetail = () => {
                         <div className="mt-14 p-6 sm:p-8 bg-gradient-to-br from-slate-50 to-white dark:from-slate-900 dark:to-slate-900/80 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
                             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
                                 <div className="w-16 h-16 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 p-2.5 flex items-center justify-center flex-shrink-0 shadow-md overflow-hidden">
-                                    <img src={logoDark} alt="UIT Club" className="w-full h-full object-contain dark:brightness-0 dark:invert" />
+                                    <Logo className="w-full h-full" />
                                 </div>
                                 <div className="flex-1">
                                     <div className="flex items-center gap-2 mb-1">

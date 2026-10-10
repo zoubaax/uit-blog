@@ -20,6 +20,9 @@
     <meta property="og:image:alt" content="UIT Club — UPF University" />
     <meta property="og:site_name" content="UIT Club" />
 
+    <!-- Color Scheme & System Theme Support -->
+    <meta name="color-scheme" content="light dark" />
+
     <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="https://www.uit-upf.tech/" />
@@ -30,7 +33,9 @@
       (function() {
         try {
           var saved = localStorage.getItem('uit_theme');
-          if (saved === 'dark') {
+          var systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var isDark = saved === 'dark' || (!saved && systemDark);
+          if (isDark) {
             document.documentElement.classList.add('dark');
             document.documentElement.style.colorScheme = 'dark';
           } else {

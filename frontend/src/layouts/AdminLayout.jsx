@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { NavLink, Link, Outlet, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, FileText, Calendar, Users, LogOut, ClipboardList, Menu, X, Megaphone, BarChart3 } from 'lucide-react';
 import authService from '../services/authService';
-import logoDark from '../assets/dark.png';
+import Logo from '../components/Logo';
 import { useTheme } from '../context/ThemeContext';
 import ThemeToggle from '../components/ThemeToggle';
 
@@ -31,11 +31,7 @@ const AdminLayout = () => {
             {/* Mobile Header */}
             <div className="md:hidden flex items-center justify-between px-4 h-16 bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800 z-30">
                 <Link to="/dashboard" className="flex items-center">
-                    <img 
-                        src={logoDark} 
-                        alt="Logo" 
-                        className="h-7 w-auto transition-all dark:brightness-0 dark:invert" 
-                    />
+                    <Logo className="h-7" />
                 </Link>
                 <div className="flex items-center gap-2">
                     <ThemeToggle />
@@ -61,11 +57,7 @@ const AdminLayout = () => {
             <aside className={`bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-800 fixed inset-y-0 left-0 z-50 w-64 h-screen transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:sticky md:top-0 md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col shrink-0`}>
                 <div className="hidden md:flex h-16 items-center justify-between px-6 border-b border-gray-100 dark:border-slate-800 shrink-0">
                     <Link to="/dashboard" className="flex items-center">
-                        <img 
-                            src={logoDark} 
-                            alt="Logo" 
-                            className="h-7 w-auto transition-all dark:brightness-0 dark:invert" 
-                        />
+                        <Logo className="h-7" />
                     </Link>
                     <ThemeToggle />
                 </div>

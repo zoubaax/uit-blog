@@ -17,12 +17,15 @@ import {
 } from 'lucide-react';
 import { SectionLoader } from '../../components/PageLoader';
 import { exportToCSV } from '../../utils/exportUtils';
+import ConfirmModal from '../../components/ConfirmModal';
 
 const AdminTeam = () => {
     const [members, setMembers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [filter, setFilter] = useState('all');
+    const [deleteTarget, setDeleteTarget] = useState(null);
+    const [deleting, setDeleting] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -40,14 +43,17 @@ const AdminTeam = () => {
         }
     };
 
-    const handleDelete = async (id) => {
-        if (window.confirm('Are you sure you want to remove this team member?')) {
-            try {
-                await teamService.delete(id);
-                setMembers(members.filter(m => m.id !== id));
-            } catch (error) {
-                alert('Failed to delete member');
-            }
+    const handleConfirmDelete = async () => {
+        if (!deleteTarget) return;
+        setDeleting(true);
+        try {
+            await teamService.delete(deleteTarget.id);
+            setMembers(members.filter(m => m.id !== deleteTarget.id));
+            setDeleteTarget(null);
+        } catch (error) {
+            console.error('Failed to delete member:', error);
+        } finally {
+            setDeleting(false);
         }
     };
 
@@ -172,8 +178,8 @@ const AdminTeam = () => {
                                             <Edit2 className="w-4 h-4" />
                                         </button>
                                         <button
-                                            onClick={() => handleDelete(member.id)}
-                                            className="p-2 text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-lg transition-colors"
+                                            onClick={() => setDeleteTarget(member)}
+                                            className="p-2 text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-lg transition-colors cursor-pointer"
                                             title="Delete"
                                         >
                                             <Trash2 className="w-4 h-4" />
@@ -291,6 +297,43 @@ const AdminTeam = () => {
                     </div>
                 </div>
             )}
+
+            {/* Custom Modern In-App Confirm Modal */}
+            <ConfirmModal
+                isOpen={Boolean(deleteTarget)}
+                onClose={() => !deleting && setDeleteTarget(null)}
+                onConfirm={handleConfirmDelete}
+                title="Remove Team Member?"
+                message="Are you sure you want to remove this member from the UIT executive team? Their profile will no longer appear publicly."
+                confirmText="Remove Member"
+                cancelText="Cancel"
+                variant="danger"
+                loading={deleting}
+                itemPreview={
+                    deleteTarget ? (
+                        <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 rounded-xl overflow-hidden bg-gray-100 dark:bg-slate-800 shrink-0 border border-gray-200 dark:border-slate-700">
+                                <img
+                                    src={deleteTarget.photo_url || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=400'}
+                                    alt={deleteTarget.name}
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
+                            <div className="min-w-0 flex-1 space-y-0.5">
+                                <h4 className="font-bold text-sm text-gray-900 dark:text-white truncate">
+                                    {deleteTarget.name}
+                                </h4>
+                                <p className="text-xs text-blue-600 dark:text-blue-400 font-semibold truncate">
+                                    {deleteTarget.role}
+                                </p>
+                                <p className="text-[11px] text-gray-400 dark:text-slate-500 truncate">
+                                    {deleteTarget.email || 'No email attached'}
+                                </p>
+                            </div>
+                        </div>
+                    ) : null
+                }
+            />
         </div>
     );
 };

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
 import { Lock, Mail, Loader2 } from 'lucide-react';
-import logoDark from '../assets/dark.png';
+import Logo from '../components/Logo';
 import { useTheme } from '../context/ThemeContext';
 
 const Login = () => {
@@ -43,11 +43,7 @@ const Login = () => {
             <div className="w-full max-w-sm bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl shadow-xl shadow-slate-200/50 dark:shadow-none p-10 space-y-10">
                 <div className="text-center">
                     <div className="flex justify-center mb-6">
-                        <img 
-                            src={logoDark} 
-                            alt="UIT Logo" 
-                            className="h-12 w-auto transition-all dark:brightness-0 dark:invert" 
-                        />
+                        <Logo className="h-12" />
                     </div>
                     <span className="text-[10px] font-bold text-[#2563eb] dark:text-blue-400 uppercase tracking-[0.2em] mb-4 block">Portal Access</span>
                     <h2 className="text-3xl font-semibold text-[#1e3a8a] dark:text-white tracking-tight">Member Login</h2>

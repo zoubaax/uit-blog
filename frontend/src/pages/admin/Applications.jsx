@@ -21,6 +21,8 @@ import {
 import { SectionLoader } from '../../components/PageLoader';
 import { exportToCSV } from '../../utils/exportUtils';
 
+import ConfirmModal from '../../components/ConfirmModal';
+
 // Helper to format Moroccan or international phone number for WhatsApp direct URL
 const getWhatsAppUrl = (phone) => {
     if (!phone) return '#';
@@ -56,6 +58,9 @@ const Applications = () => {
     const [toggling, setToggling] = useState(false);
     const [selectedApp, setSelectedApp] = useState(null); // for detail modal
 
+    const [confirmTarget, setConfirmTarget] = useState(null);
+    const [deleting, setDeleting] = useState(false);
+
     useEffect(() => {
         loadData();
     }, []);
@@ -82,34 +87,31 @@ const Applications = () => {
             await settingsService.toggleJoinForm(newStatus);
             setJoinEnabled(newStatus);
         } catch (err) {
-            alert('Failed to update portal status');
+            console.error('Failed to update portal status:', err);
         } finally {
             setToggling(false);
         }
     };
 
-    const handleDelete = async (id, e) => {
-        if (e) e.stopPropagation();
-        if (window.confirm('Are you sure you want to permanently delete this application?')) {
-            try {
-                await settingsService.deleteApplication(id);
-                setApplications(prev => prev.filter(app => app.id !== id));
-                if (selectedApp?.id === id) setSelectedApp(null);
-            } catch (err) {
-                alert('Failed to delete application');
-            }
-        }
-    };
-
-    const handleClearAll = async () => {
-        if (window.confirm('CRITICAL ACTION: Are you sure you want to delete ALL applications? This cannot be undone.')) {
-            try {
+    const handleConfirmDelete = async () => {
+        if (!confirmTarget) return;
+        setDeleting(true);
+        try {
+            if (confirmTarget.type === 'single') {
+                const appId = confirmTarget.app.id;
+                await settingsService.deleteApplication(appId);
+                setApplications(prev => prev.filter(app => app.id !== appId));
+                if (selectedApp?.id === appId) setSelectedApp(null);
+            } else if (confirmTarget.type === 'clear_all') {
                 await settingsService.clearAllApplications();
                 setApplications([]);
                 setSelectedApp(null);
-            } catch (err) {
-                alert('Failed to clear applications');
             }
+            setConfirmTarget(null);
+        } catch (err) {
+            console.error('Failed to delete application(s):', err);
+        } finally {
+            setDeleting(false);
         }
     };
 
@@ -177,8 +179,8 @@ const Applications = () => {
                     {/* Purge All */}
                     {applications.length > 0 && (
                         <button
-                            onClick={handleClearAll}
-                            className="flex items-center gap-2 px-4 py-2.5 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/50 rounded-xl hover:bg-red-100 dark:hover:bg-red-950/60 transition-colors font-semibold text-xs"
+                            onClick={() => setConfirmTarget({ type: 'clear_all' })}
+                            className="flex items-center gap-2 px-4 py-2.5 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/50 rounded-xl hover:bg-red-100 dark:hover:bg-red-950/60 transition-colors font-semibold text-xs cursor-pointer"
                         >
                             <Trash2 className="w-4 h-4" />
                             Purge All
@@ -391,14 +393,17 @@ const Applications = () => {
                                                 <div className="flex items-center justify-end gap-1">
                                                     <button
                                                         onClick={() => setSelectedApp(app)}
-                                                        className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                                                        className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
                                                         title="View Full Application"
                                                     >
                                                         <Eye className="w-4 h-4" />
                                                     </button>
                                                     <button
-                                                        onClick={(e) => handleDelete(app.id, e)}
-                                                        className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-lg transition-colors"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setConfirmTarget({ type: 'single', app });
+                                                        }}
+                                                        className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-lg transition-colors cursor-pointer"
                                                         title="Delete Dossier"
                                                     >
                                                         <Trash2 className="w-4 h-4" />
@@ -439,7 +444,7 @@ const Applications = () => {
                             </div>
                             <button
                                 onClick={() => setSelectedApp(null)}
-                                className="p-1.5 text-gray-400 hover:text-gray-700 dark:hover:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                                className="p-1.5 text-gray-400 hover:text-gray-700 dark:hover:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
                             >
                                 <X className="w-5 h-5" />
                             </button>
@@ -497,14 +502,14 @@ const Applications = () => {
                         {/* Modal Footer */}
                         <div className="pt-2 flex justify-between items-center">
                             <button
-                                onClick={() => handleDelete(selectedApp.id)}
-                                className="px-4 py-2 text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-xl transition-colors"
+                                onClick={() => setConfirmTarget({ type: 'single', app: selectedApp })}
+                                className="px-4 py-2 text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-xl transition-colors cursor-pointer"
                             >
                                 Delete Dossier
                             </button>
                             <button
                                 onClick={() => setSelectedApp(null)}
-                                className="px-5 py-2.5 bg-gray-900 hover:bg-gray-800 dark:bg-blue-600 dark:hover:bg-blue-500 text-white text-xs font-semibold rounded-xl transition-colors shadow-sm"
+                                className="px-5 py-2.5 bg-gray-900 hover:bg-gray-800 dark:bg-blue-600 dark:hover:bg-blue-500 text-white text-xs font-semibold rounded-xl transition-colors shadow-sm cursor-pointer"
                             >
                                 Close
                             </button>
@@ -512,6 +517,64 @@ const Applications = () => {
                     </div>
                 </div>
             )}
+
+            {/* Custom Modern Confirm Modal */}
+            <ConfirmModal
+                isOpen={Boolean(confirmTarget)}
+                onClose={() => !deleting && setConfirmTarget(null)}
+                onConfirm={handleConfirmDelete}
+                title={confirmTarget?.type === 'clear_all' ? 'Purge All Applications?' : 'Delete Application Dossier?'}
+                message={
+                    confirmTarget?.type === 'clear_all'
+                        ? `Are you sure you want to delete all ${applications.length} submitted applications? This will wipe all candidate records from the database.`
+                        : 'Are you sure you want to permanently delete this application? This candidate record cannot be recovered.'
+                }
+                confirmText={
+                    confirmTarget?.type === 'clear_all'
+                        ? `Purge All (${applications.length})`
+                        : 'Delete Dossier'
+                }
+                cancelText="Cancel"
+                variant="danger"
+                loading={deleting}
+                itemPreview={
+                    confirmTarget?.type === 'single' && confirmTarget.app ? (
+                        <div className="flex items-center gap-3">
+                            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-500 to-[#1e3a8a] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-xs">
+                                {confirmTarget.app.full_name
+                                    ?.split(' ')
+                                    .map(n => n[0])
+                                    .slice(0, 2)
+                                    .join('')
+                                    .toUpperCase() || 'AP'}
+                            </div>
+                            <div className="min-w-0 flex-1 space-y-0.5">
+                                <h4 className="font-bold text-sm text-gray-900 dark:text-white truncate">
+                                    {confirmTarget.app.full_name}
+                                </h4>
+                                <p className="text-xs text-gray-500 dark:text-slate-400 truncate">
+                                    {confirmTarget.app.email} • {confirmTarget.app.major || 'No Filière'}
+                                </p>
+                                <p className="text-[11px] text-gray-400 dark:text-slate-500">
+                                    {confirmTarget.app.phone ? `WhatsApp/Phone: ${confirmTarget.app.phone}` : 'No phone specified'}
+                                </p>
+                            </div>
+                        </div>
+                    ) : confirmTarget?.type === 'clear_all' ? (
+                        <div className="flex items-center gap-3 text-red-600 dark:text-red-400">
+                            <div className="w-9 h-9 rounded-xl bg-red-100 dark:bg-red-950/60 flex items-center justify-center shrink-0">
+                                <Trash2 className="w-5 h-5 text-red-600 dark:text-red-400" />
+                            </div>
+                            <div>
+                                <p className="text-xs font-bold">Irreversible Database Action</p>
+                                <p className="text-[11px] text-gray-500 dark:text-slate-400">
+                                    {applications.length} submitted dossiers will be completely removed.
+                                </p>
+                            </div>
+                        </div>
+                    ) : null
+                }
+            />
         </div>
     );
 };
