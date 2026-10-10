@@ -1,5 +1,10 @@
-import { Linkedin, Mail } from 'lucide-react';
+import { Linkedin, Mail, Globe, Twitter } from 'lucide-react';
 import { getOptimizedImageUrl } from '../utils/cloudinaryUtils';
+
+const formatUrl = (url) => {
+    if (!url) return '';
+    return url.startsWith('http://') || url.startsWith('https://') ? url : `https://${url}`;
+};
 
 const TeamCard = ({ member }) => {
     const { name, role, photo_url, social_links } = member;
@@ -17,14 +22,50 @@ const TeamCard = ({ member }) => {
             <h3 className="text-xl font-semibold text-[#1e3a8a] dark:text-white mb-1">{name}</h3>
             <p className="text-xs font-bold text-[#94a3b8] dark:text-slate-400 uppercase tracking-widest mb-4">{role}</p>
             
-            <div className="flex justify-center gap-3">
+            <div className="flex justify-center items-center gap-3">
                 {social_links?.linkedin && (
-                    <a href={social_links.linkedin} className="text-[#94a3b8] hover:text-[#2563eb] dark:hover:text-blue-400 transition-colors">
+                    <a
+                        href={formatUrl(social_links.linkedin)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`${name}'s LinkedIn`}
+                        title="LinkedIn Profile"
+                        className="text-[#94a3b8] hover:text-[#2563eb] dark:hover:text-blue-400 transition-colors p-1"
+                    >
                         <Linkedin className="w-4 h-4" />
                     </a>
                 )}
+                {social_links?.website && (
+                    <a
+                        href={formatUrl(social_links.website)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`${name}'s Portfolio`}
+                        title="Portfolio / Website"
+                        className="text-[#94a3b8] hover:text-[#059669] dark:hover:text-emerald-400 transition-colors p-1"
+                    >
+                        <Globe className="w-4 h-4" />
+                    </a>
+                )}
+                {social_links?.twitter && (
+                    <a
+                        href={formatUrl(social_links.twitter)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`${name}'s Twitter`}
+                        title="Twitter Profile"
+                        className="text-[#94a3b8] hover:text-[#0284c7] dark:hover:text-sky-400 transition-colors p-1"
+                    >
+                        <Twitter className="w-4 h-4" />
+                    </a>
+                )}
                 {member.email && (
-                    <a href={`mailto:${member.email}`} className="text-[#94a3b8] hover:text-[#2563eb] dark:hover:text-blue-400 transition-colors">
+                    <a
+                        href={`mailto:${member.email}`}
+                        aria-label={`Email ${name}`}
+                        title="Email"
+                        className="text-[#94a3b8] hover:text-[#2563eb] dark:hover:text-blue-400 transition-colors p-1"
+                    >
                         <Mail className="w-4 h-4" />
                     </a>
                 )}

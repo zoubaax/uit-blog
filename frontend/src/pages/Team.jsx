@@ -5,12 +5,12 @@ import PageLoader from '../components/PageLoader';
 import usePageMeta from '../hooks/usePageMeta';
 
 const getRank = (role = '') => {
-    const r = role.toLowerCase();
+    const r = role.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     if (r.includes('president') && !r.includes('vice') && !r.includes('assistant')) return 1;
     if (r.includes('vice') || r.includes('vp')) return 2;
-    if (r.includes('secretary') || r.includes('secrétaire') || r.includes('sg')) return 3;
-    if (r.includes('treasurer') || r.includes('trésorier')) return 4;
-    if (r.includes('lead') || r.includes('head') || r.includes('responsable')) return 5;
+    if (r.includes('secretaire') || r.includes('secretary') || r.includes('sg')) return 3;
+    if (r.includes('tresorier') || r.includes('treasurer')) return 4;
+    if (r.includes('responsable') || r.includes('lead') || r.includes('head') || r.includes('community')) return 5;
     return 6;
 };
 

@@ -6,11 +6,11 @@ const findAll = async () => {
         SELECT * FROM team_members 
         ORDER BY 
             CASE 
-                WHEN role ILIKE '%president%' AND role NOT ILIKE '%vice%' AND role NOT ILIKE '%assistant%' THEN 1
+                WHEN (role ILIKE '%president%' OR role ILIKE '%président%') AND role NOT ILIKE '%vice%' AND role NOT ILIKE '%assistant%' THEN 1
                 WHEN role ILIKE '%vice%' OR role ILIKE '%vp%' THEN 2
-                WHEN role ILIKE '%secretary%' OR role ILIKE '%secrétaire%' OR role ILIKE '%sg%' THEN 3
-                WHEN role ILIKE '%treasurer%' OR role ILIKE '%trésorier%' THEN 4
-                WHEN role ILIKE '%lead%' OR role ILIKE '%head%' OR role ILIKE '%responsable%' THEN 5
+                WHEN role ILIKE '%secretary%' OR role ILIKE '%secrétaire%' OR role ILIKE '%secretaire%' OR role ILIKE '%sg%' THEN 3
+                WHEN role ILIKE '%treasurer%' OR role ILIKE '%trésorier%' OR role ILIKE '%tresorier%' OR role ILIKE '%trésorière%' THEN 4
+                WHEN role ILIKE '%lead%' OR role ILIKE '%head%' OR role ILIKE '%responsable%' OR role ILIKE '%community%' THEN 5
                 ELSE 6
             END ASC,
             id ASC

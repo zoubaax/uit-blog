@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Linkedin, Globe, Mail } from 'lucide-react';
+import { ArrowRight, Linkedin, Globe, Mail, Twitter } from 'lucide-react';
 import teamService from '../services/teamService';
 import { getOptimizedImageUrl } from '../utils/cloudinaryUtils';
 const FALLBACK_AVATARS = {
@@ -208,7 +208,7 @@ const ExecutiveTeamSection = ({ members: propMembers, loading: propLoading }) =>
                                         {/* Optional Social Icon if available */}
                                         {leader.social_links?.linkedin && (
                                             <a
-                                                href={leader.social_links.linkedin}
+                                                href={leader.social_links.linkedin.startsWith('http') ? leader.social_links.linkedin : `https://${leader.social_links.linkedin}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 aria-label={`${leader.name} LinkedIn`}

@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import teamService from '../../services/teamService';
 import ImageUpload from '../../components/ImageUpload';
-import { Save, ArrowLeft, Loader2, Linkedin, Twitter, Globe, Trash2 } from 'lucide-react';
+import { Save, ArrowLeft, Loader2, Linkedin, Twitter, Globe } from 'lucide-react';
 import { SectionLoader } from '../../components/PageLoader';
+import { TEAM_ROLES } from '../../data/teamRoles';
 
 const EditTeam = () => {
     const { id } = useParams();
@@ -131,14 +132,22 @@ const EditTeam = () => {
                                 </div>
                                 <div className="space-y-2">
                                     <label className="block text-sm font-bold text-gray-700 dark:text-slate-300">Role / Designation</label>
-                                    <input
-                                        type="text"
+                                    <select
                                         required
-                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-gray-900 dark:text-slate-100 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:border-blue-500 outline-none transition-all placeholder:text-gray-300 dark:placeholder:text-slate-600"
-                                        placeholder="Head of Research"
+                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-gray-900 dark:text-slate-100 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:border-blue-500 outline-none transition-all cursor-pointer text-sm"
                                         value={formData.role}
                                         onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                                    />
+                                    >
+                                        <option value="" disabled>Select Role / Position</option>
+                                        {formData.role && !TEAM_ROLES.includes(formData.role) && (
+                                            <option value={formData.role}>{formData.role}</option>
+                                        )}
+                                        {TEAM_ROLES.map((role, idx) => (
+                                            <option key={idx} value={role}>
+                                                {role}
+                                            </option>
+                                        ))}
+                                    </select>
                                 </div>
                             </div>
                         </div>

@@ -1,0 +1,23 @@
+export const TEAM_ROLES = [
+    'Présidente',
+    'Président',
+    'Vice-Président',
+    'Vice-Présidente',
+    'Secrétaire Général (SG)',
+    'Secrétaire Général',
+    'Secrétaire Générale',
+    'Trésorier',
+    'Trésorière',
+    'Responsable Communication',
+    'Responsable Tutorat',
+    'Responsable Média',
+    'Responsable Événementiel',
+    'Responsable Sponsoring',
+    'Community Manager',
+    'Responsable de la communication',
+    'Responsable du tutorat',
+    'Responsable média',
+    "Responsable de l'événementiel",
+    'Responsable du sponsoring',
+    'Responsable de la communauté (Community Manager)'
+];

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import teamService from '../../services/teamService';
 import ImageUpload from '../../components/ImageUpload';
 import { Save, ArrowLeft, Loader2, Linkedin, Twitter, Globe } from 'lucide-react';
+import { TEAM_ROLES } from '../../data/teamRoles';
 
 const CreateTeam = () => {
     const navigate = useNavigate();
@@ -68,14 +69,19 @@ const CreateTeam = () => {
                     </div>
                     <div className="space-y-2">
                         <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">Role / Position</label>
-                        <input
-                            type="text"
+                        <select
                             required
-                            className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-600 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:border-blue-500 outline-none transition-all"
-                            placeholder="e.g., President"
+                            className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-gray-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:border-blue-500 outline-none transition-all cursor-pointer"
                             value={formData.role}
                             onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                        />
+                        >
+                            <option value="" disabled>Select Role / Position</option>
+                            {TEAM_ROLES.map((role, idx) => (
+                                <option key={idx} value={role}>
+                                    {role}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                 </div>
 
