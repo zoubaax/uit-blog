@@ -17,10 +17,19 @@ const getAllEvents = async (isAdmin = false) => {
     return events;
 };
 
-const getEventById = async (id) => {
+const getEventById = async (id, shouldIncrementView = true) => {
     const event = await eventModel.findById(id);
     if (!event) {
         throw new AppError('Event not found', 404);
+    }
+
+    if (shouldIncrementView) {
+        try {
+            await eventModel.incrementViews(event.id);
+            event.views = (event.views || 0) + 1;
+        } catch (e) {
+            // Non-critical, continue
+        }
     }
 
     // Add current registration count

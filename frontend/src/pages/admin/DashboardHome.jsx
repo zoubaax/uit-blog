@@ -4,6 +4,7 @@ import settingsService from '../../services/settingsService';
 import articleService from '../../services/articleService';
 import eventService from '../../services/eventService';
 import teamService from '../../services/teamService';
+import analyticsService from '../../services/analyticsService';
 import {
   ToggleRight,
   ToggleLeft,
@@ -20,7 +21,11 @@ import {
   Cloud,
   Megaphone,
   History,
-  ArrowRight
+  ArrowRight,
+  BarChart3,
+  Eye,
+  Zap,
+  Target
 } from 'lucide-react';
 import { SectionLoader } from '../../components/PageLoader';
 
@@ -31,6 +36,7 @@ const DashboardHome = () => {
     team: 0,
     applications: 0
   });
+  const [analyticsData, setAnalyticsData] = useState(null);
   const [joinEnabled, setJoinEnabled] = useState(false);
   const [loading, setLoading] = useState(true);
   const [toggling, setToggling] = useState(false);
@@ -41,13 +47,14 @@ const DashboardHome = () => {
   useEffect(() => {
     const loadDashboardData = async () => {
       try {
-        const [statusRes, articlesRes, eventsRes, teamRes, appsRes, announcementRes] = await Promise.all([
+        const [statusRes, articlesRes, eventsRes, teamRes, appsRes, announcementRes, analyticsRes] = await Promise.all([
           settingsService.getJoinStatus(),
           articleService.getAll(),
           eventService.getAll(true),
           teamService.getAll(),
           settingsService.getApplications(),
-          settingsService.getAnnouncement()
+          settingsService.getAnnouncement(),
+          analyticsService.getStats('7d').catch(() => ({ data: null }))
         ]);
 
         setJoinEnabled(statusRes.enabled);
@@ -57,6 +64,10 @@ const DashboardHome = () => {
           team: teamRes.data?.length || 0,
           applications: appsRes.data?.length || 0
         });
+
+        if (analyticsRes?.data) {
+          setAnalyticsData(analyticsRes.data);
+        }
 
         const annData = announcementRes?.data?.data || announcementRes?.data;
         if (annData && typeof annData === 'object' && !Array.isArray(annData)) {
@@ -410,14 +421,95 @@ const DashboardHome = () => {
         </div>
       </div>
 
-      {/* Recent Activity Placeholder */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-6">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Recent Activity</h2>
-        <div className="text-center py-8">
-          <Activity className="w-12 h-12 text-gray-300 dark:text-slate-600 mx-auto mb-3" />
-          <p className="text-gray-500 dark:text-slate-400 font-medium">Activity feed will appear here</p>
-          <p className="text-gray-400 dark:text-slate-500 text-sm mt-1">Actions and updates will be displayed in real-time</p>
+      {/* Live Telemetry & Analytics Snapshot */}
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-6 space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 dark:border-slate-800/80 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400">
+              <BarChart3 className="w-5 h-5" />
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-gray-900 dark:text-white">Live Traffic & Visitor Insights</h2>
+              <p className="text-xs text-gray-500 dark:text-slate-400">Real-time telemetry and engagement over the last 7 days</p>
+            </div>
+          </div>
+
+          <Link
+            to="/dashboard/analytics"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+          >
+            <span>Open Full Analytics Studio</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
         </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* 1. Visitors */}
+          <div className="p-4 rounded-xl bg-gray-50 dark:bg-slate-950/60 border border-gray-100 dark:border-slate-800/80">
+            <span className="text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Unique Visitors (7d)</span>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+              {analyticsData?.summary?.visitors?.toLocaleString() || 0}
+            </p>
+            <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium mt-1 inline-block">
+              +{analyticsData?.summary?.visitorsGrowth || 0}% vs previous
+            </span>
+          </div>
+
+          {/* 2. Total Pageviews */}
+          <div className="p-4 rounded-xl bg-gray-50 dark:bg-slate-950/60 border border-gray-100 dark:border-slate-800/80">
+            <span className="text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Total Pageviews</span>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+              {analyticsData?.summary?.pageviews?.toLocaleString() || 0}
+            </p>
+            <span className="text-[11px] text-indigo-600 dark:text-indigo-400 font-medium mt-1 inline-block">
+              {analyticsData?.summary?.articleReads || 0} blog reads
+            </span>
+          </div>
+
+          {/* 3. Event Engagement */}
+          <div className="p-4 rounded-xl bg-gray-50 dark:bg-slate-950/60 border border-gray-100 dark:border-slate-800/80">
+            <span className="text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Event Views</span>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+              {analyticsData?.summary?.eventViews?.toLocaleString() || 0}
+            </p>
+            <span className="text-[11px] text-amber-600 dark:text-amber-400 font-medium mt-1 inline-block">
+              {analyticsData?.summary?.registrations || 0} RSVPs registered
+            </span>
+          </div>
+
+          {/* 4. Join Conversion */}
+          <div className="p-4 rounded-xl bg-gray-50 dark:bg-slate-950/60 border border-gray-100 dark:border-slate-800/80">
+            <span className="text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Join Conversion</span>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+              {analyticsData?.summary?.joinConversionRate || 0}%
+            </p>
+            <span className="text-[11px] text-rose-500 font-medium mt-1 inline-block">
+              {analyticsData?.summary?.applications || 0} applications
+            </span>
+          </div>
+        </div>
+
+        {/* Recent Live Activity list */}
+        {analyticsData?.recentActivity && analyticsData.recentActivity.length > 0 && (
+          <div className="pt-2">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-slate-400 mb-3">
+              Live Visitor Ticker
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+              {analyticsData.recentActivity.slice(0, 4).map((act) => (
+                <div key={act.id} className="p-2.5 rounded-lg bg-gray-50/70 dark:bg-slate-950/40 border border-gray-100 dark:border-slate-800 text-xs">
+                  <div className="flex items-center justify-between text-gray-400 dark:text-slate-500">
+                    <span className="font-semibold text-blue-600 dark:text-blue-400 text-[10px] uppercase">{act.event_type.replace('_', ' ')}</span>
+                    <span className="text-[10px]">{new Date(act.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                  </div>
+                  <div className="font-mono text-gray-800 dark:text-slate-200 truncate mt-1">
+                    {act.resource_title || act.path}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -19,6 +19,7 @@ const Login = lazy(() => import('./pages/Login'));
 // Lazy load Admin layout and administrative tools
 const AdminLayout = lazy(() => import('./layouts/AdminLayout'));
 const DashboardHome = lazy(() => import('./pages/admin/DashboardHome'));
+const AdminAnalytics = lazy(() => import('./pages/admin/AdminAnalytics'));
 const AdminArticles = lazy(() => import('./pages/admin/AdminArticles'));
 const CreateArticle = lazy(() => import('./pages/admin/CreateArticle'));
 const EditArticle = lazy(() => import('./pages/admin/EditArticle'));
@@ -32,10 +33,18 @@ const EditTeam = lazy(() => import('./pages/admin/EditTeam'));
 const Applications = lazy(() => import('./pages/admin/Applications'));
 const AdminAnnouncement = lazy(() => import('./pages/admin/AdminAnnouncement'));
 
+import usePageTracker from './hooks/usePageTracker';
+
+const PageTracker = () => {
+  usePageTracker();
+  return null;
+};
+
 function App() {
   return (
     <ThemeProvider>
       <BrowserRouter>
+        <PageTracker />
         <Suspense fallback={<div className="min-h-screen bg-white dark:bg-slate-950" />}>
           <Routes>
             {/* Public Routes using MainLayout */}
@@ -56,6 +65,7 @@ function App() {
             <Route element={<PrivateRoute />}>
               <Route path="/dashboard" element={<AdminLayout />}>
                 <Route index element={<DashboardHome />} />
+                <Route path="analytics" element={<AdminAnalytics />} />
                 <Route path="announcement" element={<AdminAnnouncement />} />
                 <Route path="articles" element={<AdminArticles />} />
                 <Route path="articles/new" element={<CreateArticle />} />

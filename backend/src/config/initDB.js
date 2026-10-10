@@ -122,6 +122,32 @@ const initDB = async () => {
             ALTER TABLE club_applications ALTER COLUMN motivation DROP NOT NULL;
         `);
         console.log('✓ Club Applications table ready');
+
+        // 9. Create Page Views & Analytics Table
+        await pool.query(`
+            ALTER TABLE events ADD COLUMN IF NOT EXISTS views INTEGER DEFAULT 0;
+
+            CREATE TABLE IF NOT EXISTS page_views (
+                id SERIAL PRIMARY KEY,
+                path VARCHAR(255) NOT NULL,
+                event_type VARCHAR(50) DEFAULT 'pageview',
+                resource_id INTEGER,
+                resource_title VARCHAR(255),
+                visitor_hash VARCHAR(64),
+                referrer VARCHAR(500),
+                device_type VARCHAR(20) DEFAULT 'desktop',
+                browser VARCHAR(50) DEFAULT 'Other',
+                os VARCHAR(50) DEFAULT 'Other',
+                created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_page_views_created_at ON page_views(created_at);
+            CREATE INDEX IF NOT EXISTS idx_page_views_path ON page_views(path);
+            CREATE INDEX IF NOT EXISTS idx_page_views_event_type ON page_views(event_type);
+            CREATE INDEX IF NOT EXISTS idx_page_views_visitor_hash ON page_views(visitor_hash);
+            CREATE INDEX IF NOT EXISTS idx_page_views_resource ON page_views(resource_id, event_type);
+        `);
+        console.log('✓ Page Views & Analytics table ready');
         console.log('--- DB INITIALIZATION COMPLETE ---');
 
     } catch (err) {

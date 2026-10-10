@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { NavLink, Link, Outlet, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, FileText, Calendar, Users, LogOut, ClipboardList, Menu, X, Megaphone } from 'lucide-react';
+import { LayoutDashboard, FileText, Calendar, Users, LogOut, ClipboardList, Menu, X, Megaphone, BarChart3 } from 'lucide-react';
 import authService from '../services/authService';
 import logoDark from '../assets/dark.png';
 import { useTheme } from '../context/ThemeContext';
@@ -18,6 +18,7 @@ const AdminLayout = () => {
 
     const navItems = [
         { path: '/dashboard', label: 'Overview', icon: LayoutDashboard },
+        { path: '/dashboard/analytics', label: 'Analytics', icon: BarChart3 },
         { path: '/dashboard/announcement', label: 'Announcement', icon: Megaphone },
         { path: '/dashboard/articles', label: 'Articles', icon: FileText },
         { path: '/dashboard/events', label: 'Events', icon: Calendar },
@@ -57,8 +58,8 @@ const AdminLayout = () => {
             )}
 
             {/* Sidebar */}
-            <aside className={`bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-800 fixed inset-y-0 left-0 z-50 w-64 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col`}>
-                <div className="hidden md:flex h-16 items-center justify-between px-6 border-b border-gray-100 dark:border-slate-800">
+            <aside className={`bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-800 fixed inset-y-0 left-0 z-50 w-64 h-screen transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:sticky md:top-0 md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col shrink-0`}>
+                <div className="hidden md:flex h-16 items-center justify-between px-6 border-b border-gray-100 dark:border-slate-800 shrink-0">
                     <Link to="/dashboard" className="flex items-center">
                         <img 
                             src={logoDark} 
@@ -69,7 +70,7 @@ const AdminLayout = () => {
                     <ThemeToggle />
                 </div>
 
-                <nav className="p-4 space-y-1 flex-1">
+                <nav className="p-4 space-y-1 flex-1 overflow-y-auto">
                     {navItems.map((item) => (
                         <NavLink
                             key={item.path}
@@ -88,10 +89,10 @@ const AdminLayout = () => {
                     ))}
                 </nav>
 
-                <div className="p-4 border-t border-gray-100 dark:border-slate-800">
+                <div className="p-4 border-t border-gray-100 dark:border-slate-800 shrink-0 bg-white dark:bg-slate-900">
                     <button
                         onClick={handleLogout}
-                        className="flex items-center gap-3 w-full px-4 py-3 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-colors"
+                        className="flex items-center gap-3 w-full px-4 py-3 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-colors cursor-pointer"
                     >
                         <LogOut className="w-5 h-5" />
                         Sign Out
@@ -100,7 +101,7 @@ const AdminLayout = () => {
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 min-w-0 overflow-y-auto">
+            <main className="flex-1 min-w-0">
                 <div className="p-4 md:p-8">
                     <Outlet />
                 </div>

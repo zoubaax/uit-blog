@@ -10,7 +10,8 @@ const getAll = catchAsync(async (req, res) => {
 });
 
 const getOne = catchAsync(async (req, res) => {
-    const event = await eventService.getEventById(req.params.id);
+    const shouldIncrementView = req.query.skip_view !== 'true';
+    const event = await eventService.getEventById(req.params.id, shouldIncrementView);
     res.status(200).json({ success: true, data: event });
 });
 

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import eventService from '../services/eventService';
+import analyticsService from '../services/analyticsService';
 import { ArrowLeft, MapPin, Calendar, Clock, Camera, ArrowRight, CheckCircle2 } from 'lucide-react';
 import PageLoader from '../components/PageLoader';
 import EventRegistrationForm from '../components/EventRegistrationForm';
@@ -24,7 +25,17 @@ const EventDetail = () => {
         const fetchEvent = async () => {
             try {
                 const response = await eventService.getById(id);
-                setEvent(response.data);
+                const loadedEvent = response.data;
+                setEvent(loadedEvent);
+
+                if (loadedEvent?.id) {
+                    analyticsService.track({
+                        path: `/events/${loadedEvent.id}`,
+                        eventType: 'event_view',
+                        resourceId: loadedEvent.id,
+                        resourceTitle: loadedEvent.title
+                    });
+                }
             } catch (err) {
                 setError('Event not found or failed to load.');
                 console.error(err);

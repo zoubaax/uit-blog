@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import articleService from '../services/articleService';
+import analyticsService from '../services/analyticsService';
 import { 
     ArrowLeft, 
     Calendar, 
@@ -80,6 +81,16 @@ const ArticleDetail = () => {
                 const response = await articleService.getById(id);
                 const loadedArticle = response.data;
                 setArticle(loadedArticle);
+
+                // Track specific article read event
+                if (loadedArticle?.id) {
+                    analyticsService.track({
+                        path: `/articles/${loadedArticle.slug || loadedArticle.id}`,
+                        eventType: 'article_view',
+                        resourceId: loadedArticle.id,
+                        resourceTitle: loadedArticle.title
+                    });
+                }
 
                 // If visited via numeric ID or un-slugified URL, seamlessly update URL bar to the clean title slug
                 if (loadedArticle?.slug && id !== loadedArticle.slug) {

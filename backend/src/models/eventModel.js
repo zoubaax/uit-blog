@@ -83,6 +83,14 @@ const remove = async (id) => {
     return result.rows[0];
 };
 
+const incrementViews = async (id) => {
+    const result = await db.query(
+        'UPDATE events SET views = COALESCE(views, 0) + 1 WHERE id = $1 RETURNING views',
+        [parseInt(id, 10)]
+    );
+    return result.rows[0];
+};
+
 module.exports = {
     findAll,
     findAllVisible,
@@ -90,4 +98,5 @@ module.exports = {
     create,
     update,
     remove,
+    incrementViews,
 };
