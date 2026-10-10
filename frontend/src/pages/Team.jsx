@@ -4,6 +4,24 @@ import TeamCard from '../components/TeamCard';
 import PageLoader from '../components/PageLoader';
 import usePageMeta from '../hooks/usePageMeta';
 
+const getRank = (role = '') => {
+    const r = role.toLowerCase();
+    if (r.includes('president') && !r.includes('vice') && !r.includes('assistant')) return 1;
+    if (r.includes('vice') || r.includes('vp')) return 2;
+    if (r.includes('secretary') || r.includes('secrétaire') || r.includes('sg')) return 3;
+    if (r.includes('treasurer') || r.includes('trésorier')) return 4;
+    if (r.includes('lead') || r.includes('head') || r.includes('responsable')) return 5;
+    return 6;
+};
+
+const sortExecutiveHierarchy = (list = []) => {
+    return [...list].sort((a, b) => {
+        const rankDiff = getRank(a.role) - getRank(b.role);
+        if (rankDiff !== 0) return rankDiff;
+        return (a.id || 0) - (b.id || 0);
+    });
+};
+
 const Team = () => {
     usePageMeta({
         title: 'Leadership & Team',
@@ -18,7 +36,8 @@ const Team = () => {
         const fetchMembers = async () => {
             try {
                 const response = await teamService.getAll();
-                setMembers(response.data || []);
+                const rawList = response.data || [];
+                setMembers(sortExecutiveHierarchy(rawList));
             } catch (err) {
                 setError('Failed to load team members. Please try again later.');
                 console.error(err);

@@ -34,6 +34,7 @@ const Applications = lazy(() => import('./pages/admin/Applications'));
 const AdminAnnouncement = lazy(() => import('./pages/admin/AdminAnnouncement'));
 
 import usePageTracker from './hooks/usePageTracker';
+import ScrollToTop from './components/ScrollToTop';
 
 const PageTracker = () => {
   usePageTracker();
@@ -44,6 +45,7 @@ function App() {
   return (
     <ThemeProvider>
       <BrowserRouter>
+        <ScrollToTop />
         <PageTracker />
         <Suspense fallback={<div className="min-h-screen bg-white dark:bg-slate-950" />}>
           <Routes>

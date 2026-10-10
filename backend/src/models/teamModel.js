@@ -1,8 +1,21 @@
 const db = require('../config/db');
 
 const findAll = async () => {
-    // Order by ID or creation time, or potentially add a 'rank' column later for specific ordering
-    const result = await db.query('SELECT * FROM team_members ORDER BY id ASC');
+    // Order by Executive Hierarchy: President -> Vice-President -> General Secretary -> Others
+    const query = `
+        SELECT * FROM team_members 
+        ORDER BY 
+            CASE 
+                WHEN role ILIKE '%president%' AND role NOT ILIKE '%vice%' AND role NOT ILIKE '%assistant%' THEN 1
+                WHEN role ILIKE '%vice%' OR role ILIKE '%vp%' THEN 2
+                WHEN role ILIKE '%secretary%' OR role ILIKE '%secrétaire%' OR role ILIKE '%sg%' THEN 3
+                WHEN role ILIKE '%treasurer%' OR role ILIKE '%trésorier%' THEN 4
+                WHEN role ILIKE '%lead%' OR role ILIKE '%head%' OR role ILIKE '%responsable%' THEN 5
+                ELSE 6
+            END ASC,
+            id ASC
+    `;
+    const result = await db.query(query);
     return result.rows;
 };
 
